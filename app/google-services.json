@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591589116438",
+    "project_id": "savebetter-61358",
+    "storage_bucket": "savebetter-61358.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591589116438:android:4b43ae3734078377054337",
+        "android_client_info": {
+          "package_name": "com.example.savebetter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfXKlk0r4zISmNyOPBj1Q23pPIxbHPT0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

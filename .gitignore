@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+expense-tracker-ui-design-savebetter.html
+
+# Room schema exports (generated, not source-controlled)
+# Uncomment if you prefer not to track schema files:
+# app/schemas/
+
+# NOTE: app/google-services.json contains the PLACEHOLDER file and IS committed.
+# If you add the REAL google-services.json, add it to a gitignored path or
+# use a secrets manager. Never commit real API keys.
