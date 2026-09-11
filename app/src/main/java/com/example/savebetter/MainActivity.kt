@@ -88,6 +88,7 @@ class MainActivity : ComponentActivity() {
                             var isAddExpenseOpen by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var activeExpenseIdForEdit by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
                             var showWeeklyDetail by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var showMonthlyAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
                             if (isAddExpenseOpen) {
                                 com.example.savebetter.feature.addexpense.ui.AddExpenseScreen(
@@ -109,6 +110,12 @@ class MainActivity : ComponentActivity() {
                                         isAddExpenseOpen = true
                                     }
                                 )
+                            } else if (showMonthlyAnalysis) {
+                                com.example.savebetter.feature.monthly.ui.MonthlyAnalysisScreen(
+                                    userId = state.user.id,
+                                    selectedLanguage = currentLanguage,
+                                    onBackClick = { showMonthlyAnalysis = false }
+                                )
                             } else {
                                 com.example.savebetter.feature.home.ui.HomeScreen(
                                     userId = state.user.id,
@@ -124,6 +131,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onWeeklyDetailClick = {
                                         showWeeklyDetail = true
+                                    },
+                                    onMonthlyAnalysisClick = {
+                                        showMonthlyAnalysis = true
                                     },
                                     onDestinationSelected = { dest ->
                                         if (dest == com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings) {

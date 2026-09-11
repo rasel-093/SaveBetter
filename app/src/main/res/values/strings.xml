@@ -203,6 +203,21 @@
     <string name="weekday_thu">Thu</string>
     <string name="weekday_fri">Fri</string>
 
+    <!-- Monthly Analysis (Screen 06) -->
+    <string name="monthly_analysis_title">Monthly Ledger</string>
+    <string name="monthly_tag_subtitle">৳ / Month</string>
+    <string name="monthly_spending_by_category">Spending by Category</string>
+    <string name="monthly_compared_to_last_month">Compared to Last Month</string>
+    <string name="monthly_prev_month">Previous Month</string>
+    <string name="monthly_next_month">Next Month</string>
+    <string name="monthly_outlier_excluded_title">One-time expense in %1$s (%2$s) excluded</string>
+    <string name="monthly_outlier_excluded_desc">Excluding this large one-time purchase (%1$s) gives a clearer picture of your recurring monthly trend.</string>
+    <string name="monthly_reduction_suggestion_title">Potential savings in %1$s</string>
+    <string name="monthly_reduction_suggestion_desc">Spending in %1$s increased by %2$s compared to last month (%3$s of total spend). Reviewing recurring purchases here can help you save.</string>
+    <string name="monthly_savings_feasible_title">Savings goal achievable!</string>
+    <string name="monthly_savings_feasible_desc">At your current spending rate, reaching your savings goal of %1$s is well within reach.</string>
+    <string name="monthly_no_data">No expenses recorded for this month.</string>
+
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>
 </resources>

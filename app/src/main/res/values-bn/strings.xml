@@ -203,4 +203,19 @@
     <string name="weekday_wed">বুধ</string>
     <string name="weekday_thu">বৃহঃ</string>
     <string name="weekday_fri">শুক্র</string>
+
+    <!-- Monthly Analysis (Screen 06) -->
+    <string name="monthly_analysis_title">মাসিক হিসাব</string>
+    <string name="monthly_tag_subtitle">৳ / মাস</string>
+    <string name="monthly_spending_by_category">খাত অনুযায়ী খরচ</string>
+    <string name="monthly_compared_to_last_month">গত মাসের তুলনায়</string>
+    <string name="monthly_prev_month">পূর্ববর্তী মাস</string>
+    <string name="monthly_next_month">পরবর্তী মাস</string>
+    <string name="monthly_outlier_excluded_title">%1$s-এ বড় এককালীন খরচ (%2$s) বাদ দেওয়া হয়েছে</string>
+    <string name="monthly_outlier_excluded_desc">এককালীন খরচকে আলাদা হিসেবে দেখালে নিয়মিত মাসিক খরচের প্রবণতা আরও পরিষ্কার বোঝা যায়।</string>
+    <string name="monthly_reduction_suggestion_title">%1$s খাতে কমানো যেতে পারে</string>
+    <string name="monthly_reduction_suggestion_desc">%1$s খাতে এই মাসে খরচ গত মাসের তুলনায় %2$s বেড়েছে (মোট খরচের %3$s)। নিয়মিত খরচগুলো আলাদা করে দেখলে কোথায় সাশ্রয় করা যায় তা বোঝা সহজ হবে।</string>
+    <string name="monthly_savings_feasible_title">সঞ্চয় লক্ষ্য অর্জন সম্ভব!</string>
+    <string name="monthly_savings_feasible_desc">আপনার বর্তমান খরচের গতি অনুযায়ী %1$s সঞ্চয় লক্ষ্য অর্জন সম্ভব।</string>
+    <string name="monthly_no_data">এই মাসে এখনো কোনো খরচ রেকর্ড করা হয়নি।</string>
 </resources>

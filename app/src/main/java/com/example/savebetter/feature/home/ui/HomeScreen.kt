@@ -75,6 +75,7 @@ fun HomeScreen(
     onAddExpenseClick: () -> Unit = {},
     onExpenseClick: (String) -> Unit = {},
     onWeeklyDetailClick: () -> Unit = {},
+    onMonthlyAnalysisClick: () -> Unit = {},
     onDestinationSelected: (BottomNavDestination) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -105,10 +106,10 @@ fun HomeScreen(
                 selectedDestination = selectedNavDestination,
                 onDestinationSelected = { dest ->
                     selectedNavDestination = dest
-                    if (dest == BottomNavDestination.Weekly) {
-                        onWeeklyDetailClick()
-                    } else {
-                        onDestinationSelected(dest)
+                    when (dest) {
+                        BottomNavDestination.Weekly -> onWeeklyDetailClick()
+                        BottomNavDestination.Monthly -> onMonthlyAnalysisClick()
+                        else -> onDestinationSelected(dest)
                     }
                 }
             )
@@ -145,7 +146,8 @@ fun HomeScreen(
                 selectedLanguage = selectedLanguage,
                 innerPadding = innerPadding,
                 onExpenseClick = onExpenseClick,
-                onWeeklyDetailClick = onWeeklyDetailClick
+                onWeeklyDetailClick = onWeeklyDetailClick,
+                onMonthlyAnalysisClick = onMonthlyAnalysisClick
             )
         }
     }
@@ -158,6 +160,7 @@ private fun HomeContent(
     innerPadding: PaddingValues,
     onExpenseClick: (String) -> Unit = {},
     onWeeklyDetailClick: () -> Unit = {},
+    onMonthlyAnalysisClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -275,7 +278,11 @@ private fun HomeContent(
 
         // 3. Monthly Overview Card
         LedgerCard {
-            SectionLabel(text = stringResource(R.string.dashboard_monthly_title))
+            SectionLabel(
+                text = stringResource(R.string.dashboard_monthly_title),
+                actionText = stringResource(R.string.dashboard_see_all),
+                onActionClick = onMonthlyAnalysisClick
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
