@@ -113,4 +113,94 @@
     <string name="alert_savings_milestone_msg">চমৎকার! আপনি এই মাসে আপনার নির্ধারিত লক্ষ্যের চেয়ে বেশি সঞ্চয় করেছেন।</string>
     <string name="alert_offline_title">অফলাইন মোড</string>
     <string name="alert_offline_msg">পরিবর্তনগুলি ডিভাইসে সংরক্ষিত হচ্ছে এবং ইন্টারনেট পেলেই স্বয়ংক্রিয়ভাবে সিঙ্ক হবে।</string>
+
+    <!-- Onboarding (Screen 02) -->
+    <string name="onboarding_title">শুরু করা যাক</string>
+    <string name="onboarding_subtitle">প্রথম সেটআপ — মাসিক আয় ও লক্ষ্য</string>
+    <string name="onboarding_salary_label">মাসিক বেতন / আয়</string>
+    <string name="onboarding_salary_hint">যেমন: ৫০,০০০</string>
+    <string name="onboarding_monthly_target_label">মাসিক খরচের লক্ষ্য</string>
+    <string name="onboarding_monthly_target_hint">যেমন: ৩৫,০০০</string>
+    <string name="onboarding_saving_goal_label">মাসিক সঞ্চয়ের লক্ষ্য</string>
+    <string name="onboarding_saving_goal_hint">যেমন: ১০,০০০</string>
+    <string name="onboarding_weekly_target_label">সাপ্তাহিক খরচের লক্ষ্য</string>
+    <string name="onboarding_weekly_target_hint">যেমন: ৮,৫০০</string>
+    <string name="onboarding_advice">এই লক্ষ্যগুলো পরে সেটিংস থেকে যেকোনো সময় পরিবর্তন করা যাবে।</string>
+    <string name="onboarding_submit_button">চালিয়ে যান</string>
+    <string name="onboarding_error_invalid_salary">অনুগ্রহ করে সঠিক মাসিক বেতন দিন</string>
+    <string name="onboarding_error_invalid_monthly_target">অনুগ্রহ করে সঠিক মাসিক খরচের লক্ষ্য দিন</string>
+    <string name="onboarding_error_invalid_saving_goal">অনুগ্রহ করে সঠিক সঞ্চয়ের লক্ষ্য দিন</string>
+    <string name="onboarding_error_invalid_weekly_target">অনুগ্রহ করে সঠিক সাপ্তাহিক খরচের লক্ষ্য দিন</string>
+    <string name="onboarding_saving_tip">খরচের লক্ষ্য এবং সঞ্চয় সাধারণত আপনার আয়ের মধ্যে রাখা ভালো</string>
+
+    <!-- Home Dashboard (Screen 03) -->
+    <string name="greeting_morning">সুপ্রভাত</string>
+    <string name="greeting_afternoon">শুভ দুপুর</string>
+    <string name="greeting_evening">শুভ সন্ধ্যা</string>
+    <string name="greeting_default">হ্যালো</string>
+    <string name="dashboard_weekly_title">সাপ্তাহিক লক্ষ্য ও বাজেট</string>
+    <string name="dashboard_monthly_title">মাসিক বিবরণী</string>
+    <string name="dashboard_daily_limit">দৈনিক বরাদ্দ</string>
+    <string name="dashboard_today_spent">আজকের খরচ</string>
+    <string name="dashboard_cash_in_hand">হাতে অবশিষ্ট টাকা</string>
+    <string name="dashboard_projected_spent">মাস শেষে সম্ভাব্য মোট খরচ</string>
+    <string name="dashboard_savings_goal">সঞ্চয়ের লক্ষ্য</string>
+    <string name="dashboard_warning_weekly_near">বাজেট সতর্কতা: আপনি আপনার সাপ্তাহিক বাজেটের %1$s খরচ করে ফেলেছেন।</string>
+    <string name="dashboard_warning_weekly_over">বাজেট অতিক্রম: আপনি আপনার সাপ্তাহিক লক্ষ্য অতিক্রম করেছেন।</string>
+    <string name="dashboard_recent_expenses">সাম্প্রতিক খরচ</string>
+    <string name="dashboard_no_expenses">এখনো কোনো খরচ রেকর্ড করা হয়নি।</string>
+    <string name="dashboard_add_first_expense">আপনার প্রথম খরচ যোগ করতে নিচে + বাটনে চাপ দিন</string>
+    <string name="dashboard_see_all">সব দেখুন</string>
+    <string name="dashboard_fab_add_expense">খরচ যোগ করুন</string>
+
+    <!-- Add Expense (Screen 04) -->
+    <string name="add_expense_title">খরচ যোগ করুন</string>
+    <string name="edit_expense_title">খরচ সম্পাদনা করুন</string>
+    <string name="expense_amount_label">পরিমাণ</string>
+    <string name="expense_category_label">ক্যাটাগরি</string>
+    <string name="expense_new_category">+ নতুন ক্যাটাগরি</string>
+    <string name="expense_date_label">তারিখ</string>
+    <string name="expense_note_label">নোট (ঐচ্ছিক)</string>
+    <string name="expense_note_hint">যেমন: দুপুরের খাবার, ওষুধ, বাজার</string>
+    <string name="action_save_expense">সংরক্ষণ করুন</string>
+    <string name="action_update_expense">আপডেট করুন</string>
+    <string name="action_delete_expense">মুছে ফেলুন</string>
+    <string name="dialog_new_category_title">নতুন ক্যাটাগরি</string>
+    <string name="dialog_category_name_label">ক্যাটাগরির নাম</string>
+    <string name="dialog_category_name_hint">যেমন: বিনোদন, ইলেকট্রনিক্স</string>
+    <string name="dialog_category_color_label">রং নির্বাচন</string>
+    <string name="dialog_create">তৈরি করুন</string>
+    <string name="dialog_cancel">বাতিল</string>
+    <string name="error_enter_amount">অনুগ্রহ করে টাকার পরিমাণ দিন</string>
+    <string name="error_select_category">অনুগ্রহ করে একটি ক্যাটাগরি নির্বাচন করুন</string>
+    <string name="error_category_name_empty">অনুগ্রহ করে ক্যাটাগরির নাম দিন</string>
+
+    <!-- Weekly Detail (Screen 05) -->
+    <string name="weekly_detail_title">এই সপ্তাহের হিসাব</string>
+    <string name="weekly_target_label">লক্ষ্য</string>
+    <string name="weekly_spent_label">খরচ হয়েছে</string>
+    <string name="weekly_remaining_label">বাকি আছে</string>
+    <string name="weekly_overshoot_warning_title">এই গতিতে চললে লক্ষ্য ছাড়িয়ে যাবে</string>
+    <string name="weekly_overshoot_warning_desc">বর্তমান খরচের গতিতে চললে বাকি %2$d দিনে দৈনিক গড় %1$s-এর বেশি খরচ করলে সপ্তাহের বাজেট শেষ হয়ে যাবে।</string>
+    <string name="weekly_advice_section_title">পরামর্শ</string>
+    <string name="weekly_advice_dominant_category_title">%1$s এই সপ্তাহে সবচেয়ে বেশি (মোট খরচের %2$s)</string>
+    <string name="weekly_advice_dominant_category_desc">%1$s খাতে এই সপ্তাহে খরচ তুলনামূলক বেশি (%2$s)। এই খাতে কোনো অপ্রয়োজনীয় খরচ কমানো যায় কিনা তা বিবেচনা করতে পারেন।</string>
+    <string name="weekly_advice_frequent_small_title">%1$s খাতে ছোট কেনাকাটা একসাথে করুন</string>
+    <string name="weekly_advice_frequent_small_desc">এই সপ্তাহে %2$s খাতে আপনি %1$dটি ছোট খরচ করেছেন। বারবার ছোট কেনাকাটার বদলে তালিকা করে একসাথে কেনাকাটা করলে সময় ও আনুষঙ্গিক খরচ কমতে পারে।</string>
+    <string name="weekly_advice_overshoot_title">বাকি দিনগুলোতে দৈনিক খরচ %1$s-এর মধ্যে রাখুন</string>
+    <string name="weekly_advice_overshoot_desc">সপ্তাহের বাকি %2$d দিনে লক্ষ্য %1$s বজায় রাখতে প্রতিদিনের খরচ নিয়ন্ত্রণে রাখুন।</string>
+    <string name="weekly_advice_on_track_title">চমৎকার বাজেট নিয়ন্ত্রণ!</string>
+    <string name="weekly_advice_on_track_desc">আপনার খরচ সাপ্তাহিক লক্ষ্যের চেয়ে যথেষ্ট কম আছে। এভাবে বাজেট বজায় রাখুন!</string>
+    <string name="weekly_trend_section_title">দিন অনুযায়ী খরচ</string>
+    <string name="weekly_expenses_section_title">এই সপ্তাহের খরচ</string>
+    <string name="weekly_no_expenses_desc">এই সপ্তাহে এখনো কোনো খরচ রেকর্ড করা হয়নি।</string>
+    <string name="weekly_prev_week">পূর্ববর্তী সপ্তাহ</string>
+    <string name="weekly_next_week">পরবর্তী সপ্তাহ</string>
+    <string name="weekday_sat">শনি</string>
+    <string name="weekday_sun">রবি</string>
+    <string name="weekday_mon">সোম</string>
+    <string name="weekday_tue">মঙ্গল</string>
+    <string name="weekday_wed">বুধ</string>
+    <string name="weekday_thu">বৃহঃ</string>
+    <string name="weekday_fri">শুক্র</string>
 </resources>

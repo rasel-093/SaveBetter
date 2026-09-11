@@ -113,6 +113,96 @@
     <string name="alert_offline_title">Offline Mode</string>
     <string name="alert_offline_msg">Changes are saved locally and will automatically sync when connected.</string>
 
+    <!-- Onboarding (Screen 02) -->
+    <string name="onboarding_title">Let\'s Get Started</string>
+    <string name="onboarding_subtitle">Initial Setup — Monthly Income &amp; Targets</string>
+    <string name="onboarding_salary_label">Monthly Salary / Income</string>
+    <string name="onboarding_salary_hint">e.g. 50,000</string>
+    <string name="onboarding_monthly_target_label">Monthly Expense Target</string>
+    <string name="onboarding_monthly_target_hint">e.g. 35,000</string>
+    <string name="onboarding_saving_goal_label">Monthly Savings Goal</string>
+    <string name="onboarding_saving_goal_hint">e.g. 10,000</string>
+    <string name="onboarding_weekly_target_label">Weekly Expense Target</string>
+    <string name="onboarding_weekly_target_hint">e.g. 8,500</string>
+    <string name="onboarding_advice">You can change these targets anytime later from Settings.</string>
+    <string name="onboarding_submit_button">Continue</string>
+    <string name="onboarding_error_invalid_salary">Please enter a valid monthly salary</string>
+    <string name="onboarding_error_invalid_monthly_target">Please enter a valid monthly expense target</string>
+    <string name="onboarding_error_invalid_saving_goal">Please enter a valid savings goal</string>
+    <string name="onboarding_error_invalid_weekly_target">Please enter a valid weekly target</string>
+    <string name="onboarding_saving_tip">Target + Savings should ideally be within your salary</string>
+
+    <!-- Home Dashboard (Screen 03) -->
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="greeting_default">Hello</string>
+    <string name="dashboard_weekly_title">Weekly Target &amp; Budget</string>
+    <string name="dashboard_monthly_title">Monthly Overview</string>
+    <string name="dashboard_daily_limit">Daily Allowance</string>
+    <string name="dashboard_today_spent">Today\'s Spend</string>
+    <string name="dashboard_cash_in_hand">Cash Remaining in Hand</string>
+    <string name="dashboard_projected_spent">Projected Month-End Spend</string>
+    <string name="dashboard_savings_goal">Savings Goal</string>
+    <string name="dashboard_warning_weekly_near">Budget Warning: You have used %1$s of your weekly budget.</string>
+    <string name="dashboard_warning_weekly_over">Budget Exceeded: You have exceeded your weekly target.</string>
+    <string name="dashboard_recent_expenses">Recent Expenses</string>
+    <string name="dashboard_no_expenses">No expenses recorded yet.</string>
+    <string name="dashboard_add_first_expense">Tap + below to add your first expense</string>
+    <string name="dashboard_see_all">See All</string>
+    <string name="dashboard_fab_add_expense">Add Expense</string>
+
+    <!-- Add Expense (Screen 04) -->
+    <string name="add_expense_title">Add Expense</string>
+    <string name="edit_expense_title">Edit Expense</string>
+    <string name="expense_amount_label">Amount</string>
+    <string name="expense_category_label">Category</string>
+    <string name="expense_new_category">+ New Category</string>
+    <string name="expense_date_label">Date</string>
+    <string name="expense_note_label">Note (Optional)</string>
+    <string name="expense_note_hint">e.g. Lunch with team, medicine, groceries</string>
+    <string name="action_save_expense">Save Expense</string>
+    <string name="action_update_expense">Update Expense</string>
+    <string name="action_delete_expense">Delete Expense</string>
+    <string name="dialog_new_category_title">New Category</string>
+    <string name="dialog_category_name_label">Category Name</string>
+    <string name="dialog_category_name_hint">e.g. Subscriptions, Gaming</string>
+    <string name="dialog_category_color_label">Color Theme</string>
+    <string name="dialog_create">Create</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="error_enter_amount">Please enter an amount</string>
+    <string name="error_select_category">Please select a category</string>
+    <string name="error_category_name_empty">Please enter a category name</string>
+
+    <!-- Weekly Detail (Screen 05) -->
+    <string name="weekly_detail_title">This Week\'s Ledger</string>
+    <string name="weekly_target_label">Target</string>
+    <string name="weekly_spent_label">Spent</string>
+    <string name="weekly_remaining_label">Remaining</string>
+    <string name="weekly_overshoot_warning_title">On Track to Exceed Target</string>
+    <string name="weekly_overshoot_warning_desc">At your current pace, spending more than an average of %1$s/day in the remaining %2$d days will exceed your weekly target.</string>
+    <string name="weekly_advice_section_title">Advice</string>
+    <string name="weekly_advice_dominant_category_title">%1$s is highest this week (%2$s of spend)</string>
+    <string name="weekly_advice_dominant_category_desc">Spending on %1$s is relatively high this week (%2$s). Consider reviewing non-essential purchases in this category.</string>
+    <string name="weekly_advice_frequent_small_title">Consolidate small purchases in %1$s</string>
+    <string name="weekly_advice_frequent_small_desc">You recorded %1$d frequent small purchases in %2$s this week. Making a planned shopping list can help reduce incidental expenses.</string>
+    <string name="weekly_advice_overshoot_title">Keep remaining daily spend under %1$s</string>
+    <string name="weekly_advice_overshoot_desc">To stay within your %1$s budget for the remaining %2$d days, pace your daily expenses accordingly.</string>
+    <string name="weekly_advice_on_track_title">Great budget pacing!</string>
+    <string name="weekly_advice_on_track_desc">Your spending is well within your weekly target. Keep up the disciplined budgeting!</string>
+    <string name="weekly_trend_section_title">Spending by Day</string>
+    <string name="weekly_expenses_section_title">Expenses This Week</string>
+    <string name="weekly_no_expenses_desc">No expenses recorded this week.</string>
+    <string name="weekly_prev_week">Previous Week</string>
+    <string name="weekly_next_week">Next Week</string>
+    <string name="weekday_sat">Sat</string>
+    <string name="weekday_sun">Sun</string>
+    <string name="weekday_mon">Mon</string>
+    <string name="weekday_tue">Tue</string>
+    <string name="weekday_wed">Wed</string>
+    <string name="weekday_thu">Thu</string>
+    <string name="weekday_fri">Fri</string>
+
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>
 </resources>

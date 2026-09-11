@@ -3,16 +3,21 @@ package com.example.savebetter.feature.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.savebetter.core.auth.model.AuthUser
+import com.example.savebetter.core.domain.model.UserProfile
 import com.example.savebetter.core.domain.usecase.auth.ObserveAuthStateUseCase
+import com.example.savebetter.core.domain.usecase.profile.GetUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
- * Root gate state representing whether an active authenticated session exists.
+ * Root gate state representing session and onboarding status.
  */
 sealed interface AuthGateState {
     /**
@@ -26,27 +31,45 @@ sealed interface AuthGateState {
     data object Unauthenticated : AuthGateState
 
     /**
-     * User is authenticated with a valid session.
+     * User is authenticated but has not yet completed initial financial onboarding.
      */
-    data class Authenticated(val user: AuthUser) : AuthGateState
+    data class NeedsOnboarding(val user: AuthUser) : AuthGateState
+
+    /**
+     * User is authenticated and onboarding is completed; proceed to home dashboard.
+     */
+    data class Authenticated(val user: AuthUser, val profile: UserProfile) : AuthGateState
 }
 
 /**
- * Root ViewModel that acts as the application's authentication gate.
+ * Root ViewModel that acts as the application's authentication and onboarding gate.
  *
- * Restores the persistent Firebase session automatically on startup.
+ * Flow:
+ * Startup -> Loading -> Check Firebase Session
+ * If Unauthenticated -> Login / Signup
+ * If Authenticated -> Observe local UserProfile
+ *   If profile == null || !profile.onboardingCompleted -> NeedsOnboarding (Screen 02)
+ *   If profile != null && profile.onboardingCompleted -> Authenticated (Home)
  */
 @HiltViewModel
 class AuthGateViewModel @Inject constructor(
-    observeAuthStateUseCase: ObserveAuthStateUseCase
+    observeAuthStateUseCase: ObserveAuthStateUseCase,
+    getUserProfileUseCase: GetUserProfileUseCase
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val gateState: StateFlow<AuthGateState> = observeAuthStateUseCase()
-        .map { user ->
-            if (user != null) {
-                AuthGateState.Authenticated(user)
+        .flatMapLatest { user ->
+            if (user == null) {
+                flowOf(AuthGateState.Unauthenticated)
             } else {
-                AuthGateState.Unauthenticated
+                getUserProfileUseCase(user.id).map { profile ->
+                    if (profile == null || !profile.onboardingCompleted) {
+                        AuthGateState.NeedsOnboarding(user)
+                    } else {
+                        AuthGateState.Authenticated(user, profile)
+                    }
+                }
             }
         }
         .stateIn(

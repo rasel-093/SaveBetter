@@ -73,14 +73,65 @@ class MainActivity : ComponentActivity() {
                         is AuthGateState.Unauthenticated -> {
                             AuthNavHost(viewModel = authViewModel)
                         }
-                        is AuthGateState.Authenticated -> {
-                            AuthenticatedPlaceholderScreen(
-                                user = state.user,
-                                onSignOut = authViewModel::signOut,
-                                selectedLanguage = currentLanguage,
-                                onLanguageSelected = languageViewModel::onLanguageSelected,
-                                onOpenShowcase = { showDesignShowcase = true }
+                        is AuthGateState.NeedsOnboarding -> {
+                            com.example.savebetter.feature.onboarding.ui.OnboardingScreen(
+                                userId = state.user.id,
+                                userName = state.user.displayName,
+                                userEmail = state.user.email,
+                                preferredLanguage = currentLanguage.code,
+                                onOnboardingCompleted = {
+                                    // Room write automatically updates AuthGateViewModel to Authenticated
+                                }
                             )
+                        }
+                        is AuthGateState.Authenticated -> {
+                            var isAddExpenseOpen by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var activeExpenseIdForEdit by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+                            var showWeeklyDetail by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
+                            if (isAddExpenseOpen) {
+                                com.example.savebetter.feature.addexpense.ui.AddExpenseScreen(
+                                    userId = state.user.id,
+                                    editExpenseId = activeExpenseIdForEdit,
+                                    selectedLanguage = currentLanguage,
+                                    onDismiss = {
+                                        isAddExpenseOpen = false
+                                        activeExpenseIdForEdit = null
+                                    }
+                                )
+                            } else if (showWeeklyDetail) {
+                                com.example.savebetter.feature.weekly.ui.WeeklyDetailScreen(
+                                    userId = state.user.id,
+                                    selectedLanguage = currentLanguage,
+                                    onBackClick = { showWeeklyDetail = false },
+                                    onExpenseClick = { expenseId ->
+                                        activeExpenseIdForEdit = expenseId
+                                        isAddExpenseOpen = true
+                                    }
+                                )
+                            } else {
+                                com.example.savebetter.feature.home.ui.HomeScreen(
+                                    userId = state.user.id,
+                                    userName = state.user.displayName,
+                                    selectedLanguage = currentLanguage,
+                                    onAddExpenseClick = {
+                                        activeExpenseIdForEdit = null
+                                        isAddExpenseOpen = true
+                                    },
+                                    onExpenseClick = { expenseId ->
+                                        activeExpenseIdForEdit = expenseId
+                                        isAddExpenseOpen = true
+                                    },
+                                    onWeeklyDetailClick = {
+                                        showWeeklyDetail = true
+                                    },
+                                    onDestinationSelected = { dest ->
+                                        if (dest == com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings) {
+                                            showDesignShowcase = true
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }

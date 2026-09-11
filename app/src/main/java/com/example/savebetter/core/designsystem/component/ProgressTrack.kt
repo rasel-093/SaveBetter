@@ -39,8 +39,8 @@ fun ProgressTrack(
     )
 
     val resolvedFillColor = fillColor ?: when {
-        clampedProgress > 0.90f -> SaveBetterTheme.colors.brick
-        clampedProgress > 0.70f -> SaveBetterTheme.colors.gold
+        clampedProgress >= 1.00f -> SaveBetterTheme.colors.brick
+        clampedProgress >= 0.80f -> SaveBetterTheme.colors.gold
         else -> SaveBetterTheme.colors.moss
     }
 

@@ -47,6 +47,7 @@ fun AuthenticatedPlaceholderScreen(
     user: AuthUser,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
+    profile: com.example.savebetter.core.domain.model.UserProfile? = null,
     selectedLanguage: com.example.savebetter.core.i18n.AppLanguage = com.example.savebetter.core.i18n.AppLanguage.ENGLISH,
     onLanguageSelected: ((com.example.savebetter.core.i18n.AppLanguage) -> Unit)? = null,
     onOpenShowcase: (() -> Unit)? = null
@@ -188,6 +189,37 @@ fun AuthenticatedPlaceholderScreen(
                         color = SaveBetterColors.Moss,
                         fontWeight = FontWeight.Bold
                     )
+                }
+
+                if (profile != null) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(SaveBetterColors.Paper)
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.onboarding_salary_label),
+                            fontSize = 12.sp,
+                            color = SaveBetterColors.TextMuted,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = com.example.savebetter.core.i18n.CurrencyFormatter.formatMinor(
+                                profile.monthlySalaryMinor,
+                                language = selectedLanguage
+                            ),
+                            fontSize = 13.sp,
+                            color = SaveBetterColors.Ink,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = com.example.savebetter.core.designsystem.theme.IBMPlexMonoFontFamily
+                        )
+                    }
                 }
             }
 

@@ -81,4 +81,14 @@ object CurrencyFormatter {
         language: AppLanguage = AppLanguage.ENGLISH,
         includeDecimals: Boolean = false
     ): String = formatAmount(amount.toDouble(), language, includeDecimals)
+
+    /**
+     * Formats an amount stored in minor currency units (poisha / cents).
+     * 1 BDT = 100 poisha.
+     */
+    fun formatMinor(
+        minorAmount: Long,
+        language: AppLanguage = AppLanguage.ENGLISH,
+        includeDecimals: Boolean = false
+    ): String = formatAmount(minorAmount / 100.0, language, includeDecimals)
 }
