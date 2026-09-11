@@ -42,7 +42,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
+import com.example.savebetter.core.i18n.AppLanguage
+import com.example.savebetter.core.i18n.CurrencyFormatter
 
 /**
  * Interactive Design System Showcase screen displaying every token and component.
@@ -54,7 +58,9 @@ import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 @Composable
 fun DesignSystemShowcase(
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
+    onLanguageSelected: (AppLanguage) -> Unit = {}
 ) {
     var isDarkTheme by remember { mutableStateOf(false) }
     var selectedBottomNav by remember { mutableStateOf(BottomNavDestination.Home) }
@@ -62,12 +68,15 @@ fun DesignSystemShowcase(
     var toggleState1 by remember { mutableStateOf(true) }
     var toggleState2 by remember { mutableStateOf(false) }
 
-    SaveBetterTheme(darkTheme = isDarkTheme) {
+    SaveBetterTheme(
+        darkTheme = isDarkTheme,
+        language = selectedLanguage
+    ) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
             topBar = {
                 AppTopBar(
-                    title = "Design System",
+                    title = stringResource(R.string.design_system_title),
                     subtitle = if (isDarkTheme) "Dark Mode • Paper Aesthetic" else "Light Mode • Paper Aesthetic",
                     onBackClick = onBackClick,
                     actions = {
@@ -97,6 +106,77 @@ fun DesignSystemShowcase(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
+                // ── Section: Localization & BDT Currency ─────────────────────
+                SectionLabel(text = "Localization & BDT Currency (Step 3)")
+
+                LedgerCard {
+                    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                        Text(
+                            text = "Language Selector (DataStore & AppCompatDelegate)",
+                            style = SaveBetterTheme.typography.caption,
+                            color = SaveBetterTheme.colors.textMuted
+                        )
+
+                        LanguageSelector(
+                            selectedLanguage = selectedLanguage,
+                            onLanguageSelected = onLanguageSelected
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = "Strict BDT / ৳ Formatting (Never ₹)",
+                            style = SaveBetterTheme.typography.caption,
+                            color = SaveBetterTheme.colors.textMuted
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Standard Amount",
+                                    style = SaveBetterTheme.typography.caption,
+                                    color = SaveBetterTheme.colors.textMuted
+                                )
+                                Text(
+                                    text = CurrencyFormatter.formatAmount(1420.50, selectedLanguage),
+                                    style = SaveBetterTheme.typography.amountMedium,
+                                    fontSize = 17.sp,
+                                    color = SaveBetterTheme.colors.moss
+                                )
+                            }
+                            Column {
+                                Text(
+                                    text = "Expense Amount",
+                                    style = SaveBetterTheme.typography.caption,
+                                    color = SaveBetterTheme.colors.textMuted
+                                )
+                                Text(
+                                    text = CurrencyFormatter.formatSignedAmount(-340.00, selectedLanguage),
+                                    style = SaveBetterTheme.typography.amountMedium,
+                                    fontSize = 17.sp,
+                                    color = SaveBetterTheme.colors.brick
+                                )
+                            }
+                            Column {
+                                Text(
+                                    text = "Zero State",
+                                    style = SaveBetterTheme.typography.caption,
+                                    color = SaveBetterTheme.colors.textMuted
+                                )
+                                Text(
+                                    text = CurrencyFormatter.formatAmount(0.00, selectedLanguage),
+                                    style = SaveBetterTheme.typography.amountMedium,
+                                    fontSize = 17.sp,
+                                    color = SaveBetterTheme.colors.inkSoft
+                                )
+                            }
+                        }
+                    }
+                }
+
                 // ── Section: Colors ──────────────────────────────────────────
                 SectionLabel(text = "Color Tokens")
 
@@ -219,9 +299,9 @@ fun DesignSystemShowcase(
                     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                         StatRow(
                             items = listOf(
-                                StatItem("BUDGET", "$3,500"),
-                                StatItem("SPENT", "$1,420", SaveBetterTheme.colors.moss),
-                                StatItem("LEFT", "$2,080", SaveBetterTheme.colors.ink)
+                                StatItem(stringResource(R.string.label_budget), CurrencyFormatter.formatAmount(3500.0, selectedLanguage, includeDecimals = false)),
+                                StatItem(stringResource(R.string.label_spent), CurrencyFormatter.formatAmount(1420.0, selectedLanguage, includeDecimals = false), SaveBetterTheme.colors.moss),
+                                StatItem(stringResource(R.string.label_remaining), CurrencyFormatter.formatAmount(2080.0, selectedLanguage, includeDecimals = false), SaveBetterTheme.colors.ink)
                             )
                         )
 
@@ -302,7 +382,7 @@ fun DesignSystemShowcase(
 
                 AlertBanner(
                     title = "Savings Milestone",
-                    message = "Great job! You saved $240 more than last month.",
+                    message = "Great job! You saved ${CurrencyFormatter.formatAmount(240.0, selectedLanguage, includeDecimals = false)} more than last month.",
                     type = AlertBannerType.Success
                 )
 
@@ -320,7 +400,7 @@ fun DesignSystemShowcase(
                         ExpenseListRow(
                             title = "Whole Foods Market",
                             subtitle = "Today, 5:40 PM • Groceries",
-                            amount = "-$68.40",
+                            amount = CurrencyFormatter.formatSignedAmount(-68.40, selectedLanguage),
                             badgeColor = SaveBetterTheme.colors.cat1,
                             amountColor = SaveBetterTheme.colors.brick,
                             icon = Icons.Outlined.Fastfood
@@ -328,7 +408,7 @@ fun DesignSystemShowcase(
                         ExpenseListRow(
                             title = "Apartment Rent",
                             subtitle = "Yesterday • Housing",
-                            amount = "-$1,200.00",
+                            amount = CurrencyFormatter.formatSignedAmount(-1200.0, selectedLanguage),
                             badgeColor = SaveBetterTheme.colors.cat2,
                             amountColor = SaveBetterTheme.colors.brick,
                             icon = Icons.Outlined.Home
@@ -336,7 +416,7 @@ fun DesignSystemShowcase(
                         ExpenseListRow(
                             title = "Freelance Consulting",
                             subtitle = "Sep 10 • Income",
-                            amount = "+$850.00",
+                            amount = CurrencyFormatter.formatSignedAmount(850.0, selectedLanguage),
                             badgeColor = SaveBetterTheme.colors.moss,
                             amountColor = SaveBetterTheme.colors.moss,
                             icon = Icons.Outlined.Receipt,
@@ -396,8 +476,8 @@ fun DesignSystemShowcase(
                         )
 
                         ComparisonBars(
-                            primaryItem = ComparisonBarItem("This Week", "$455.00", 455f, SaveBetterTheme.colors.moss),
-                            secondaryItem = ComparisonBarItem("Last Week", "$580.00", 580f, SaveBetterTheme.colors.paperLineStrong)
+                            primaryItem = ComparisonBarItem("This Week", CurrencyFormatter.formatAmount(455.0, selectedLanguage), 455f, SaveBetterTheme.colors.moss),
+                            secondaryItem = ComparisonBarItem("Last Week", CurrencyFormatter.formatAmount(580.0, selectedLanguage), 580f, SaveBetterTheme.colors.paperLineStrong)
                         )
                     }
                 }

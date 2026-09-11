@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SaveBetter</string>
+    <string name="app_tagline">সহজ হিসাব। সচেতন সঞ্চয়।</string>
+
+    <!-- Auth Common -->
+    <string name="email_label">ইমেইল</string>
+    <string name="email_placeholder">you@example.com</string>
+    <string name="password_label">পাসওয়ার্ড</string>
+    <string name="password_placeholder">••••••••</string>
+    <string name="confirm_password_label">পাসওয়ার্ড নিশ্চিত করুন</string>
+    <string name="or_continue_with">অথবা চালিয়ে যান</string>
+
+    <!-- Login -->
+    <string name="login_title">স্বাগতম</string>
+    <string name="login_subtitle">আপনার আর্থিক হিসাব পরিচালনা করতে সাইন ইন করুন</string>
+    <string name="login_button">সাইন ইন</string>
+    <string name="google_sign_in_button">গুগল দিয়ে চালিয়ে যান</string>
+    <string name="forgot_password_link">পাসওয়ার্ড ভুলে গেছেন?</string>
+    <string name="dont_have_account">একাউন্ট নেই?</string>
+    <string name="sign_up_link">সাইন আপ করুন</string>
+
+    <!-- Sign Up -->
+    <string name="signup_title">একাউন্ট তৈরি করুন</string>
+    <string name="signup_subtitle">আপনার সচেতন সঞ্চয় যাত্রা শুরু করুন</string>
+    <string name="signup_button">একাউন্ট তৈরি করুন</string>
+    <string name="already_have_account">ইতিমধ্যে একাউন্ট আছে?</string>
+    <string name="sign_in_link">সাইন ইন করুন</string>
+
+    <!-- Forgot Password -->
+    <string name="forgot_password_title">পাসওয়ার্ড রিসেট</string>
+    <string name="forgot_password_subtitle">আপনার ইমেইল লিখুন, আমরা পাসওয়ার্ড রিসেট লিংক পাঠাব</string>
+    <string name="send_reset_link_button">রিসেট লিংক পাঠান</string>
+    <string name="reset_link_sent_title">ইনবক্স চেক করুন</string>
+    <string name="reset_link_sent_message">%1$s ঠিকানায় পাসওয়ার্ড রিসেট লিংক পাঠানো হয়েছে</string>
+    <string name="back_to_login">সাইন ইন-এ ফিরে যান</string>
+
+    <!-- Placeholder Authenticated -->
+    <string name="auth_success_title">প্রমাণীকরণ সফল হয়েছে</string>
+    <string name="auth_success_subtitle">ধাপ ১ — ফায়ারবেস প্রমাণীকরণ সম্পন্ন</string>
+    <string name="logout_button">লগ আউট</string>
+    <string name="open_showcase_button">🎨 ডিজাইন সিস্টেম প্রদর্শনী খুলুন</string>
+    <string name="design_system_title">ডিজাইন সিস্টেম</string>
+    <string name="user_id_label">ইউজার আইডি</string>
+    <string name="session_status_label">সেশন স্ট্যাটাস</string>
+    <string name="session_active_value">সক্রিয় ও সংরক্ষিত</string>
+
+    <!-- Navigation Tabs -->
+    <string name="nav_home">হোম</string>
+    <string name="nav_weekly">সাপ্তাহিক</string>
+    <string name="nav_monthly">মাসিক</string>
+    <string name="nav_debts">দেনা-পাওনা</string>
+    <string name="nav_settings">সেটিংস</string>
+
+    <!-- Categories -->
+    <string name="category_food">খাবার ও ডাইনিং</string>
+    <string name="category_housing">বাসা ভাড়া ও বসবাস</string>
+    <string name="category_utilities">ইউটিলিটি বিল</string>
+    <string name="category_entertainment">বিনোদন ও অবসর</string>
+    <string name="category_health">স্বাস্থ্য ও চিকিৎসা</string>
+    <string name="category_transport">যাতায়াত ও ভ্রমণ</string>
+    <string name="category_other">অন্যান্য খরচ</string>
+    <string name="category_income">আয়</string>
+
+    <!-- Common Financial Labels -->
+    <string name="label_budget">বাজেট</string>
+    <string name="label_spent">খরচ</string>
+    <string name="label_remaining">অবশিষ্ট</string>
+    <string name="label_total">মোট</string>
+    <string name="label_income">আয়</string>
+    <string name="label_expense">ব্যয়</string>
+    <string name="label_savings">সঞ্চয়</string>
+    <string name="label_daily_limit">দৈনিক সীমা</string>
+    <string name="label_monthly_target">মাসিক লক্ষ্য</string>
+
+    <!-- Common Actions -->
+    <string name="action_save">সংরক্ষণ</string>
+    <string name="action_cancel">বাতিল</string>
+    <string name="action_delete">মুছুন</string>
+    <string name="action_edit">সম্পাদনা</string>
+    <string name="action_confirm">নিশ্চিত করুন</string>
+    <string name="action_see_all">সব দেখুন</string>
+    <string name="action_retry">পুনরায় চেষ্টা করুন</string>
+    <string name="action_add_expense">খরচ যোগ করুন</string>
+
+    <!-- Sync Status -->
+    <string name="sync_synced">সিঙ্ক হয়েছে</string>
+    <string name="sync_syncing">সিঙ্ক হচ্ছে</string>
+    <string name="sync_offline">অফলাইন</string>
+    <string name="sync_error">ত্রুটি</string>
+
+    <!-- Settings & Preferences -->
+    <string name="settings_title">সেটিংস</string>
+    <string name="settings_language">ভাষা</string>
+    <string name="language_english">English (ইংরেজি)</string>
+    <string name="language_bangla">বাংলা</string>
+    <string name="settings_theme">থিম</string>
+    <string name="theme_light">লাইট মোড</string>
+    <string name="theme_dark">ডার্ক মোড</string>
+    <string name="theme_system">সিস্টেম ডিফল্ট</string>
+    <string name="settings_biometrics">বায়োমেট্রিক আনলক</string>
+    <string name="settings_biometrics_desc">অ্যাপ চালুর সময় ফিঙ্গারপ্রিন্ট বা ফেস আনলক প্রয়োজন</string>
+    <string name="settings_notifications">বিজ্ঞপ্তি</string>
+    <string name="settings_notifications_desc">বাজেট সতর্কতা এবং অনুস্মারক পান</string>
+
+    <!-- Alert Banners & Advice -->
+    <string name="alert_budget_warning_title">বাজেট সতর্কতা</string>
+    <string name="alert_budget_warning_msg">এই সময়কালের জন্য আপনি বাজেটের ৮৫% এর বেশি খরচ করে ফেলেছেন।</string>
+    <string name="alert_savings_milestone_title">সঞ্চয় অর্জন</string>
+    <string name="alert_savings_milestone_msg">চমৎকার! আপনি এই মাসে আপনার নির্ধারিত লক্ষ্যের চেয়ে বেশি সঞ্চয় করেছেন।</string>
+    <string name="alert_offline_title">অফলাইন মোড</string>
+    <string name="alert_offline_msg">পরিবর্তনগুলি ডিভাইসে সংরক্ষিত হচ্ছে এবং ইন্টারনেট পেলেই স্বয়ংক্রিয়ভাবে সিঙ্ক হবে।</string>
+</resources>

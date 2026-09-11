@@ -27,13 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.savebetter.feature.settings.LanguageViewModel
 import com.example.savebetter.feature.auth.AuthGateState
 import com.example.savebetter.feature.auth.AuthGateViewModel
 import com.example.savebetter.feature.auth.AuthViewModel
 import com.example.savebetter.feature.auth.ui.AuthenticatedPlaceholderScreen
 import com.example.savebetter.feature.auth.ui.SaveBetterColors
 import com.example.savebetter.navigation.AuthNavHost
-import com.example.savebetter.ui.theme.SaveBetterTheme
+import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -49,7 +50,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SaveBetterTheme {
+            val languageViewModel: LanguageViewModel = hiltViewModel()
+            val currentLanguage by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+
+            SaveBetterTheme(language = currentLanguage) {
                 val authGateViewModel: AuthGateViewModel = hiltViewModel()
                 val authViewModel: AuthViewModel = hiltViewModel()
                 val gateState by authGateViewModel.gateState.collectAsStateWithLifecycle()
@@ -57,7 +61,9 @@ class MainActivity : ComponentActivity() {
 
                 if (showDesignShowcase) {
                     com.example.savebetter.core.designsystem.component.DesignSystemShowcase(
-                        onBackClick = { showDesignShowcase = false }
+                        onBackClick = { showDesignShowcase = false },
+                        selectedLanguage = currentLanguage,
+                        onLanguageSelected = languageViewModel::onLanguageSelected
                     )
                 } else {
                     when (val state = gateState) {
@@ -71,6 +77,8 @@ class MainActivity : ComponentActivity() {
                             AuthenticatedPlaceholderScreen(
                                 user = state.user,
                                 onSignOut = authViewModel::signOut,
+                                selectedLanguage = currentLanguage,
+                                onLanguageSelected = languageViewModel::onLanguageSelected,
                                 onOpenShowcase = { showDesignShowcase = true }
                             )
                         }

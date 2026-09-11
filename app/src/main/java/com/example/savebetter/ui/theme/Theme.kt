@@ -10,10 +10,12 @@ import com.example.savebetter.core.designsystem.theme.SaveBetterTheme as CoreSav
 @Composable
 fun SaveBetterTheme(
     darkTheme: Boolean = false,
+    language: com.example.savebetter.core.i18n.AppLanguage = com.example.savebetter.core.i18n.AppLanguage.ENGLISH,
     content: @Composable () -> Unit
 ) {
     CoreSaveBetterTheme(
         darkTheme = darkTheme,
+        language = language,
         content = content
     )
 }

@@ -38,6 +38,77 @@
     <string name="auth_success_title">Authentication Succeeded</string>
     <string name="auth_success_subtitle">Step 1 — Firebase Authentication Complete</string>
     <string name="logout_button">Log Out</string>
+    <string name="open_showcase_button">🎨 Open Design System Showcase</string>
+    <string name="design_system_title">Design System</string>
+    <string name="user_id_label">User ID</string>
+    <string name="session_status_label">Session Status</string>
+    <string name="session_active_value">Active &amp; Persisted</string>
+
+    <!-- Navigation Tabs -->
+    <string name="nav_home">Home</string>
+    <string name="nav_weekly">Weekly</string>
+    <string name="nav_monthly">Monthly</string>
+    <string name="nav_debts">Debts</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Categories -->
+    <string name="category_food">Food &amp; Dining</string>
+    <string name="category_housing">Housing &amp; Rent</string>
+    <string name="category_utilities">Utilities</string>
+    <string name="category_entertainment">Entertainment &amp; Leisure</string>
+    <string name="category_health">Health &amp; Medical</string>
+    <string name="category_transport">Transport &amp; Travel</string>
+    <string name="category_other">Other Expenses</string>
+    <string name="category_income">Income</string>
+
+    <!-- Common Financial Labels -->
+    <string name="label_budget">Budget</string>
+    <string name="label_spent">Spent</string>
+    <string name="label_remaining">Remaining</string>
+    <string name="label_total">Total</string>
+    <string name="label_income">Income</string>
+    <string name="label_expense">Expense</string>
+    <string name="label_savings">Savings</string>
+    <string name="label_daily_limit">Daily Limit</string>
+    <string name="label_monthly_target">Monthly Target</string>
+
+    <!-- Common Actions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_see_all">See All</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_add_expense">Add Expense</string>
+
+    <!-- Sync Status -->
+    <string name="sync_synced">SYNCED</string>
+    <string name="sync_syncing">SYNCING</string>
+    <string name="sync_offline">OFFLINE</string>
+    <string name="sync_error">SYNC ERR</string>
+
+    <!-- Settings & Preferences -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="language_english">English</string>
+    <string name="language_bangla">বাংলা (Bangla)</string>
+    <string name="settings_theme">Theme</string>
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
+    <string name="theme_system">System Default</string>
+    <string name="settings_biometrics">Biometric Unlock</string>
+    <string name="settings_biometrics_desc">Require fingerprint or face recognition on launch</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_desc">Receive alerts for budget milestones and reminders</string>
+
+    <!-- Alert Banners & Advice -->
+    <string name="alert_budget_warning_title">Budget Alert</string>
+    <string name="alert_budget_warning_msg">You have exceeded 85% of your allocated budget for this period.</string>
+    <string name="alert_savings_milestone_title">Savings Milestone</string>
+    <string name="alert_savings_milestone_msg">Outstanding! You saved more this month than your set target.</string>
+    <string name="alert_offline_title">Offline Mode</string>
+    <string name="alert_offline_msg">Changes are saved locally and will automatically sync when connected.</string>
 
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>

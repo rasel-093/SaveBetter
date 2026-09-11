@@ -47,6 +47,8 @@ fun AuthenticatedPlaceholderScreen(
     user: AuthUser,
     onSignOut: () -> Unit,
     modifier: Modifier = Modifier,
+    selectedLanguage: com.example.savebetter.core.i18n.AppLanguage = com.example.savebetter.core.i18n.AppLanguage.ENGLISH,
+    onLanguageSelected: ((com.example.savebetter.core.i18n.AppLanguage) -> Unit)? = null,
     onOpenShowcase: (() -> Unit)? = null
 ) {
     Scaffold(
@@ -150,7 +152,7 @@ fun AuthenticatedPlaceholderScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "User ID",
+                        text = stringResource(R.string.user_id_label),
                         fontSize = 12.sp,
                         color = SaveBetterColors.TextMuted,
                         fontWeight = FontWeight.Medium
@@ -175,13 +177,13 @@ fun AuthenticatedPlaceholderScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Session Status",
+                        text = stringResource(R.string.session_status_label),
                         fontSize = 12.sp,
                         color = SaveBetterColors.TextMuted,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        text = "Active & Persisted",
+                        text = stringResource(R.string.session_active_value),
                         fontSize = 12.sp,
                         color = SaveBetterColors.Moss,
                         fontWeight = FontWeight.Bold
@@ -189,7 +191,17 @@ fun AuthenticatedPlaceholderScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Language Selector
+            if (onLanguageSelected != null) {
+                com.example.savebetter.core.designsystem.component.LanguageSelector(
+                    selectedLanguage = selectedLanguage,
+                    onLanguageSelected = onLanguageSelected
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
             if (onOpenShowcase != null) {
                 Button(
@@ -204,7 +216,7 @@ fun AuthenticatedPlaceholderScreen(
                     )
                 ) {
                     Text(
-                        text = "🎨 Open Design System Showcase",
+                        text = stringResource(R.string.open_showcase_button),
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp
                     )
