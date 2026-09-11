@@ -94,6 +94,7 @@ class MainActivity : ComponentActivity() {
                             var showWeeklyDetail by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showMonthlyAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showReconciliation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var showDebts by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
                             androidx.compose.runtime.LaunchedEffect(Unit) {
                                 if (intent?.getStringExtra("navigate_to") == "reconciliation") {
@@ -140,6 +141,34 @@ class MainActivity : ComponentActivity() {
                                         isAddExpenseOpen = true
                                     }
                                 )
+                            } else if (showDebts) {
+                                com.example.savebetter.feature.debts.ui.DebtsScreen(
+                                    userId = state.user.id,
+                                    selectedLanguage = currentLanguage,
+                                    onBackClick = { showDebts = false },
+                                    onDestinationSelected = { dest ->
+                                        when (dest) {
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
+                                                showDebts = false
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
+                                                showDebts = false
+                                                showWeeklyDetail = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
+                                                showDebts = false
+                                                showMonthlyAnalysis = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
+                                                // Already here
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
+                                                showDebts = false
+                                                showDesignShowcase = true
+                                            }
+                                        }
+                                    }
+                                )
                             } else {
                                 com.example.savebetter.feature.home.ui.HomeScreen(
                                     userId = state.user.id,
@@ -163,8 +192,22 @@ class MainActivity : ComponentActivity() {
                                         showReconciliation = true
                                     },
                                     onDestinationSelected = { dest ->
-                                        if (dest == com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings) {
-                                            showDesignShowcase = true
+                                        when (dest) {
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
+                                                // Already here
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
+                                                showWeeklyDetail = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
+                                                showMonthlyAnalysis = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
+                                                showDebts = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
+                                                showDesignShowcase = true
+                                            }
                                         }
                                     }
                                 )

@@ -263,17 +263,17 @@ All advice text must use string resources — no hardcoded strings.
 | Step | Description | Status |
 |------|-------------|--------|
 | 0 | Project Setup & Architecture Foundation | ✅ Complete |
-| 1 | Firebase Authentication + Session Handling | ⏳ Pending |
-| 2 | Design System | ⏳ Pending |
-| 3 | Localisation | ⏳ Pending |
-| 4 | Room Database + Data Architecture | ⏳ Pending |
-| 5 | User Profile + Onboarding | ⏳ Pending |
-| 6 | Home Dashboard | ⏳ Pending |
-| 7 | Add Expense | ⏳ Pending |
-| 8 | Weekly Detail | ⏳ Pending |
-| 9 | Monthly Analysis | ⏳ Pending |
-| 10 | Out-of-Note Reconciliation | ⏳ Pending |
-| 11 | Debts & Credits | ⏳ Pending |
+| 1 | Firebase Authentication + Session Handling | ✅ Complete |
+| 2 | Design System | ✅ Complete |
+| 3 | Localisation | ✅ Complete |
+| 4 | Room Database + Data Architecture | ✅ Complete |
+| 5 | User Profile + Onboarding | ✅ Complete |
+| 6 | Home Dashboard | ✅ Complete |
+| 7 | Add Expense | ✅ Complete |
+| 8 | Weekly Detail | ✅ Complete |
+| 9 | Monthly Analysis | ✅ Complete |
+| 10 | Out-of-Note Reconciliation | ✅ Complete |
+| 11 | Debts & Credits | ✅ Complete |
 | 12 | Settings | ⏳ Pending |
 | 13 | Account Deletion | ⏳ Pending |
 | 14 | Background Synchronisation | ⏳ Pending |

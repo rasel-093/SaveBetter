@@ -246,6 +246,47 @@
     <string name="reconciliation_reminder_notification_title">Month-End Cash Check</string>
     <string name="reconciliation_reminder_notification_desc">Check your cash on hand and reconcile unrecorded expenses for %1$s.</string>
 
+    <!-- Debts and Credits (Screen 08) -->
+    <string name="debts_screen_title">Debts &amp; Credits</string>
+    <string name="debts_add_new_action">+ New</string>
+    <string name="debts_total_receivable_label">Total Receivable</string>
+    <string name="debts_total_payable_label">Total Payable</string>
+    <string name="debts_net_position_receivable">Net Position: You will receive %1$s</string>
+    <string name="debts_net_position_payable">Net Position: You need to pay %1$s</string>
+    <string name="debts_net_position_balanced">Net Position: Balanced (%1$s)</string>
+    <string name="debts_savings_exclusion_notice">Debt/credit balances are not automatically treated as monthly savings.</string>
+    <string name="debts_receivables_section_title">Receivable (They will give you)</string>
+    <string name="debts_payables_section_title">Payable (You will give)</string>
+    <string name="debts_history_section_title">History &amp; Settled</string>
+    <string name="debts_empty_receivables">No active receivables.</string>
+    <string name="debts_empty_payables">No active payables.</string>
+    <string name="debts_empty_history">No settled records yet.</string>
+    <string name="debts_tab_active">Active</string>
+    <string name="debts_tab_history">History</string>
+    <string name="debts_dialog_add_title">New Debt / Credit</string>
+    <string name="debts_dialog_edit_title">Edit Entry</string>
+    <string name="debts_direction_label">Type</string>
+    <string name="debts_direction_receivable">Receivable (I will get / পাওনা)</string>
+    <string name="debts_direction_payable">Payable (I have to pay / দেনা)</string>
+    <string name="debts_person_name_label">Person Name</string>
+    <string name="debts_person_name_hint">e.g. Rahim, Karim</string>
+    <string name="debts_amount_label">Amount</string>
+    <string name="debts_amount_hint">e.g. 5,000</string>
+    <string name="debts_note_label">Note (Optional)</string>
+    <string name="debts_note_hint">e.g. Office lunch advance</string>
+    <string name="debts_due_date_label">Due Date (Optional)</string>
+    <string name="debts_due_date_hint">Select due date</string>
+    <string name="debts_action_settle">Mark as Settled</string>
+    <string name="debts_action_unsettle">Mark as Unsettled</string>
+    <string name="debts_action_edit">Edit</string>
+    <string name="debts_action_delete">Delete</string>
+    <string name="debts_save_button">Save</string>
+    <string name="debts_cancel_button">Cancel</string>
+    <string name="debts_error_empty_person">Please enter person name</string>
+    <string name="debts_error_invalid_amount">Please enter a valid amount greater than 0</string>
+    <string name="debts_settled_badge">Settled</string>
+    <string name="debts_due_date_prefix">Due: %1$s</string>
+
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>
 </resources>

@@ -243,4 +243,45 @@
     <string name="reconciliation_reminder_channel_desc">মাস শেষে হাতে থাকা টাকার হিসাব মেলানোর নোটিফিকেশন</string>
     <string name="reconciliation_reminder_notification_title">মাস শেষের হিসাব মেলান</string>
     <string name="reconciliation_reminder_notification_desc">%1$s মাসের হাতে থাকা নগদ টাকা মিলিয়ে অমিল খরচগুলো লিখে রাখুন।</string>
+
+    <!-- Debts and Credits (Screen 08) -->
+    <string name="debts_screen_title">দেনা-পাওনা</string>
+    <string name="debts_add_new_action">+ নতুন</string>
+    <string name="debts_total_receivable_label">মোট পাওনা</string>
+    <string name="debts_total_payable_label">মোট দেনা</string>
+    <string name="debts_net_position_receivable">নিট হিসাব: আপনি পাবেন %1$s</string>
+    <string name="debts_net_position_payable">নিট হিসাব: আপনি দেবেন %1$s</string>
+    <string name="debts_net_position_balanced">নিট হিসাব: সমান (%1$s)</string>
+    <string name="debts_savings_exclusion_notice">এই টাকা মাসিক সঞ্চয় লক্ষ্যের হিসাবে ধরা হয়নি।</string>
+    <string name="debts_receivables_section_title">পাওনা (তারা আপনাকে দেবে)</string>
+    <string name="debts_payables_section_title">দেনা (আপনি দেবেন)</string>
+    <string name="debts_history_section_title">নিষ্পন্ন / ইতিহাস</string>
+    <string name="debts_empty_receivables">কোনো পাওনা হিসাব নেই।</string>
+    <string name="debts_empty_payables">কোনো দেনা হিসাব নেই।</string>
+    <string name="debts_empty_history">এখনো কোনো নিষ্পন্ন হিসাব নেই।</string>
+    <string name="debts_tab_active">চলতি</string>
+    <string name="debts_tab_history">ইতিহাস</string>
+    <string name="debts_dialog_add_title">নতুন দেনা-পাওনা</string>
+    <string name="debts_dialog_edit_title">হিসাব সম্পাদনা</string>
+    <string name="debts_direction_label">ধরন</string>
+    <string name="debts_direction_receivable">পাওনা (আমি পাব)</string>
+    <string name="debts_direction_payable">দেনা (আমি দেব)</string>
+    <string name="debts_person_name_label">ব্যক্তির নাম</string>
+    <string name="debts_person_name_hint">যেমন: রহিম, করিম</string>
+    <string name="debts_amount_label">টাকার পরিমাণ</string>
+    <string name="debts_amount_hint">যেমন: ৫,০০০</string>
+    <string name="debts_note_label">নোট (ঐচ্ছিক)</string>
+    <string name="debts_note_hint">যেমন: লাঞ্চের অগ্রিম</string>
+    <string name="debts_due_date_label">পরিশোধের তারিখ (ঐচ্ছিক)</string>
+    <string name="debts_due_date_hint">তারিখ নির্বাচন করুন</string>
+    <string name="debts_action_settle">পরিশোধ চিহ্নিত করুন</string>
+    <string name="debts_action_unsettle">অপরিশোধিত চিহ্নিত করুন</string>
+    <string name="debts_action_edit">সম্পাদনা</string>
+    <string name="debts_action_delete">মুছুন</string>
+    <string name="debts_save_button">সংরক্ষণ করুন</string>
+    <string name="debts_cancel_button">বাতিল</string>
+    <string name="debts_error_empty_person">অনুগ্রহ করে ব্যক্তির নাম লিখুন</string>
+    <string name="debts_error_invalid_amount">সঠিক টাকার পরিমাণ দিন (০-এর বেশি)</string>
+    <string name="debts_settled_badge">নিষ্পন্ন</string>
+    <string name="debts_due_date_prefix">পরিশোধের সময়: %1$s</string>
 </resources>
