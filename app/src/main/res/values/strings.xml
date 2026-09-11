@@ -218,6 +218,34 @@
     <string name="monthly_savings_feasible_desc">At your current spending rate, reaching your savings goal of %1$s is well within reach.</string>
     <string name="monthly_no_data">No expenses recorded for this month.</string>
 
+    <!-- Out-of-Note Reconciliation (Screen 07) -->
+    <string name="reconciliation_title">Month-End Reconciliation</string>
+    <string name="reconciliation_advice_desc">Enter your monthly income and cash on hand — the app calculates your net cash outflow and compares it against your recorded expenses.</string>
+    <string name="reconciliation_salary_label">This Month\'s Salary / Income</string>
+    <string name="reconciliation_hand_remaining_label">Cash in Hand Now</string>
+    <string name="reconciliation_net_outflow_label">Net Cash Outflow (Income − Cash in Hand)</string>
+    <string name="reconciliation_app_logged_label">App-Logged Expenses</string>
+    <string name="reconciliation_unrecorded_label">Unrecorded Expenses</string>
+    <string name="reconciliation_discrepancy_warning_title">%1$s in spending is unrecorded in the app</string>
+    <string name="reconciliation_discrepancy_warning_desc">Remembering where this money was spent and adding it helps keep future financial advice accurate.</string>
+    <string name="reconciliation_balanced_title">Everything matches!</string>
+    <string name="reconciliation_balanced_desc">Your cash on hand and recorded expenses are perfectly balanced with zero discrepancy.</string>
+    <string name="reconciliation_mismatch_title">Data Mismatch Detected</string>
+    <string name="reconciliation_mismatch_desc">Cash on hand plus recorded expenses exceed your recorded income. Please check your income or cash in hand amount.</string>
+    <string name="reconciliation_add_expense_button">Add Expense to Reconcile</string>
+    <string name="reconciliation_save_record_button">Save Reconciliation</string>
+    <string name="reconciliation_record_saved">Reconciliation saved successfully.</string>
+    <string name="reconciliation_quick_log_title">Quick Log Discrepancy</string>
+    <string name="reconciliation_quick_log_desc">Add an unrecorded expense entry of %1$s to immediately balance your cash in hand.</string>
+    <string name="reconciliation_open_add_expense">Open in Add Expense</string>
+    <string name="reconciliation_quick_log_action">Quick Log Expense</string>
+    <string name="reconciliation_unrecorded_expense_note">Month-end unrecorded expense</string>
+    <string name="reconciliation_nav_button">Reconcile Cash</string>
+    <string name="reconciliation_reminder_channel_name">Month-End Reconciliation Reminders</string>
+    <string name="reconciliation_reminder_channel_desc">Notifications reminding you to reconcile your cash in hand near month-end</string>
+    <string name="reconciliation_reminder_notification_title">Month-End Cash Check</string>
+    <string name="reconciliation_reminder_notification_desc">Check your cash on hand and reconcile unrecorded expenses for %1$s.</string>
+
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>
 </resources>

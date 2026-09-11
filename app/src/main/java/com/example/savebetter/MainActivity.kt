@@ -49,6 +49,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Schedule WorkManager month-end reconciliation reminder
+        com.example.savebetter.core.notification.ReconciliationReminderScheduler.scheduleMonthEndReminder(applicationContext)
+
         setContent {
             val languageViewModel: LanguageViewModel = hiltViewModel()
             val currentLanguage by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
@@ -89,6 +93,13 @@ class MainActivity : ComponentActivity() {
                             var activeExpenseIdForEdit by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
                             var showWeeklyDetail by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showMonthlyAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var showReconciliation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+
+                            androidx.compose.runtime.LaunchedEffect(Unit) {
+                                if (intent?.getStringExtra("navigate_to") == "reconciliation") {
+                                    showReconciliation = true
+                                }
+                            }
 
                             if (isAddExpenseOpen) {
                                 com.example.savebetter.feature.addexpense.ui.AddExpenseScreen(
@@ -114,7 +125,20 @@ class MainActivity : ComponentActivity() {
                                 com.example.savebetter.feature.monthly.ui.MonthlyAnalysisScreen(
                                     userId = state.user.id,
                                     selectedLanguage = currentLanguage,
-                                    onBackClick = { showMonthlyAnalysis = false }
+                                    onBackClick = { showMonthlyAnalysis = false },
+                                    onReconcileClick = {
+                                        showMonthlyAnalysis = false
+                                        showReconciliation = true
+                                    }
+                                )
+                            } else if (showReconciliation) {
+                                com.example.savebetter.feature.reconciliation.ui.ReconciliationScreen(
+                                    onNavigateBack = { showReconciliation = false },
+                                    onOpenAddExpenseWithAmount = {
+                                        showReconciliation = false
+                                        activeExpenseIdForEdit = null
+                                        isAddExpenseOpen = true
+                                    }
                                 )
                             } else {
                                 com.example.savebetter.feature.home.ui.HomeScreen(
@@ -134,6 +158,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onMonthlyAnalysisClick = {
                                         showMonthlyAnalysis = true
+                                    },
+                                    onReconciliationClick = {
+                                        showReconciliation = true
                                     },
                                     onDestinationSelected = { dest ->
                                         if (dest == com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings) {

@@ -216,6 +216,31 @@
     <string name="monthly_reduction_suggestion_title">%1$s খাতে কমানো যেতে পারে</string>
     <string name="monthly_reduction_suggestion_desc">%1$s খাতে এই মাসে খরচ গত মাসের তুলনায় %2$s বেড়েছে (মোট খরচের %3$s)। নিয়মিত খরচগুলো আলাদা করে দেখলে কোথায় সাশ্রয় করা যায় তা বোঝা সহজ হবে।</string>
     <string name="monthly_savings_feasible_title">সঞ্চয় লক্ষ্য অর্জন সম্ভব!</string>
-    <string name="monthly_savings_feasible_desc">আপনার বর্তমান খরচের গতি অনুযায়ী %1$s সঞ্চয় লক্ষ্য অর্জন সম্ভব।</string>
-    <string name="monthly_no_data">এই মাসে এখনো কোনো খরচ রেকর্ড করা হয়নি।</string>
+    <!-- Out-of-Note Reconciliation (Screen 07) -->
+    <string name="reconciliation_title">মাস শেষের মিলান</string>
+    <string name="reconciliation_advice_desc">মাসের মোট আয় ও হাতে থাকা টাকা লিখুন — অ্যাপ আপনার নেট নগদ বহির্গমন এবং খাতায় নথিভুক্ত খরচের পার্থক্য দেখাবে।</string>
+    <string name="reconciliation_salary_label">এই মাসের বেতন / আয়</string>
+    <string name="reconciliation_hand_remaining_label">এখন হাতে আছে</string>
+    <string name="reconciliation_net_outflow_label">নেট নগদ বহির্গমন (আয় − হাতে থাকা)</string>
+    <string name="reconciliation_app_logged_label">অ্যাপে লেখা খরচ</string>
+    <string name="reconciliation_unrecorded_label">অমিল খরচ</string>
+    <string name="reconciliation_discrepancy_warning_title">%1$s টাকার হিসাব অ্যাপে নেই</string>
+    <string name="reconciliation_discrepancy_warning_desc">এই টাকা কোথায় খরচ হয়েছে মনে করে যোগ করলে ভবিষ্যতের পরামর্শ আরও সঠিক হবে।</string>
+    <string name="reconciliation_balanced_title">সব খরচের হিসাব মিলে গেছে!</string>
+    <string name="reconciliation_balanced_desc">আপনার হাতে থাকা টাকা ও অ্যাপে লেখা খরচ সম্পূর্ণভাবে মিলে গেছে, কোনো অমিল নেই।</string>
+    <string name="reconciliation_mismatch_title">হিসাবে অসঙ্গতি দেখা গেছে</string>
+    <string name="reconciliation_mismatch_desc">হাতে থাকা টাকা ও অ্যাপে লেখা খরচ যোগ করলে মোট আয়ের চেয়ে বেশি হয়ে যায়। আপনার বেতন বা হাতে থাকা টাকার অঙ্ক পুনরায় যাচাই করুন।</string>
+    <string name="reconciliation_add_expense_button">খরচ যোগ করে হিসাব মেলান</string>
+    <string name="reconciliation_save_record_button">হিসাব সংরক্ষণ করুন</string>
+    <string name="reconciliation_record_saved">হিসাবের তথ্য সফলভাবে সংরক্ষিত হয়েছে।</string>
+    <string name="reconciliation_quick_log_title">দ্রুত হিসাব মেলান</string>
+    <string name="reconciliation_quick_log_desc">%1$s টাকার হিসাববহির্ভূত খরচ রেকর্ড করে এখনই হিসাব মিলিয়ে নিন।</string>
+    <string name="reconciliation_open_add_expense">বিস্তারিত লিখে যোগ করুন</string>
+    <string name="reconciliation_quick_log_action">দ্রুত খরচ যোগ করুন</string>
+    <string name="reconciliation_unrecorded_expense_note">মাস শেষের অমিল হিসাব</string>
+    <string name="reconciliation_nav_button">হিসাব মেলান</string>
+    <string name="reconciliation_reminder_channel_name">মাস শেষের হিসাব মিলানোর রিমাইন্ডার</string>
+    <string name="reconciliation_reminder_channel_desc">মাস শেষে হাতে থাকা টাকার হিসাব মেলানোর নোটিফিকেশন</string>
+    <string name="reconciliation_reminder_notification_title">মাস শেষের হিসাব মেলান</string>
+    <string name="reconciliation_reminder_notification_desc">%1$s মাসের হাতে থাকা নগদ টাকা মিলিয়ে অমিল খরচগুলো লিখে রাখুন।</string>
 </resources>

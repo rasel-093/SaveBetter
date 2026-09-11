@@ -49,6 +49,11 @@ import com.example.savebetter.core.i18n.CurrencyFormatter
 import com.example.savebetter.feature.monthly.MonthlyAnalysisUiState
 import com.example.savebetter.feature.monthly.MonthlyAnalysisViewModel
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
+
 /**
  * Screen 06: Monthly Analysis & Detail (মাসিক বিস্তারিত ও গ্রাফ).
  *
@@ -64,6 +69,7 @@ fun MonthlyAnalysisScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
+    onReconcileClick: () -> Unit = {},
     viewModel: MonthlyAnalysisViewModel = hiltViewModel()
 ) {
     LaunchedEffect(userId, selectedLanguage) {
@@ -122,7 +128,8 @@ fun MonthlyAnalysisScreen(
             MonthlyAnalysisContent(
                 uiState = uiState,
                 selectedLanguage = selectedLanguage,
-                innerPadding = innerPadding
+                innerPadding = innerPadding,
+                onReconcileClick = onReconcileClick
             )
         }
     }
@@ -133,6 +140,7 @@ private fun MonthlyAnalysisContent(
     uiState: MonthlyAnalysisUiState,
     selectedLanguage: AppLanguage,
     innerPadding: PaddingValues,
+    onReconcileClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -201,6 +209,29 @@ private fun MonthlyAnalysisContent(
                     style = SaveBetterTheme.typography.amountMedium,
                     color = if (isGoalPossible) SaveBetterTheme.colors.moss else SaveBetterTheme.colors.brick,
                     fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            HorizontalDivider(color = SaveBetterTheme.colors.paperLine, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = onReconcileClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(38.dp),
+                shape = RoundedCornerShape(SaveBetterTheme.shapes.radiusCard),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = SaveBetterTheme.colors.ink
+                ),
+                border = ButtonDefaults.outlinedButtonBorder.copy(
+                    brush = androidx.compose.ui.graphics.SolidColor(SaveBetterTheme.colors.paperLineStrong)
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.reconciliation_nav_button),
+                    style = SaveBetterTheme.typography.body.copy(fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
                 )
             }
         }

@@ -3,6 +3,7 @@ package com.example.savebetter.feature.home.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,6 +77,7 @@ fun HomeScreen(
     onExpenseClick: (String) -> Unit = {},
     onWeeklyDetailClick: () -> Unit = {},
     onMonthlyAnalysisClick: () -> Unit = {},
+    onReconciliationClick: () -> Unit = {},
     onDestinationSelected: (BottomNavDestination) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -147,7 +149,8 @@ fun HomeScreen(
                 innerPadding = innerPadding,
                 onExpenseClick = onExpenseClick,
                 onWeeklyDetailClick = onWeeklyDetailClick,
-                onMonthlyAnalysisClick = onMonthlyAnalysisClick
+                onMonthlyAnalysisClick = onMonthlyAnalysisClick,
+                onReconciliationClick = onReconciliationClick
             )
         }
     }
@@ -161,6 +164,7 @@ private fun HomeContent(
     onExpenseClick: (String) -> Unit = {},
     onWeeklyDetailClick: () -> Unit = {},
     onMonthlyAnalysisClick: () -> Unit = {},
+    onReconciliationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -344,7 +348,13 @@ private fun HomeContent(
                     )
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .clickable(onClick = onReconciliationClick)
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                ) {
                     Text(
                         text = stringResource(R.string.dashboard_cash_in_hand),
                         style = SaveBetterTheme.typography.caption,
