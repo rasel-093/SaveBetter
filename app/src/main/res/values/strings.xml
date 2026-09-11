@@ -1,3 +1,44 @@
 <resources>
     <string name="app_name">SaveBetter</string>
+    <string name="app_tagline">Track simply. Save intentionally.</string>
+
+    <!-- Auth Common -->
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">you@example.com</string>
+    <string name="password_label">Password</string>
+    <string name="password_placeholder">••••••••</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="or_continue_with">or continue with</string>
+
+    <!-- Login -->
+    <string name="login_title">Welcome Back</string>
+    <string name="login_subtitle">Sign in to manage your finances</string>
+    <string name="login_button">Sign In</string>
+    <string name="google_sign_in_button">Continue with Google</string>
+    <string name="forgot_password_link">Forgot password?</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="sign_up_link">Sign up</string>
+
+    <!-- Sign Up -->
+    <string name="signup_title">Create Account</string>
+    <string name="signup_subtitle">Start your intentional saving journey</string>
+    <string name="signup_button">Create Account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in_link">Sign in</string>
+
+    <!-- Forgot Password -->
+    <string name="forgot_password_title">Reset Password</string>
+    <string name="forgot_password_subtitle">Enter your email and we\'ll send you a link to reset your password</string>
+    <string name="send_reset_link_button">Send Reset Link</string>
+    <string name="reset_link_sent_title">Check your inbox</string>
+    <string name="reset_link_sent_message">We\'ve sent a password reset link to %1$s</string>
+    <string name="back_to_login">Back to Sign In</string>
+
+    <!-- Placeholder Authenticated -->
+    <string name="auth_success_title">Authentication Succeeded</string>
+    <string name="auth_success_subtitle">Step 1 — Firebase Authentication Complete</string>
+    <string name="logout_button">Log Out</string>
+
+    <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
+    <string name="default_web_client_id" translatable="false"></string>
 </resources>
