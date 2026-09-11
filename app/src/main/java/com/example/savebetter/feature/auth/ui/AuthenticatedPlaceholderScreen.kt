@@ -46,7 +46,8 @@ import com.example.savebetter.core.auth.model.AuthUser
 fun AuthenticatedPlaceholderScreen(
     user: AuthUser,
     onSignOut: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenShowcase: (() -> Unit)? = null
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -189,6 +190,28 @@ fun AuthenticatedPlaceholderScreen(
             }
 
             Spacer(modifier = Modifier.height(40.dp))
+
+            if (onOpenShowcase != null) {
+                Button(
+                    onClick = onOpenShowcase,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SaveBetterColors.Gold,
+                        contentColor = SaveBetterColors.Cover
+                    )
+                ) {
+                    Text(
+                        text = "🎨 Open Design System Showcase",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+            }
 
             // Logout Button
             Button(

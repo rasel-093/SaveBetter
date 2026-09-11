@@ -1,0 +1,108 @@
+package com.example.savebetter.core.designsystem.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
+
+enum class AlertBannerType {
+    Warning,
+    Info,
+    Success
+}
+
+/**
+ * Paper-styled alert and notification banner.
+ */
+@Composable
+fun AlertBanner(
+    message: String,
+    modifier: Modifier = Modifier,
+    title: String? = null,
+    type: AlertBannerType = AlertBannerType.Warning,
+    icon: ImageVector? = null
+) {
+    val (bgColor, borderColor, contentColor, defaultIcon) = when (type) {
+        AlertBannerType.Warning -> Quadruple(
+            SaveBetterTheme.colors.brickTint,
+            SaveBetterTheme.colors.brick.copy(alpha = 0.4f),
+            SaveBetterTheme.colors.brick,
+            Icons.Outlined.Warning
+        )
+        AlertBannerType.Info -> Quadruple(
+            SaveBetterTheme.colors.goldTint,
+            SaveBetterTheme.colors.gold.copy(alpha = 0.4f),
+            SaveBetterTheme.colors.gold,
+            Icons.Outlined.Info
+        )
+        AlertBannerType.Success -> Quadruple(
+            SaveBetterTheme.colors.mossTint,
+            SaveBetterTheme.colors.moss.copy(alpha = 0.4f),
+            SaveBetterTheme.colors.moss,
+            Icons.Outlined.CheckCircle
+        )
+    }
+
+    val shape = RoundedCornerShape(10.dp)
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(bgColor)
+            .border(1.dp, borderColor, shape)
+            .padding(14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon ?: defaultIcon,
+            contentDescription = null,
+            tint = contentColor,
+            modifier = Modifier.size(22.dp)
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            if (title != null) {
+                Text(
+                    text = title,
+                    style = SaveBetterTheme.typography.body,
+                    fontWeight = FontWeight.Bold,
+                    color = contentColor,
+                    fontSize = 13.sp
+                )
+            }
+            Text(
+                text = message,
+                style = SaveBetterTheme.typography.caption,
+                color = contentColor,
+                lineHeight = 16.sp
+            )
+        }
+    }
+}
+
+private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

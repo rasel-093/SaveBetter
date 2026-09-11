@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,19 +53,27 @@ class MainActivity : ComponentActivity() {
                 val authGateViewModel: AuthGateViewModel = hiltViewModel()
                 val authViewModel: AuthViewModel = hiltViewModel()
                 val gateState by authGateViewModel.gateState.collectAsStateWithLifecycle()
+                var showDesignShowcase by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
-                when (val state = gateState) {
-                    is AuthGateState.Loading -> {
-                        AuthLoadingScreen()
-                    }
-                    is AuthGateState.Unauthenticated -> {
-                        AuthNavHost(viewModel = authViewModel)
-                    }
-                    is AuthGateState.Authenticated -> {
-                        AuthenticatedPlaceholderScreen(
-                            user = state.user,
-                            onSignOut = authViewModel::signOut
-                        )
+                if (showDesignShowcase) {
+                    com.example.savebetter.core.designsystem.component.DesignSystemShowcase(
+                        onBackClick = { showDesignShowcase = false }
+                    )
+                } else {
+                    when (val state = gateState) {
+                        is AuthGateState.Loading -> {
+                            AuthLoadingScreen()
+                        }
+                        is AuthGateState.Unauthenticated -> {
+                            AuthNavHost(viewModel = authViewModel)
+                        }
+                        is AuthGateState.Authenticated -> {
+                            AuthenticatedPlaceholderScreen(
+                                user = state.user,
+                                onSignOut = authViewModel::signOut,
+                                onOpenShowcase = { showDesignShowcase = true }
+                            )
+                        }
                     }
                 }
             }
