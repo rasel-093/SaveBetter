@@ -55,6 +55,9 @@
     <!-- Categories -->
     <string name="category_food">খাবার ও ডাইনিং</string>
     <string name="category_housing">বাসা ভাড়া ও বসবাস</string>
+    <string name="category_household">গৃহস্থালি</string>
+    <string name="category_family">পরিবার</string>
+    <string name="category_grocery">বাজার ও মুদি</string>
     <string name="category_utilities">ইউটিলিটি বিল</string>
     <string name="category_entertainment">বিনোদন ও অবসর</string>
     <string name="category_health">স্বাস্থ্য ও চিকিৎসা</string>

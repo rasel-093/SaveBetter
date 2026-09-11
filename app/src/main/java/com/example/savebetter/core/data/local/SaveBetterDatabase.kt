@@ -4,6 +4,21 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
+import com.example.savebetter.core.data.local.dao.CategoryDao
+import com.example.savebetter.core.data.local.dao.DebtCreditDao
+import com.example.savebetter.core.data.local.dao.ExpenseDao
+import com.example.savebetter.core.data.local.dao.MonthlyTargetDao
+import com.example.savebetter.core.data.local.dao.SalaryHandRecordDao
+import com.example.savebetter.core.data.local.dao.UserDao
+import com.example.savebetter.core.data.local.dao.WeeklyTargetDao
+import com.example.savebetter.core.data.local.entity.CategoryEntity
+import com.example.savebetter.core.data.local.entity.DebtCreditEntity
+import com.example.savebetter.core.data.local.entity.ExpenseEntity
+import com.example.savebetter.core.data.local.entity.MonthlyTargetEntity
+import com.example.savebetter.core.data.local.entity.SalaryHandRecordEntity
+import com.example.savebetter.core.data.local.entity.UserEntity
+import com.example.savebetter.core.data.local.entity.WeeklyTargetEntity
+
 /**
  * SaveBetter local Room database.
  *
@@ -11,12 +26,6 @@ import androidx.room.TypeConverters
  * *local source of truth* — the UI observes Flows backed by this database.
  * Remote data (Firebase now, Django later) is synchronised *into* this database
  * by the SyncWorker.
- *
- * Entity list is intentionally empty at Step 0.
- * Entities will be added in Step 4 (Room Local Database).
- *
- * Increment [version] whenever schema changes and provide a [Migration]
- * or use [fallbackToDestructiveMigration] in development only.
  *
  * ┌──────────────────────────────────────────────────────────────┐
  * │  Architecture note                                           │
@@ -27,12 +36,25 @@ import androidx.room.TypeConverters
  * └──────────────────────────────────────────────────────────────┘
  */
 @Database(
-    entities = [DbMetaEntity::class],  // Placeholder — replaced by full entity set in Step 4
-    version  = 1,
+    entities = [
+        UserEntity::class,
+        ExpenseEntity::class,
+        CategoryEntity::class,
+        WeeklyTargetEntity::class,
+        MonthlyTargetEntity::class,
+        SalaryHandRecordEntity::class,
+        DebtCreditEntity::class
+    ],
+    version = 1,
     exportSchema = true
 )
 @TypeConverters(SaveBetterTypeConverters::class)
 abstract class SaveBetterDatabase : RoomDatabase() {
-    // DAOs will be added here in Step 4 as entities are created.
-    // Example: abstract fun expenseDao(): ExpenseDao
+    abstract fun userDao(): UserDao
+    abstract fun expenseDao(): ExpenseDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun weeklyTargetDao(): WeeklyTargetDao
+    abstract fun monthlyTargetDao(): MonthlyTargetDao
+    abstract fun salaryHandRecordDao(): SalaryHandRecordDao
+    abstract fun debtCreditDao(): DebtCreditDao
 }

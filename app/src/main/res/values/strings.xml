@@ -54,6 +54,9 @@
     <!-- Categories -->
     <string name="category_food">Food &amp; Dining</string>
     <string name="category_housing">Housing &amp; Rent</string>
+    <string name="category_household">Household</string>
+    <string name="category_family">Family</string>
+    <string name="category_grocery">Market &amp; Grocery</string>
     <string name="category_utilities">Utilities</string>
     <string name="category_entertainment">Entertainment &amp; Leisure</string>
     <string name="category_health">Health &amp; Medical</string>
