@@ -6,14 +6,17 @@ import com.example.savebetter.core.auth.model.AuthUser
 import com.example.savebetter.core.domain.model.UserProfile
 import com.example.savebetter.core.domain.usecase.auth.ObserveAuthStateUseCase
 import com.example.savebetter.core.domain.usecase.profile.GetUserProfileUseCase
+import com.example.savebetter.core.domain.repository.SyncRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -54,8 +57,23 @@ sealed interface AuthGateState {
 @HiltViewModel
 class AuthGateViewModel @Inject constructor(
     observeAuthStateUseCase: ObserveAuthStateUseCase,
-    getUserProfileUseCase: GetUserProfileUseCase
+    getUserProfileUseCase: GetUserProfileUseCase,
+    private val syncRepository: SyncRepository? = null
 ) : ViewModel() {
+
+    init {
+        viewModelScope.launch {
+            observeAuthStateUseCase().collect { user ->
+                if (user != null && syncRepository != null) {
+                    val localProfile = getUserProfileUseCase(user.id).first()
+                    if (localProfile == null) {
+                        // Multi-device session restoration: hydrate Room from remote
+                        runCatching { syncRepository.pullRemote(user.id) }
+                    }
+                }
+            }
+        }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val gateState: StateFlow<AuthGateState> = observeAuthStateUseCase()

@@ -275,9 +275,9 @@ All advice text must use string resources — no hardcoded strings.
 | 10 | Out-of-Note Reconciliation | ✅ Complete |
 | 11 | Debts & Credits | ✅ Complete |
 | 12 | Settings | ✅ Complete |
-| 13 | Account Deletion | ⏳ Pending |
-| 14 | Background Synchronisation | ⏳ Pending |
-| 15 | Multi-Device Behavior | ⏳ Pending |
+| 13 | Account Deletion | ✅ Complete |
+| 14 | Background Synchronisation | ✅ Complete |
+| 15 | Multi-Device Behavior | ✅ Complete |
 | 16 | Django Migration Readiness | ⏳ Pending |
 | 17 | Tests | ⏳ Pending |
 | 18 | Accessibility, Polish & README | ⏳ Pending |

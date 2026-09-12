@@ -7,6 +7,8 @@ import com.example.savebetter.core.domain.usecase.auth.SignInUseCase
 import com.example.savebetter.core.domain.usecase.auth.SignInWithGoogleUseCase
 import com.example.savebetter.core.domain.usecase.auth.SignOutUseCase
 import com.example.savebetter.core.domain.usecase.auth.SignUpUseCase
+import com.example.savebetter.core.domain.repository.SyncRepository
+import com.example.savebetter.core.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +49,9 @@ class AuthViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val sendPasswordResetUseCase: SendPasswordResetUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val syncRepository: SyncRepository? = null,
+    private val syncManager: SyncManager? = null
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow(LoginUiState())
@@ -84,7 +88,10 @@ class AuthViewModel @Inject constructor(
             _loginState.update { it.copy(isLoading = true, errorMessage = null) }
             val result = signInUseCase(currentState.email, currentState.password)
             result.fold(
-                onSuccess = {
+                onSuccess = { user ->
+                    // Multi-Device: Pull remote records into local Room database so UI observes populated Room immediately
+                    runCatching { syncRepository?.pullRemote(user.id) }
+                    syncManager?.requestImmediateSync()
                     _loginState.update { it.copy(isLoading = false) }
                     onSuccess()
                 },
@@ -105,7 +112,10 @@ class AuthViewModel @Inject constructor(
             _loginState.update { it.copy(isLoading = true, errorMessage = null) }
             val result = signInWithGoogleUseCase(idToken)
             result.fold(
-                onSuccess = {
+                onSuccess = { user ->
+                    // Multi-Device: Pull remote records into local Room database
+                    runCatching { syncRepository?.pullRemote(user.id) }
+                    syncManager?.requestImmediateSync()
                     _loginState.update { it.copy(isLoading = false) }
                     onSuccess()
                 },
@@ -151,6 +161,7 @@ class AuthViewModel @Inject constructor(
             )
             result.fold(
                 onSuccess = {
+                    syncManager?.requestImmediateSync()
                     _signUpState.update { it.copy(isLoading = false) }
                     onSuccess()
                 },
