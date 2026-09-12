@@ -274,7 +274,7 @@ All advice text must use string resources — no hardcoded strings.
 | 9 | Monthly Analysis | ✅ Complete |
 | 10 | Out-of-Note Reconciliation | ✅ Complete |
 | 11 | Debts & Credits | ✅ Complete |
-| 12 | Settings | ⏳ Pending |
+| 12 | Settings | ✅ Complete |
 | 13 | Account Deletion | ⏳ Pending |
 | 14 | Background Synchronisation | ⏳ Pending |
 | 15 | Multi-Device Behavior | ⏳ Pending |

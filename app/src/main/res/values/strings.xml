@@ -287,6 +287,53 @@
     <string name="debts_settled_badge">Settled</string>
     <string name="debts_due_date_prefix">Due: %1$s</string>
 
+    <!-- Settings (Screen 09) -->
+    <string name="settings_screen_title">Settings</string>
+    <string name="settings_section_profile">Profile</string>
+    <string name="settings_edit_profile">Edit Profile</string>
+    <string name="settings_edit_profile_title">Edit Profile</string>
+    <string name="settings_name_label">Full Name</string>
+    <string name="settings_name_hint">e.g. Rasel Rahman</string>
+    <string name="settings_salary_label">Monthly Salary</string>
+    <string name="settings_salary_hint">e.g. 50,000</string>
+    <string name="settings_section_display">Display</string>
+    <string name="settings_theme_label">Theme</string>
+    <string name="settings_theme_sub">System default / Light / Dark</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_vibration_label">Vibration (Haptics)</string>
+    <string name="settings_vibration_sub">Vibrate on button taps and warnings</string>
+    <string name="settings_language_label">Language</string>
+    <string name="settings_language_sub">English / বাংলা</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_notifications_all">All Notifications</string>
+    <string name="settings_notifications_all_sub">Master switch for all alerts</string>
+    <string name="settings_notify_weekly">Weekly Target Warning</string>
+    <string name="settings_notify_weekly_sub">Alert when approaching weekly spending limit</string>
+    <string name="settings_notify_monthly">Monthly Target Warning</string>
+    <string name="settings_notify_monthly_sub">Alert when approaching monthly budget</string>
+    <string name="settings_notify_reconciliation">Month-End Reconciliation Reminder</string>
+    <string name="settings_notify_reconciliation_sub">Remind on 27th of month to check cash in hand</string>
+    <string name="settings_section_data_sync">Data &amp; Sync</string>
+    <string name="settings_manage_categories">Manage Categories</string>
+    <string name="settings_manage_categories_sub">Review and add custom categories</string>
+    <string name="settings_sync_now">Sync Now</string>
+    <string name="settings_synced">Synced</string>
+    <string name="settings_syncing">Syncing…</string>
+    <string name="settings_sync_failed">Sync Failed</string>
+    <string name="settings_logout">Log Out</string>
+    <string name="settings_logout_confirm_title">Log Out</string>
+    <string name="settings_logout_confirm_desc">Are you sure you want to log out from SaveBetter?</string>
+    <string name="settings_delete_account">Delete Account / Data</string>
+    <string name="settings_delete_account_confirm_title">Delete Account</string>
+    <string name="settings_delete_account_confirm_desc">Account deletion is handled as a permanent operation. Proceed to delete your account and financial data?</string>
+    <string name="settings_save_button">Save</string>
+    <string name="settings_cancel_button">Cancel</string>
+    <string name="settings_close_button">Close</string>
+    <string name="settings_categories_dialog_title">Categories</string>
+    <string name="settings_profile_updated">Profile updated successfully</string>
+
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>
 </resources>

@@ -55,9 +55,20 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val languageViewModel: LanguageViewModel = hiltViewModel()
+            val settingsViewModel: com.example.savebetter.feature.settings.SettingsViewModel = hiltViewModel()
             val currentLanguage by languageViewModel.currentLanguage.collectAsStateWithLifecycle()
+            val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
-            SaveBetterTheme(language = currentLanguage) {
+            val isDarkTheme = when (settingsUiState.themeMode) {
+                com.example.savebetter.core.domain.model.ThemeMode.SYSTEM -> androidx.compose.foundation.isSystemInDarkTheme()
+                com.example.savebetter.core.domain.model.ThemeMode.LIGHT -> false
+                com.example.savebetter.core.domain.model.ThemeMode.DARK -> true
+            }
+
+            SaveBetterTheme(
+                darkTheme = isDarkTheme,
+                language = currentLanguage
+            ) {
                 val authGateViewModel: AuthGateViewModel = hiltViewModel()
                 val authViewModel: AuthViewModel = hiltViewModel()
                 val gateState by authGateViewModel.gateState.collectAsStateWithLifecycle()
@@ -95,6 +106,7 @@ class MainActivity : ComponentActivity() {
                             var showMonthlyAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showReconciliation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showDebts by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var showSettings by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
 
                             androidx.compose.runtime.LaunchedEffect(Unit) {
                                 if (intent?.getStringExtra("navigate_to") == "reconciliation") {
@@ -164,9 +176,40 @@ class MainActivity : ComponentActivity() {
                                             }
                                             com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
                                                 showDebts = false
-                                                showDesignShowcase = true
+                                                showSettings = true
                                             }
                                         }
+                                    }
+                                )
+                            } else if (showSettings) {
+                                com.example.savebetter.feature.settings.ui.SettingsScreen(
+                                    userId = state.user.id,
+                                    selectedLanguage = currentLanguage,
+                                    onBackClick = { showSettings = false },
+                                    onDestinationSelected = { dest ->
+                                        when (dest) {
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
+                                                showSettings = false
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
+                                                showSettings = false
+                                                showWeeklyDetail = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
+                                                showSettings = false
+                                                showMonthlyAnalysis = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
+                                                showSettings = false
+                                                showDebts = true
+                                            }
+                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
+                                                // Already here
+                                            }
+                                        }
+                                    },
+                                    onDeleteAccountClick = {
+                                        // Next milestone (Step 13 Account Deletion)
                                     }
                                 )
                             } else {
@@ -206,7 +249,7 @@ class MainActivity : ComponentActivity() {
                                                 showDebts = true
                                             }
                                             com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
-                                                showDesignShowcase = true
+                                                showSettings = true
                                             }
                                         }
                                     }
