@@ -43,7 +43,13 @@ interface AuthRemoteDataSource {
     suspend fun signOut()
 
     /**
+     * Re-authenticates the current user using password before sensitive operations.
+     */
+    suspend fun reauthenticate(password: String): Result<Unit>
+
+    /**
      * Permanently deletes the remote account.
      */
     suspend fun deleteAccount(): Result<Unit>
 }
+

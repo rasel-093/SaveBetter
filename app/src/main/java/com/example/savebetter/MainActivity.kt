@@ -209,9 +209,10 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                     onDeleteAccountClick = {
-                                        // Next milestone (Step 13 Account Deletion)
+                                        settingsViewModel.showDeleteAccountConfirm(true)
                                     }
                                 )
+
                             } else {
                                 com.example.savebetter.feature.home.ui.HomeScreen(
                                     userId = state.user.id,

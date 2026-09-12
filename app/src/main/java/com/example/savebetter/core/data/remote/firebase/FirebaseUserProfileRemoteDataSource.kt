@@ -45,4 +45,31 @@ class FirebaseUserProfileRemoteDataSource @Inject constructor(
             .set(dto, SetOptions.merge())
             .await()
     }
+
+    override suspend fun deleteUserData(userId: String): Result<Unit> = runCatching {
+        val userDoc = firestore.collection("users").document(userId)
+        val collections = listOf(
+            "expenses",
+            "categories",
+            "weekly_targets",
+            "monthly_targets",
+            "salary_hand_records",
+            "debts",
+            "profile"
+        )
+
+        for (colName in collections) {
+            val snapshot = userDoc.collection(colName).get().await()
+            if (!snapshot.isEmpty) {
+                snapshot.documents.chunked(450).forEach { chunk ->
+                    val batch = firestore.batch()
+                    chunk.forEach { doc -> batch.delete(doc.reference) }
+                    batch.commit().await()
+                }
+            }
+        }
+        // Delete the root user document
+        userDoc.delete().await()
+    }
 }
+

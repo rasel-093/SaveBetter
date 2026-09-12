@@ -77,4 +77,11 @@ class SettingsPreferences @Inject constructor(
             preferences[PreferenceKeys.NOTIFY_RECONCILIATION] = enabled
         }
     }
+
+    suspend fun clearAllPreferences() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
 }
+

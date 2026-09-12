@@ -26,4 +26,8 @@ interface WeeklyTargetDao {
 
     @Upsert
     suspend fun upsertWeeklyTargets(targets: List<WeeklyTargetEntity>)
+
+    @Query("DELETE FROM weekly_targets WHERE userId = :userId")
+    suspend fun deleteWeeklyTargetsByUserId(userId: String)
 }
+

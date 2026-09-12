@@ -10,6 +10,8 @@ import com.example.savebetter.core.domain.model.Category
 import com.example.savebetter.core.domain.model.SyncState
 import com.example.savebetter.core.domain.model.ThemeMode
 import com.example.savebetter.core.domain.model.UserProfile
+import com.example.savebetter.core.auth.model.RecentLoginRequiredException
+import com.example.savebetter.core.domain.usecase.auth.DeleteAccountUseCase
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.DebtCreditRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
@@ -50,6 +52,8 @@ class SettingsViewModelTest {
     private val expenseRepository: ExpenseRepository = mockk()
     private val targetRepository: TargetRepository = mockk()
     private val debtCreditRepository: DebtCreditRepository = mockk()
+    private val deleteAccountUseCase: DeleteAccountUseCase = mockk()
+
 
     private val themeModeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     private val vibrationFlow = MutableStateFlow(true)
@@ -125,9 +129,11 @@ class SettingsViewModelTest {
             categoryRepository = categoryRepository,
             expenseRepository = expenseRepository,
             targetRepository = targetRepository,
-            debtCreditRepository = debtCreditRepository
+            debtCreditRepository = debtCreditRepository,
+            deleteAccountUseCase = deleteAccountUseCase
         )
     }
+
 
     @After
     fun tearDown() {
@@ -325,7 +331,67 @@ class SettingsViewModelTest {
             viewModel.showDeleteAccountConfirm(false)
             assertFalse(awaitItem().showDeleteAccountConfirmDialog)
 
+            viewModel.showReauthDialog(true)
+            assertTrue(awaitItem().showReauthDialog)
+            viewModel.showReauthDialog(false)
+            assertFalse(awaitItem().showReauthDialog)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `deleteAccount calls deleteAccountUseCase with active user id`() = runTest {
+        viewModel.initUser("user_settings_1")
+        testScheduler.advanceUntilIdle()
+
+        coEvery { deleteAccountUseCase("user_settings_1", null) } returns Result.success(Unit)
+
+        viewModel.deleteAccount()
+        testScheduler.advanceUntilIdle()
+
+        coVerify { deleteAccountUseCase("user_settings_1", null) }
+    }
+
+    @Test
+    fun `deleteAccount with password calls deleteAccountUseCase with password`() = runTest {
+        viewModel.initUser("user_settings_1")
+        testScheduler.advanceUntilIdle()
+
+        coEvery { deleteAccountUseCase("user_settings_1", "securePass123") } returns Result.success(Unit)
+
+        viewModel.deleteAccount(password = "securePass123")
+        testScheduler.advanceUntilIdle()
+
+        coVerify { deleteAccountUseCase("user_settings_1", "securePass123") }
+    }
+
+    @Test
+    fun `deleteAccount with RecentLoginRequiredException triggers reauth dialog`() = runTest {
+        viewModel.initUser("user_settings_1")
+        testScheduler.advanceUntilIdle()
+
+        coEvery { deleteAccountUseCase("user_settings_1", null) } returns Result.failure(
+            RecentLoginRequiredException("Recent login required")
+        )
+
+        viewModel.uiState.test {
+            var state = awaitItem()
+            if (state.isLoading) {
+                state = awaitItem()
+            }
+            assertFalse(state.showReauthDialog)
+
+            viewModel.deleteAccount()
+            testScheduler.advanceUntilIdle()
+
+            val reauthItem = awaitItem()
+            assertTrue(reauthItem.showReauthDialog)
+            assertEquals("Recent login required", reauthItem.reauthError)
+            assertFalse(reauthItem.isDeletingAccount)
+
             cancelAndIgnoreRemainingEvents()
         }
     }
 }
+

@@ -53,7 +53,14 @@ interface AuthRepository {
     suspend fun signOut()
 
     /**
+     * Re-authenticates the current user using their password.
+     * Required before performing sensitive operations like account deletion.
+     */
+    suspend fun reauthenticate(password: String): Result<Unit>
+
+    /**
      * Permanently deletes the current user's account.
      */
     suspend fun deleteAccount(): Result<Unit>
 }
+

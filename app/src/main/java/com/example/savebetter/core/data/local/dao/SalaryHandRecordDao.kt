@@ -26,4 +26,8 @@ interface SalaryHandRecordDao {
 
     @Upsert
     suspend fun upsertSalaryHandRecords(records: List<SalaryHandRecordEntity>)
+
+    @Query("DELETE FROM salary_hand_records WHERE userId = :userId")
+    suspend fun deleteSalaryHandRecordsByUserId(userId: String)
 }
+

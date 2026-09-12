@@ -26,4 +26,8 @@ interface MonthlyTargetDao {
 
     @Upsert
     suspend fun upsertMonthlyTargets(targets: List<MonthlyTargetEntity>)
+
+    @Query("DELETE FROM monthly_targets WHERE userId = :userId")
+    suspend fun deleteMonthlyTargetsByUserId(userId: String)
 }
+

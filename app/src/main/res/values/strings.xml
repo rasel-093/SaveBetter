@@ -328,11 +328,19 @@
     <string name="settings_delete_account">Delete Account / Data</string>
     <string name="settings_delete_account_confirm_title">Delete Account</string>
     <string name="settings_delete_account_confirm_desc">Account deletion is handled as a permanent operation. Proceed to delete your account and financial data?</string>
+    <string name="settings_delete_account_progress">Deleting account and data…</string>
+    <string name="settings_reauth_required_title">Authentication Required</string>
+    <string name="settings_reauth_required_desc">This sensitive operation requires recent authentication. Please enter your password to proceed with deleting your account and all data.</string>
+    <string name="settings_reauth_password_label">Password</string>
+    <string name="settings_reauth_confirm_button">Confirm &amp; Delete</string>
+    <string name="settings_reauth_failed">Authentication failed. Please verify your password.</string>
+    <string name="auth_error_recent_login_required">For security, please log in again before deleting your account.</string>
     <string name="settings_save_button">Save</string>
     <string name="settings_cancel_button">Cancel</string>
     <string name="settings_close_button">Close</string>
     <string name="settings_categories_dialog_title">Categories</string>
     <string name="settings_profile_updated">Profile updated successfully</string>
+
 
     <!-- Google Sign-In Client ID (fallback if not auto-generated) -->
     <string name="default_web_client_id" translatable="false"></string>

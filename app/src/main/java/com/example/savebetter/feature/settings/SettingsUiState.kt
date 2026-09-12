@@ -28,5 +28,9 @@ data class SettingsUiState(
     val showCategoriesDialog: Boolean = false,
     val showLogoutConfirmDialog: Boolean = false,
     val showDeleteAccountConfirmDialog: Boolean = false,
+    val showReauthDialog: Boolean = false,
+    val isDeletingAccount: Boolean = false,
+    val reauthError: String? = null,
     val userMessage: String? = null
 )
+

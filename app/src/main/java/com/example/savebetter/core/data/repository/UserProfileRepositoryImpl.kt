@@ -56,4 +56,9 @@ class UserProfileRepositoryImpl @Inject constructor(
             userDao.upsertUser(remoteProfile.toEntity())
         }
     }
+
+    override suspend fun deleteUserData(userId: String): Result<Unit> {
+        return remoteDataSource.deleteUserData(userId)
+    }
 }
+

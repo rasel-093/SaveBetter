@@ -50,4 +50,15 @@ object ReconciliationReminderScheduler {
     fun cancelReminder(context: Context) {
         WorkManager.getInstance(context).cancelUniqueWork(ReconciliationReminderWorker.WORK_NAME)
     }
+
+    /**
+     * Cancels all scheduled user jobs and background work.
+     */
+    fun cancelAllUserWork(context: Context) {
+        cancelReminder(context)
+        runCatching {
+            WorkManager.getInstance(context).cancelAllWork()
+        }
+    }
 }
+

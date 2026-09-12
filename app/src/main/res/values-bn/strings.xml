@@ -326,9 +326,17 @@
     <string name="settings_delete_account">অ্যাকাউন্ট মুছুন</string>
     <string name="settings_delete_account_confirm_title">অ্যাকাউন্ট মোছা</string>
     <string name="settings_delete_account_confirm_desc">অ্যাকাউন্ট ডিলিট করলে আপনার সকল আর্থিক তথ্য মুছে যাবে। আপনি কি অ্যাকাউন্ট ডিলিট প্রক্রিয়ায় যেতে চান?</string>
+    <string name="settings_delete_account_progress">অ্যাকাউন্ট ও তথ্য মোছা হচ্ছে…</string>
+    <string name="settings_reauth_required_title">পুনরায় যাচাইকরণ প্রয়োজন</string>
+    <string name="settings_reauth_required_desc">নিরাপত্তার স্বার্থে এই সংবেদনশীল কাজের জন্য সাম্প্রতিক লগইন আবশ্যক। অ্যাকাউন্ট ও তথ্য মুছে ফেলার জন্য অনুগ্রহ করে পাসওয়ার্ড প্রদান করুন।</string>
+    <string name="settings_reauth_password_label">পাসওয়ার্ড</string>
+    <string name="settings_reauth_confirm_button">যাচাই ও মুছুন</string>
+    <string name="settings_reauth_failed">যাচাইকরণ ব্যর্থ হয়েছে। সঠিক পাসওয়ার্ড দিন।</string>
+    <string name="auth_error_recent_login_required">নিরাপত্তাজনিত কারণে আপনার অ্যাকাউন্ট মুছে ফেলার আগে অনুগ্রহ করে আবার লগইন করুন।</string>
     <string name="settings_save_button">সংরক্ষণ করুন</string>
     <string name="settings_cancel_button">বাতিল</string>
     <string name="settings_close_button">বন্ধ করুন</string>
     <string name="settings_categories_dialog_title">ক্যাটাগরিসমূহ</string>
     <string name="settings_profile_updated">প্রোফাইল সফলভাবে আপডেট হয়েছে</string>
+
 </resources>

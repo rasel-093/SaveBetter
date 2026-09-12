@@ -11,4 +11,6 @@ import com.example.savebetter.core.domain.model.UserProfile
 interface UserProfileRemoteDataSource {
     suspend fun fetchUserProfile(userId: String): Result<UserProfile?>
     suspend fun saveUserProfile(profile: UserProfile): Result<Unit>
+    suspend fun deleteUserData(userId: String): Result<Unit>
 }
+

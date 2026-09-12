@@ -23,7 +23,17 @@ data class AuthUser(
  * Used to translate backend-specific (e.g. Firebase SDK) exceptions into
  * user-friendly, localized error messages without leaking SDK details.
  */
-class AuthException(
+open class AuthException(
     message: String,
     cause: Throwable? = null
 ) : Exception(message, cause)
+
+/**
+ * Thrown when a sensitive operation (such as account deletion) requires
+ * recent authentication before it can proceed.
+ */
+class RecentLoginRequiredException(
+    message: String = "This sensitive operation requires recent authentication. Please verify your credentials.",
+    cause: Throwable? = null
+) : AuthException(message, cause)
+

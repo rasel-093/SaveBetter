@@ -34,4 +34,8 @@ interface DebtCreditDao {
 
     @Query("UPDATE debt_credits SET isDeleted = 1, deletedAt = :deletedAt, updatedAt = :updatedAt, syncStatus = :syncStatus WHERE id = :id")
     suspend fun softDeleteDebtCredit(id: String, deletedAt: Instant, updatedAt: Instant, syncStatus: SyncState)
+
+    @Query("DELETE FROM debt_credits WHERE userId = :userId")
+    suspend fun deleteDebtCreditsByUserId(userId: String)
 }
+

@@ -3,6 +3,7 @@ package com.example.savebetter.feature.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.savebetter.core.auth.model.RecentLoginRequiredException
 import com.example.savebetter.core.auth.repository.AuthRepository
 import com.example.savebetter.core.data.local.LanguagePreferences
 import com.example.savebetter.core.data.local.SettingsPreferences
@@ -15,6 +16,7 @@ import com.example.savebetter.core.domain.repository.DebtCreditRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
 import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.repository.UserProfileRepository
+import com.example.savebetter.core.domain.usecase.auth.DeleteAccountUseCase
 import com.example.savebetter.core.i18n.AppLanguage
 import com.example.savebetter.core.notification.ReconciliationReminderScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +45,8 @@ class SettingsViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val expenseRepository: ExpenseRepository,
     private val targetRepository: TargetRepository,
-    private val debtCreditRepository: DebtCreditRepository
+    private val debtCreditRepository: DebtCreditRepository,
+    private val deleteAccountUseCase: DeleteAccountUseCase
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
@@ -55,10 +58,14 @@ class SettingsViewModel @Inject constructor(
         val showCategories: Boolean = false,
         val showLogout: Boolean = false,
         val showDeleteAccount: Boolean = false,
+        val showReauthDialog: Boolean = false,
+        val isDeletingAccount: Boolean = false,
+        val reauthError: String? = null,
         val isSyncing: Boolean = false,
         val syncMessage: String? = null,
         val userMessage: String? = null
     )
+
 
     private val dialogStates = MutableStateFlow(DialogStates())
 
@@ -155,6 +162,9 @@ class SettingsViewModel @Inject constructor(
             showCategoriesDialog = dialogs.showCategories,
             showLogoutConfirmDialog = dialogs.showLogout,
             showDeleteAccountConfirmDialog = dialogs.showDeleteAccount,
+            showReauthDialog = dialogs.showReauthDialog,
+            isDeletingAccount = dialogs.isDeletingAccount,
+            reauthError = dialogs.reauthError,
             userMessage = dialogs.userMessage
         )
     }.stateIn(
@@ -279,7 +289,52 @@ class SettingsViewModel @Inject constructor(
         dialogStates.update { it.copy(showDeleteAccount = show) }
     }
 
+    fun showReauthDialog(show: Boolean) {
+        dialogStates.update { it.copy(showReauthDialog = show, reauthError = null) }
+    }
+
+    fun deleteAccount(password: String? = null) {
+        val uid = activeUserId.value ?: return
+        viewModelScope.launch {
+            dialogStates.update {
+                it.copy(
+                    isDeletingAccount = true,
+                    showDeleteAccount = false,
+                    reauthError = null
+                )
+            }
+            val result = deleteAccountUseCase(userId = uid, password = password)
+            result.onSuccess {
+                dialogStates.update {
+                    it.copy(
+                        isDeletingAccount = false,
+                        showReauthDialog = false,
+                        reauthError = null
+                    )
+                }
+            }.onFailure { error ->
+                if (error is RecentLoginRequiredException) {
+                    dialogStates.update {
+                        it.copy(
+                            isDeletingAccount = false,
+                            showReauthDialog = true,
+                            reauthError = error.localizedMessage
+                        )
+                    }
+                } else {
+                    dialogStates.update {
+                        it.copy(
+                            isDeletingAccount = false,
+                            userMessage = error.localizedMessage ?: "Failed to delete account."
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun clearUserMessage() {
         dialogStates.update { it.copy(userMessage = null) }
     }
 }
+

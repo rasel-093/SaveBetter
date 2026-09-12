@@ -37,4 +37,8 @@ interface CategoryDao {
 
     @Query("UPDATE categories SET isDeleted = 1, syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :id")
     suspend fun softDeleteCategory(id: String, updatedAt: Instant, syncStatus: SyncState)
+
+    @Query("DELETE FROM categories WHERE userId = :userId")
+    suspend fun deleteCategoriesByUserId(userId: String)
 }
+

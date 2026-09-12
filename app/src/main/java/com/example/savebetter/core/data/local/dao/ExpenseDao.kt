@@ -43,4 +43,8 @@ interface ExpenseDao {
 
     @Query("DELETE FROM expenses WHERE id = :id")
     suspend fun hardDeleteExpense(id: String)
+
+    @Query("DELETE FROM expenses WHERE userId = :userId")
+    suspend fun deleteExpensesByUserId(userId: String)
 }
+

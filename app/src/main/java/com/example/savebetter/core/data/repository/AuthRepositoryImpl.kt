@@ -43,7 +43,12 @@ class AuthRepositoryImpl @Inject constructor(
         remoteDataSource.signOut()
     }
 
+    override suspend fun reauthenticate(password: String): Result<Unit> {
+        return remoteDataSource.reauthenticate(password)
+    }
+
     override suspend fun deleteAccount(): Result<Unit> {
         return remoteDataSource.deleteAccount()
     }
 }
+

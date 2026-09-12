@@ -49,7 +49,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -357,13 +359,10 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    if (onDeleteAccountClick != null) {
-                                        onDeleteAccountClick()
-                                    } else {
-                                        viewModel.showDeleteAccountConfirm(true)
-                                    }
+                                    viewModel.showDeleteAccountConfirm(true)
                                 }
                                 .padding(vertical = 12.dp),
+
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -459,7 +458,7 @@ fun SettingsScreen(
         )
     }
 
-    // Dialog: Delete Account Confirmation (Step 13 Entrypoint)
+    // Dialog: Delete Account Confirmation
     if (uiState.showDeleteAccountConfirmDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.showDeleteAccountConfirm(false) },
@@ -481,8 +480,7 @@ fun SettingsScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        viewModel.showDeleteAccountConfirm(false)
-                        onDeleteAccountClick?.invoke()
+                        viewModel.deleteAccount()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = SaveBetterTheme.colors.brick,
@@ -499,7 +497,123 @@ fun SettingsScreen(
             }
         )
     }
+
+    // Dialog: Re-authentication Required for Sensitive Deletion
+    if (uiState.showReauthDialog) {
+        var passwordInput by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { viewModel.showReauthDialog(false) },
+            containerColor = SaveBetterTheme.colors.paper,
+            title = {
+                Text(
+                    text = stringResource(R.string.settings_reauth_required_title),
+                    style = SaveBetterTheme.typography.screenSubtitle,
+                    color = SaveBetterTheme.colors.brick
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = stringResource(R.string.settings_reauth_required_desc),
+                        style = SaveBetterTheme.typography.body,
+                        color = SaveBetterTheme.colors.inkSoft
+                    )
+                    OutlinedTextField(
+                        value = passwordInput,
+                        onValueChange = { passwordInput = it },
+                        label = { Text(stringResource(R.string.settings_reauth_password_label)) },
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        isError = uiState.reauthError != null,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = SaveBetterTheme.colors.gold,
+                            unfocusedBorderColor = SaveBetterTheme.colors.paperLine,
+                            focusedLabelColor = SaveBetterTheme.colors.gold
+                        )
+                    )
+                    if (uiState.reauthError != null) {
+                        Text(
+                            text = uiState.reauthError ?: "",
+                            style = SaveBetterTheme.typography.caption,
+                            color = SaveBetterTheme.colors.brick
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (passwordInput.isNotBlank()) {
+                            viewModel.deleteAccount(password = passwordInput)
+                        }
+                    },
+                    enabled = passwordInput.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SaveBetterTheme.colors.brick,
+                        contentColor = SaveBetterTheme.colors.paper
+                    )
+                ) {
+                    Text(stringResource(R.string.settings_reauth_confirm_button))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.showReauthDialog(false) }) {
+                    Text(stringResource(R.string.settings_cancel_button), color = SaveBetterTheme.colors.ink)
+                }
+            }
+        )
+    }
+
+    // Dialog: Deleting in Progress
+    if (uiState.isDeletingAccount) {
+        AlertDialog(
+            onDismissRequest = { /* Prevent dismiss during deletion */ },
+            containerColor = SaveBetterTheme.colors.paper,
+            title = null,
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        color = SaveBetterTheme.colors.brick,
+                        modifier = Modifier.size(36.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.settings_delete_account_progress),
+                        style = SaveBetterTheme.typography.body,
+                        color = SaveBetterTheme.colors.ink
+                    )
+                }
+            },
+            confirmButton = {}
+        )
+    }
+
+    // Dialog: User notification / error message
+    if (uiState.userMessage != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearUserMessage() },
+            containerColor = SaveBetterTheme.colors.paper,
+            title = null,
+            text = {
+                Text(
+                    text = uiState.userMessage ?: "",
+                    style = SaveBetterTheme.typography.body,
+                    color = SaveBetterTheme.colors.ink
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearUserMessage() }) {
+                    Text(stringResource(R.string.settings_close_button), color = SaveBetterTheme.colors.gold)
+                }
+            }
+        )
+    }
 }
+
 
 @Composable
 private fun SettingsClickableRow(

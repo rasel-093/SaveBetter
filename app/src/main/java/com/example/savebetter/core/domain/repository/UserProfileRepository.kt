@@ -12,4 +12,6 @@ interface UserProfileRepository {
     suspend fun saveUserProfile(profile: UserProfile)
     suspend fun updateOnboardingCompleted(userId: String, completed: Boolean)
     suspend fun syncUserProfile(userId: String): Result<Unit>
+    suspend fun deleteUserData(userId: String): Result<Unit>
 }
+
