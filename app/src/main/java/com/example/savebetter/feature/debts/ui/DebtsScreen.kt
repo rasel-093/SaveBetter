@@ -280,7 +280,7 @@ fun DebtsScreen(
                                 text = stringResource(R.string.debts_empty_receivables),
                                 style = SaveBetterTheme.typography.caption,
                                 color = SaveBetterTheme.colors.textMuted,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
                             )
                         }
                     } else {
@@ -309,7 +309,7 @@ fun DebtsScreen(
                                 text = stringResource(R.string.debts_empty_payables),
                                 style = SaveBetterTheme.typography.caption,
                                 color = SaveBetterTheme.colors.textMuted,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
                             )
                         }
                     } else {
@@ -336,7 +336,7 @@ fun DebtsScreen(
                                 text = stringResource(R.string.debts_empty_history),
                                 style = SaveBetterTheme.typography.caption,
                                 color = SaveBetterTheme.colors.textMuted,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
                             )
                         }
                     } else {
@@ -506,7 +506,7 @@ private fun DebtListRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onRowClick)
-            .padding(vertical = 10.dp, horizontal = 4.dp),
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -679,13 +679,15 @@ private fun DebtAddEditDialog(
                         label = stringResource(R.string.debts_direction_receivable),
                         dotColor = SaveBetterTheme.colors.moss,
                         isSelected = direction == DebtDirection.RECEIVABLE,
-                        onClick = { direction = DebtDirection.RECEIVABLE }
+                        onClick = { direction = DebtDirection.RECEIVABLE },
+                        modifier = Modifier.weight(1f)
                     )
                     CategoryChip(
                         label = stringResource(R.string.debts_direction_payable),
                         dotColor = SaveBetterTheme.colors.brick,
                         isSelected = direction == DebtDirection.PAYABLE,
-                        onClick = { direction = DebtDirection.PAYABLE }
+                        onClick = { direction = DebtDirection.PAYABLE },
+                        modifier = Modifier.weight(1f)
                     )
                 }
 

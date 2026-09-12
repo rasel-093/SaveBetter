@@ -103,12 +103,13 @@ fun WeeklyDetailScreen(
                             )
                         }
                         IconButton(
-                            onClick = viewModel::navigateNextWeek
+                            onClick = viewModel::navigateNextWeek,
+                            enabled = uiState.hasNextWeek
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(R.string.weekly_next_week),
-                                tint = SaveBetterTheme.colors.inkSoft,
+                                tint = if (uiState.hasNextWeek) SaveBetterTheme.colors.inkSoft else SaveBetterTheme.colors.textMuted.copy(alpha = 0.38f),
                                 modifier = Modifier.size(20.dp)
                             )
                         }
@@ -263,7 +264,7 @@ private fun WeeklyDetailContent(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 24.dp),
+                        .padding(horizontal = 16.dp, vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(

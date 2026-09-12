@@ -134,6 +134,9 @@ class WeeklyDetailViewModel @Inject constructor(
                         )
                     }
 
+                val currentWeekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                val hasNextWeek = weekStart.isBefore(currentWeekStart)
+
                 WeeklyDetailUiState(
                     weeklySummary = weeklySummary,
                     weekDateRangeText = dateRangeStr,
@@ -142,6 +145,7 @@ class WeeklyDetailViewModel @Inject constructor(
                     adviceList = adviceList,
                     weeklyExpenses = expenseItems,
                     categories = activeCategories,
+                    hasNextWeek = hasNextWeek,
                     isLoading = false
                 )
             }
@@ -166,7 +170,12 @@ class WeeklyDetailViewModel @Inject constructor(
     }
 
     fun navigateNextWeek() {
-        referenceDate.update { it.plusWeeks(1) }
+        val currentWeekStart = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        referenceDate.update { date ->
+            val nextDate = date.plusWeeks(1)
+            val nextWeekStart = nextDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            if (nextWeekStart.isAfter(currentWeekStart)) date else nextDate
+        }
     }
 
     fun resetToCurrentWeek() {

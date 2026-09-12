@@ -21,5 +21,6 @@ data class MonthlyAnalysisUiState(
     val suggestions: List<MonthlySuggestion> = emptyList(),
     val comparisonPrevious: ComparisonBarItem? = null,
     val comparisonCurrent: ComparisonBarItem? = null,
+    val hasNextMonth: Boolean = false,
     val isLoading: Boolean = true
 )

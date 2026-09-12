@@ -131,6 +131,8 @@ class MonthlyAnalysisViewModel @Inject constructor(
                 )
 
                 val monthTitle = formatMonthTitle(ym, language)
+                val currentYm = YearMonth.now()
+                val hasNextMonth = ym.isBefore(currentYm)
 
                 MonthlyAnalysisUiState(
                     selectedYearMonth = ym,
@@ -145,6 +147,7 @@ class MonthlyAnalysisViewModel @Inject constructor(
                     suggestions = suggestions,
                     comparisonPrevious = comparisonPrev,
                     comparisonCurrent = comparisonCurrent,
+                    hasNextMonth = hasNextMonth,
                     isLoading = false
                 )
             }
@@ -169,7 +172,11 @@ class MonthlyAnalysisViewModel @Inject constructor(
     }
 
     fun navigateNextMonth() {
-        selectedYearMonth.update { it.plusMonths(1) }
+        val currentYm = YearMonth.now()
+        selectedYearMonth.update { ym ->
+            val nextYm = ym.plusMonths(1)
+            if (nextYm.isAfter(currentYm)) ym else nextYm
+        }
     }
 
     fun resetToCurrentMonth() {

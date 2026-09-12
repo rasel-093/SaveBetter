@@ -51,7 +51,7 @@ fun ExpenseListRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .then(clickModifier)
-                .padding(vertical = 10.dp),
+                .padding(horizontal = 14.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

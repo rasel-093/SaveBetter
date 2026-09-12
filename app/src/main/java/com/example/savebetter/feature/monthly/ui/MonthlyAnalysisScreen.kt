@@ -99,12 +99,13 @@ fun MonthlyAnalysisScreen(
                             )
                         }
                         IconButton(
-                            onClick = viewModel::navigateNextMonth
+                            onClick = viewModel::navigateNextMonth,
+                            enabled = uiState.hasNextMonth
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(R.string.monthly_next_month),
-                                tint = SaveBetterTheme.colors.inkSoft,
+                                tint = if (uiState.hasNextMonth) SaveBetterTheme.colors.inkSoft else SaveBetterTheme.colors.textMuted.copy(alpha = 0.38f),
                                 modifier = Modifier.size(20.dp)
                             )
                         }

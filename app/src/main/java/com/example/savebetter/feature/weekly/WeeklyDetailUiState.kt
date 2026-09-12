@@ -29,5 +29,6 @@ data class WeeklyDetailUiState(
     val adviceList: List<WeeklyAdvice> = emptyList(),
     val weeklyExpenses: List<ExpenseItemUiModel> = emptyList(),
     val categories: List<Category> = emptyList(),
+    val hasNextWeek: Boolean = false,
     val isLoading: Boolean = true
 )
