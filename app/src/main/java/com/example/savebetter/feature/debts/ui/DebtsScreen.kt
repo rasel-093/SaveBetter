@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,6 +58,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -282,18 +284,16 @@ fun DebtsScreen(
                             )
                         }
                     } else {
-                        LedgerCard(modifier = Modifier.fillMaxWidth()) {
-                            Column {
-                                uiState.summary.activeReceivables.forEachIndexed { index, item ->
-                                    DebtListRow(
-                                        item = item,
-                                        selectedLanguage = selectedLanguage,
-                                        onRowClick = { selectedItemForAction = item },
-                                        onSettleClick = { viewModel.toggleSettle(item) }
-                                    )
-                                    if (index < uiState.summary.activeReceivables.lastIndex) {
-                                        HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
-                                    }
+                        LedgerCard(isFlush = true) {
+                            uiState.summary.activeReceivables.forEachIndexed { index, item ->
+                                DebtListRow(
+                                    item = item,
+                                    selectedLanguage = selectedLanguage,
+                                    onRowClick = { selectedItemForAction = item },
+                                    onSettleClick = { viewModel.toggleSettle(item) }
+                                )
+                                if (index < uiState.summary.activeReceivables.lastIndex) {
+                                    HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
                                 }
                             }
                         }
@@ -313,18 +313,16 @@ fun DebtsScreen(
                             )
                         }
                     } else {
-                        LedgerCard(modifier = Modifier.fillMaxWidth()) {
-                            Column {
-                                uiState.summary.activePayables.forEachIndexed { index, item ->
-                                    DebtListRow(
-                                        item = item,
-                                        selectedLanguage = selectedLanguage,
-                                        onRowClick = { selectedItemForAction = item },
-                                        onSettleClick = { viewModel.toggleSettle(item) }
-                                    )
-                                    if (index < uiState.summary.activePayables.lastIndex) {
-                                        HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
-                                    }
+                        LedgerCard(isFlush = true) {
+                            uiState.summary.activePayables.forEachIndexed { index, item ->
+                                DebtListRow(
+                                    item = item,
+                                    selectedLanguage = selectedLanguage,
+                                    onRowClick = { selectedItemForAction = item },
+                                    onSettleClick = { viewModel.toggleSettle(item) }
+                                )
+                                if (index < uiState.summary.activePayables.lastIndex) {
+                                    HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
                                 }
                             }
                         }
@@ -342,18 +340,16 @@ fun DebtsScreen(
                             )
                         }
                     } else {
-                        LedgerCard(modifier = Modifier.fillMaxWidth()) {
-                            Column {
-                                uiState.summary.settledList.forEachIndexed { index, item ->
-                                    DebtListRow(
-                                        item = item,
-                                        selectedLanguage = selectedLanguage,
-                                        onRowClick = { selectedItemForAction = item },
-                                        onSettleClick = { viewModel.toggleSettle(item) }
-                                    )
-                                    if (index < uiState.summary.settledList.lastIndex) {
-                                        HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
-                                    }
+                        LedgerCard(isFlush = true) {
+                            uiState.summary.settledList.forEachIndexed { index, item ->
+                                DebtListRow(
+                                    item = item,
+                                    selectedLanguage = selectedLanguage,
+                                    onRowClick = { selectedItemForAction = item },
+                                    onSettleClick = { viewModel.toggleSettle(item) }
+                                )
+                                if (index < uiState.summary.settledList.lastIndex) {
+                                    HorizontalDivider(color = SaveBetterTheme.colors.paperLine)
                                 }
                             }
                         }
@@ -551,19 +547,26 @@ private fun DebtListRow(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(
                         text = item.personName,
                         style = SaveBetterTheme.typography.body.copy(fontWeight = FontWeight.SemiBold),
-                        color = SaveBetterTheme.colors.ink
+                        color = SaveBetterTheme.colors.ink,
+                        modifier = Modifier.weight(1f, fill = false),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     if (item.isSettled) {
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = "[${stringResource(R.string.debts_settled_badge)}]",
                             style = SaveBetterTheme.typography.caption,
-                            color = SaveBetterTheme.colors.textMuted
+                            color = SaveBetterTheme.colors.textMuted,
+                            maxLines = 1
                         )
                     }
                 }
@@ -571,16 +574,26 @@ private fun DebtListRow(
                 Text(
                     text = subtitle,
                     style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
+                    color = SaveBetterTheme.colors.textMuted,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.widthIn(max = 140.dp)
+        ) {
             Text(
                 text = "$prefix${CurrencyFormatter.formatMinor(item.amountMinor, selectedLanguage)}",
                 style = SaveBetterTheme.typography.amountSmall.copy(fontWeight = FontWeight.SemiBold),
-                color = amountColor
+                color = amountColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .widthIn(max = 100.dp)
             )
 
             IconButton(

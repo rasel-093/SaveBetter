@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -43,14 +44,18 @@ fun SettingsToggleRow(
             Text(
                 text = title,
                 style = SaveBetterTheme.typography.body,
-                color = if (enabled) SaveBetterTheme.colors.ink else SaveBetterTheme.colors.textMuted
+                color = if (enabled) SaveBetterTheme.colors.ink else SaveBetterTheme.colors.textMuted,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
                     style = SaveBetterTheme.typography.caption,
                     color = SaveBetterTheme.colors.textMuted,
-                    lineHeight = 15.sp
+                    lineHeight = 15.sp,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

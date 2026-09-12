@@ -110,11 +110,15 @@ class MainActivity : ComponentActivity() {
                         is AuthGateState.Authenticated -> {
                             var isAddExpenseOpen by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var activeExpenseIdForEdit by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
-                            var showWeeklyDetail by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-                            var showMonthlyAnalysis by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var showReconciliation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-                            var showDebts by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-                            var showSettings by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var mainDestination by androidx.compose.runtime.remember {
+                                androidx.compose.runtime.mutableStateOf(
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Home
+                                )
+                            }
+
+                            val onMainTabSelected: (com.example.savebetter.core.designsystem.component.BottomNavDestination) -> Unit =
+                                { mainDestination = it }
 
                             androidx.compose.runtime.LaunchedEffect(Unit) {
                                 if (intent?.getStringExtra("navigate_to") == "reconciliation") {
@@ -132,26 +136,6 @@ class MainActivity : ComponentActivity() {
                                         activeExpenseIdForEdit = null
                                     }
                                 )
-                            } else if (showWeeklyDetail) {
-                                com.example.savebetter.feature.weekly.ui.WeeklyDetailScreen(
-                                    userId = state.user.id,
-                                    selectedLanguage = currentLanguage,
-                                    onBackClick = { showWeeklyDetail = false },
-                                    onExpenseClick = { expenseId ->
-                                        activeExpenseIdForEdit = expenseId
-                                        isAddExpenseOpen = true
-                                    }
-                                )
-                            } else if (showMonthlyAnalysis) {
-                                com.example.savebetter.feature.monthly.ui.MonthlyAnalysisScreen(
-                                    userId = state.user.id,
-                                    selectedLanguage = currentLanguage,
-                                    onBackClick = { showMonthlyAnalysis = false },
-                                    onReconcileClick = {
-                                        showMonthlyAnalysis = false
-                                        showReconciliation = true
-                                    }
-                                )
                             } else if (showReconciliation) {
                                 com.example.savebetter.feature.reconciliation.ui.ReconciliationScreen(
                                     onNavigateBack = { showReconciliation = false },
@@ -161,108 +145,73 @@ class MainActivity : ComponentActivity() {
                                         isAddExpenseOpen = true
                                     }
                                 )
-                            } else if (showDebts) {
-                                com.example.savebetter.feature.debts.ui.DebtsScreen(
-                                    userId = state.user.id,
-                                    selectedLanguage = currentLanguage,
-                                    onBackClick = { showDebts = false },
-                                    onDestinationSelected = { dest ->
-                                        when (dest) {
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
-                                                showDebts = false
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
-                                                showDebts = false
-                                                showWeeklyDetail = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
-                                                showDebts = false
-                                                showMonthlyAnalysis = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
-                                                // Already here
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
-                                                showDebts = false
-                                                showSettings = true
-                                            }
-                                        }
-                                    }
-                                )
-                            } else if (showSettings) {
-                                com.example.savebetter.feature.settings.ui.SettingsScreen(
-                                    userId = state.user.id,
-                                    selectedLanguage = currentLanguage,
-                                    onBackClick = { showSettings = false },
-                                    onDestinationSelected = { dest ->
-                                        when (dest) {
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
-                                                showSettings = false
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
-                                                showSettings = false
-                                                showWeeklyDetail = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
-                                                showSettings = false
-                                                showMonthlyAnalysis = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
-                                                showSettings = false
-                                                showDebts = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
-                                                // Already here
-                                            }
-                                        }
-                                    },
-                                    onDeleteAccountClick = {
-                                        settingsViewModel.showDeleteAccountConfirm(true)
-                                    }
-                                )
-
                             } else {
-                                com.example.savebetter.feature.home.ui.HomeScreen(
-                                    userId = state.user.id,
-                                    userName = state.user.displayName,
-                                    selectedLanguage = currentLanguage,
-                                    onAddExpenseClick = {
-                                        activeExpenseIdForEdit = null
-                                        isAddExpenseOpen = true
-                                    },
-                                    onExpenseClick = { expenseId ->
-                                        activeExpenseIdForEdit = expenseId
-                                        isAddExpenseOpen = true
-                                    },
-                                    onWeeklyDetailClick = {
-                                        showWeeklyDetail = true
-                                    },
-                                    onMonthlyAnalysisClick = {
-                                        showMonthlyAnalysis = true
-                                    },
-                                    onReconciliationClick = {
-                                        showReconciliation = true
-                                    },
-                                    onDestinationSelected = { dest ->
-                                        when (dest) {
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
-                                                // Already here
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
-                                                showWeeklyDetail = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
-                                                showMonthlyAnalysis = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
-                                                showDebts = true
-                                            }
-                                            com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
-                                                showSettings = true
-                                            }
-                                        }
+                                when (mainDestination) {
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Home -> {
+                                        com.example.savebetter.feature.home.ui.HomeScreen(
+                                            userId = state.user.id,
+                                            userName = state.user.displayName,
+                                            selectedLanguage = currentLanguage,
+                                            selectedBottomNavDestination = mainDestination,
+                                            onAddExpenseClick = {
+                                                activeExpenseIdForEdit = null
+                                                isAddExpenseOpen = true
+                                            },
+                                            onExpenseClick = { expenseId ->
+                                                activeExpenseIdForEdit = expenseId
+                                                isAddExpenseOpen = true
+                                            },
+                                            onWeeklyDetailClick = {
+                                                mainDestination =
+                                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly
+                                            },
+                                            onMonthlyAnalysisClick = {
+                                                mainDestination =
+                                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly
+                                            },
+                                            onReconciliationClick = {
+                                                showReconciliation = true
+                                            },
+                                            onDestinationSelected = onMainTabSelected
+                                        )
                                     }
-                                )
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly -> {
+                                        com.example.savebetter.feature.weekly.ui.WeeklyDetailScreen(
+                                            userId = state.user.id,
+                                            selectedLanguage = currentLanguage,
+                                            onExpenseClick = { expenseId ->
+                                                activeExpenseIdForEdit = expenseId
+                                                isAddExpenseOpen = true
+                                            },
+                                            onDestinationSelected = onMainTabSelected
+                                        )
+                                    }
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly -> {
+                                        com.example.savebetter.feature.monthly.ui.MonthlyAnalysisScreen(
+                                            userId = state.user.id,
+                                            selectedLanguage = currentLanguage,
+                                            onReconcileClick = { showReconciliation = true },
+                                            onDestinationSelected = onMainTabSelected
+                                        )
+                                    }
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Debts -> {
+                                        com.example.savebetter.feature.debts.ui.DebtsScreen(
+                                            userId = state.user.id,
+                                            selectedLanguage = currentLanguage,
+                                            onDestinationSelected = onMainTabSelected
+                                        )
+                                    }
+                                    com.example.savebetter.core.designsystem.component.BottomNavDestination.Settings -> {
+                                        com.example.savebetter.feature.settings.ui.SettingsScreen(
+                                            userId = state.user.id,
+                                            selectedLanguage = currentLanguage,
+                                            onDestinationSelected = onMainTabSelected,
+                                            onDeleteAccountClick = {
+                                                settingsViewModel.showDeleteAccountConfirm(true)
+                                            }
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
@@ -25,14 +26,17 @@ fun SectionLabel(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 6.dp),
+            .padding(bottom = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = text.uppercase(),
             style = SaveBetterTheme.typography.sectionLabel,
-            color = SaveBetterTheme.colors.textMuted
+            color = SaveBetterTheme.colors.textMuted,
+            modifier = Modifier.weight(1f),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
 
         if (actionText != null && onActionClick != null) {
@@ -40,7 +44,11 @@ fun SectionLabel(
                 text = actionText,
                 style = SaveBetterTheme.typography.caption,
                 color = SaveBetterTheme.colors.moss,
-                modifier = Modifier.clickable(onClick = onActionClick)
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .clickable(onClick = onActionClick)
+                    .padding(start = 8.dp)
             )
         }
     }

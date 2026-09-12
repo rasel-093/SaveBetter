@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +82,10 @@ fun DonutChart(
         if (showLegend) {
             Spacer(modifier = Modifier.width(20.dp))
 
-            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
                 slices.forEach { slice ->
                     val percentage = (slice.value / total * 100).toInt()
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,14 +100,18 @@ fun DonutChart(
                             text = slice.label,
                             style = SaveBetterTheme.typography.caption,
                             color = SaveBetterTheme.colors.inkSoft,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "$percentage%",
                             style = SaveBetterTheme.typography.amountSmall,
                             color = SaveBetterTheme.colors.textMuted,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            maxLines = 1
                         )
                     }
                 }

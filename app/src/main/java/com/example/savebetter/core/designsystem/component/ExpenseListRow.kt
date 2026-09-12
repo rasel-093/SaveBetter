@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -84,18 +86,22 @@ fun ExpenseListRow(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
                         style = SaveBetterTheme.typography.body,
                         color = SaveBetterTheme.colors.ink,
-                        fontSize = 13.sp
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = subtitle,
                         style = SaveBetterTheme.typography.caption,
                         color = SaveBetterTheme.colors.textMuted,
-                        fontSize = 11.sp
+                        fontSize = 11.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -104,7 +110,12 @@ fun ExpenseListRow(
             Text(
                 text = amount,
                 style = SaveBetterTheme.typography.amountSmall,
-                color = amountColor ?: SaveBetterTheme.colors.ink
+                color = amountColor ?: SaveBetterTheme.colors.ink,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .widthIn(max = 130.dp)
             )
         }
 

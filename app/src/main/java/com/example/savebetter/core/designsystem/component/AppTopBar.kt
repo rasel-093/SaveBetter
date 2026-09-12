@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -69,23 +70,30 @@ fun AppTopBar(
                     Spacer(modifier = Modifier.width(4.dp))
                 }
 
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
                         style = SaveBetterTheme.typography.screenTitle,
-                        color = SaveBetterTheme.colors.ink
+                        color = SaveBetterTheme.colors.ink,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
                             style = SaveBetterTheme.typography.screenSubtitle,
-                            color = SaveBetterTheme.colors.textMuted
+                            color = SaveBetterTheme.colors.textMuted,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
                 actions()
             }
         }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -46,9 +45,12 @@ import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.component.AlertBanner
 import com.example.savebetter.core.designsystem.component.AlertBannerType
 import com.example.savebetter.core.designsystem.component.AppTopBar
+import com.example.savebetter.core.designsystem.component.BottomNavBar
+import com.example.savebetter.core.designsystem.component.BottomNavDestination
 import com.example.savebetter.core.designsystem.component.DailyTrendBarChart
 import com.example.savebetter.core.designsystem.component.ExpenseListRow
 import com.example.savebetter.core.designsystem.component.LedgerCard
+import com.example.savebetter.core.designsystem.component.LedgerLabelValueRow
 import com.example.savebetter.core.designsystem.component.ProgressTrack
 import com.example.savebetter.core.designsystem.component.SectionLabel
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -70,10 +72,10 @@ import com.example.savebetter.feature.weekly.WeeklyDetailViewModel
 @Composable
 fun WeeklyDetailScreen(
     userId: String,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
     onExpenseClick: (String) -> Unit = {},
+    onDestinationSelected: ((BottomNavDestination) -> Unit)? = null,
     viewModel: WeeklyDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(userId, selectedLanguage) {
@@ -88,7 +90,6 @@ fun WeeklyDetailScreen(
             AppTopBar(
                 title = stringResource(R.string.weekly_detail_title),
                 subtitle = uiState.weekDateRangeText,
-                onBackClick = onBackClick,
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
@@ -114,6 +115,14 @@ fun WeeklyDetailScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            if (onDestinationSelected != null) {
+                BottomNavBar(
+                    selectedDestination = BottomNavDestination.Weekly,
+                    onDestinationSelected = onDestinationSelected
+                )
+            }
         },
         containerColor = SaveBetterTheme.colors.paper
     ) { innerPadding ->
@@ -153,59 +162,32 @@ private fun WeeklyDetailContent(
             .fillMaxSize()
             .padding(innerPadding)
             .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .navigationBarsPadding(),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // 1. Weekly Target & Budget Card
         LedgerCard {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.weekly_target_label),
-                    style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
-                )
-                Text(
-                    text = CurrencyFormatter.formatMinor(weekly.targetAmountMinor, selectedLanguage),
-                    style = SaveBetterTheme.typography.amountMedium,
-                    color = SaveBetterTheme.colors.ink,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            LedgerLabelValueRow(
+                label = stringResource(R.string.weekly_target_label),
+                value = CurrencyFormatter.formatMinor(weekly.targetAmountMinor, selectedLanguage)
+            )
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.weekly_spent_label),
-                    style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
-                )
-                val spentColor = when {
-                    weekly.isOverBudget -> SaveBetterTheme.colors.brick
-                    weekly.isWarning -> SaveBetterTheme.colors.gold
-                    else -> SaveBetterTheme.colors.ink
-                }
-                Text(
-                    text = CurrencyFormatter.formatMinor(weekly.spentAmountMinor, selectedLanguage),
-                    style = SaveBetterTheme.typography.amountLarge,
-                    color = spentColor,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                )
+            val spentColor = when {
+                weekly.isOverBudget -> SaveBetterTheme.colors.brick
+                weekly.isWarning -> SaveBetterTheme.colors.gold
+                else -> SaveBetterTheme.colors.ink
             }
+            LedgerLabelValueRow(
+                label = stringResource(R.string.weekly_spent_label),
+                value = CurrencyFormatter.formatMinor(weekly.spentAmountMinor, selectedLanguage),
+                valueColor = spentColor,
+                valueStyle = SaveBetterTheme.typography.amountLarge.copy(fontSize = 24.sp)
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Progress Bar
             ProgressTrack(
                 progress = weekly.percentage,
                 height = 8.dp
@@ -213,24 +195,12 @@ private fun WeeklyDetailContent(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.weekly_remaining_label),
-                    style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
-                )
-                val remainingColor = if (weekly.isOverBudget) SaveBetterTheme.colors.brick else SaveBetterTheme.colors.moss
-                Text(
-                    text = CurrencyFormatter.formatMinor(weekly.remainingAmountMinor, selectedLanguage),
-                    style = SaveBetterTheme.typography.amountMedium,
-                    color = remainingColor,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            val remainingColor = if (weekly.isOverBudget) SaveBetterTheme.colors.brick else SaveBetterTheme.colors.moss
+            LedgerLabelValueRow(
+                label = stringResource(R.string.weekly_remaining_label),
+                value = CurrencyFormatter.formatMinor(weekly.remainingAmountMinor, selectedLanguage),
+                valueColor = remainingColor
+            )
         }
 
         // 2. Pace Warning Banner

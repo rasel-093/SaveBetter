@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -84,14 +85,16 @@ fun AlertBanner(
             .background(bgColor)
             .border(1.dp, borderColor, shape)
             .semantics(mergeDescendants = true) {}
-            .padding(14.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(12.dp),
+        verticalAlignment = Alignment.Top
     ) {
         Icon(
             imageVector = icon ?: defaultIcon,
             contentDescription = null,
             tint = contentColor,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier
+                .size(20.dp)
+                .padding(top = 1.dp)
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -103,14 +106,18 @@ fun AlertBanner(
                     style = SaveBetterTheme.typography.body,
                     fontWeight = FontWeight.Bold,
                     color = contentColor,
-                    fontSize = 13.sp
+                    fontSize = 13.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             Text(
                 text = message,
                 style = SaveBetterTheme.typography.caption,
                 color = contentColor,
-                lineHeight = 16.sp
+                lineHeight = 16.sp,
+                maxLines = 6,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

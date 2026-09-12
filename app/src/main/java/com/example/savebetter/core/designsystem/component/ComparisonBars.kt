@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
@@ -43,12 +45,18 @@ fun ComparisonBars(
                 Text(
                     text = primaryItem.label,
                     style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
+                    color = SaveBetterTheme.colors.textMuted,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = primaryItem.amountFormatted,
                     style = SaveBetterTheme.typography.amountSmall,
-                    color = SaveBetterTheme.colors.ink
+                    color = SaveBetterTheme.colors.ink,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -71,12 +79,18 @@ fun ComparisonBars(
                 Text(
                     text = secondaryItem.label,
                     style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
+                    color = SaveBetterTheme.colors.textMuted,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = secondaryItem.amountFormatted,
                     style = SaveBetterTheme.typography.amountSmall,
-                    color = SaveBetterTheme.colors.textMuted
+                    color = SaveBetterTheme.colors.textMuted,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))

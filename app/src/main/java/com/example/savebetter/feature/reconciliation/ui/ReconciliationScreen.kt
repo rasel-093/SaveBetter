@@ -51,11 +51,9 @@ import com.example.savebetter.core.designsystem.component.AlertBanner
 import com.example.savebetter.core.designsystem.component.AlertBannerType
 import com.example.savebetter.core.designsystem.component.AppTopBar
 import com.example.savebetter.core.designsystem.component.LedgerCard
-import com.example.savebetter.core.designsystem.component.SyncStatus
-import com.example.savebetter.core.designsystem.component.SyncStatusPill
+import com.example.savebetter.core.designsystem.component.LedgerLabelValueRow
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 import com.example.savebetter.core.domain.model.ReconciliationStatus
-import com.example.savebetter.core.domain.model.SyncState
 import com.example.savebetter.feature.reconciliation.ReconciliationViewModel
 
 /**
@@ -81,12 +79,6 @@ fun ReconciliationScreen(
         }
     }
 
-    val syncStatus = uiState.liveSyncStatus ?: when (uiState.syncStatus) {
-        SyncState.SYNCED -> SyncStatus.Synced
-        SyncState.SYNCING -> SyncStatus.Syncing
-        SyncState.PENDING -> SyncStatus.Offline
-        SyncState.ERROR -> SyncStatus.Error
-    }
 
     Scaffold(
         topBar = {
@@ -115,7 +107,6 @@ fun ReconciliationScreen(
                             modifier = Modifier.size(22.dp)
                         )
                     }
-                    SyncStatusPill(status = syncStatus)
                 }
             )
         },
@@ -155,74 +146,46 @@ fun ReconciliationScreen(
             }
 
             // 3. Breakdown Card (Screen 07 core calculation)
-            LedgerCard(modifier = Modifier.fillMaxWidth()) {
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.reconciliation_net_outflow_label),
-                            style = SaveBetterTheme.typography.caption,
-                            color = SaveBetterTheme.colors.textMuted
-                        )
-                        Text(
-                            text = uiState.formattedNetOutflow,
-                            style = SaveBetterTheme.typography.amountMedium,
-                            color = SaveBetterTheme.colors.ink
-                        )
-                    }
+            LedgerCard {
+                LedgerLabelValueRow(
+                    label = stringResource(R.string.reconciliation_net_outflow_label),
+                    value = uiState.formattedNetOutflow
+                )
 
-                    HorizontalDivider(
-                        color = SaveBetterTheme.colors.paperLine,
-                        thickness = 1.dp
-                    )
+                Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.reconciliation_app_logged_label),
-                            style = SaveBetterTheme.typography.caption,
-                            color = SaveBetterTheme.colors.textMuted
-                        )
-                        Text(
-                            text = uiState.formattedAppLogged,
-                            style = SaveBetterTheme.typography.amountMedium,
-                            color = SaveBetterTheme.colors.moss
-                        )
-                    }
+                HorizontalDivider(
+                    color = SaveBetterTheme.colors.paperLine,
+                    thickness = 1.dp
+                )
 
-                    HorizontalDivider(
-                        color = SaveBetterTheme.colors.paperLineStrong,
-                        thickness = 1.dp
-                    )
+                Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.reconciliation_unrecorded_label),
-                            style = SaveBetterTheme.typography.body.copy(fontWeight = FontWeight.SemiBold),
-                            color = SaveBetterTheme.colors.ink
-                        )
-                        Text(
-                            text = uiState.formattedUnrecorded,
-                            style = SaveBetterTheme.typography.amountLarge,
-                            color = when (uiState.summary.status) {
-                                ReconciliationStatus.UNRECORDED_EXPENSE -> SaveBetterTheme.colors.brick
-                                ReconciliationStatus.BALANCED -> SaveBetterTheme.colors.moss
-                                ReconciliationStatus.DATA_MISMATCH -> SaveBetterTheme.colors.amber
-                            },
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+                LedgerLabelValueRow(
+                    label = stringResource(R.string.reconciliation_app_logged_label),
+                    value = uiState.formattedAppLogged,
+                    valueColor = SaveBetterTheme.colors.moss
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                HorizontalDivider(
+                    color = SaveBetterTheme.colors.paperLineStrong,
+                    thickness = 1.dp
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                LedgerLabelValueRow(
+                    label = stringResource(R.string.reconciliation_unrecorded_label),
+                    value = uiState.formattedUnrecorded,
+                    valueColor = when (uiState.summary.status) {
+                        ReconciliationStatus.UNRECORDED_EXPENSE -> SaveBetterTheme.colors.brick
+                        ReconciliationStatus.BALANCED -> SaveBetterTheme.colors.moss
+                        ReconciliationStatus.DATA_MISMATCH -> SaveBetterTheme.colors.amber
+                    },
+                    valueStyle = SaveBetterTheme.typography.amountLarge
+                )
             }
 
             // 4. Status Banner

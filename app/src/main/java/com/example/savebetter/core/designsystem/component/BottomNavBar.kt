@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
@@ -98,7 +99,9 @@ fun BottomNavBar(
                     style = SaveBetterTheme.typography.caption,
                     color = tint,
                     fontSize = 10.sp,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    softWrap = false
                 )
             }
         }

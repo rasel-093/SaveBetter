@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -317,21 +318,27 @@ private fun AmountDisplayCard(
                 .padding(vertical = 18.dp, horizontal = 20.dp),
             contentAlignment = Alignment.Center
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
                     text = "৳",
                     style = SaveBetterTheme.typography.amountLarge,
                     color = SaveBetterTheme.colors.gold,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp
+                    fontSize = 28.sp
                 )
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = displayDigits,
                     style = SaveBetterTheme.typography.amountLarge,
                     color = SaveBetterTheme.colors.ink,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 36.sp
+                    fontSize = 30.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }

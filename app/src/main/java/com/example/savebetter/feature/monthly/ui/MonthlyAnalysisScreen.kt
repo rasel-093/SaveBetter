@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -37,9 +36,12 @@ import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.component.AlertBanner
 import com.example.savebetter.core.designsystem.component.AlertBannerType
 import com.example.savebetter.core.designsystem.component.AppTopBar
+import com.example.savebetter.core.designsystem.component.BottomNavBar
+import com.example.savebetter.core.designsystem.component.BottomNavDestination
 import com.example.savebetter.core.designsystem.component.ComparisonBars
 import com.example.savebetter.core.designsystem.component.DonutChart
 import com.example.savebetter.core.designsystem.component.LedgerCard
+import com.example.savebetter.core.designsystem.component.LedgerLabelValueRow
 import com.example.savebetter.core.designsystem.component.ProgressTrack
 import com.example.savebetter.core.designsystem.component.SectionLabel
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
@@ -66,10 +68,10 @@ import androidx.compose.material3.OutlinedButton
 @Composable
 fun MonthlyAnalysisScreen(
     userId: String,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
     onReconcileClick: () -> Unit = {},
+    onDestinationSelected: ((BottomNavDestination) -> Unit)? = null,
     viewModel: MonthlyAnalysisViewModel = hiltViewModel()
 ) {
     LaunchedEffect(userId, selectedLanguage) {
@@ -84,7 +86,6 @@ fun MonthlyAnalysisScreen(
             AppTopBar(
                 title = uiState.monthTitleText.ifBlank { stringResource(R.string.monthly_analysis_title) },
                 subtitle = stringResource(R.string.monthly_tag_subtitle),
-                onBackClick = onBackClick,
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
@@ -110,6 +111,14 @@ fun MonthlyAnalysisScreen(
                     }
                 }
             )
+        },
+        bottomBar = {
+            if (onDestinationSelected != null) {
+                BottomNavBar(
+                    selectedDestination = BottomNavDestination.Monthly,
+                    onDestinationSelected = onDestinationSelected
+                )
+            }
         },
         containerColor = SaveBetterTheme.colors.paper
     ) { innerPadding ->
@@ -148,38 +157,31 @@ private fun MonthlyAnalysisContent(
             .fillMaxSize()
             .padding(innerPadding)
             .verticalScroll(scrollState)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .navigationBarsPadding(),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         // 1. Monthly Target & Savings Card
         LedgerCard {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${stringResource(R.string.label_budget)}: ${CurrencyFormatter.formatMinor(uiState.targetAmountMinor, selectedLanguage)}",
-                    style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
-                )
-                val spentColor = when {
-                    uiState.isOverBudget -> SaveBetterTheme.colors.brick
-                    uiState.isWarning -> SaveBetterTheme.colors.gold
-                    else -> SaveBetterTheme.colors.ink
-                }
-                Text(
-                    text = CurrencyFormatter.formatMinor(uiState.spentAmountMinor, selectedLanguage),
-                    style = SaveBetterTheme.typography.amountMedium,
-                    color = spentColor,
-                    fontWeight = FontWeight.Bold
-                )
+            LedgerLabelValueRow(
+                label = stringResource(R.string.label_budget),
+                value = CurrencyFormatter.formatMinor(uiState.targetAmountMinor, selectedLanguage)
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            val spentColor = when {
+                uiState.isOverBudget -> SaveBetterTheme.colors.brick
+                uiState.isWarning -> SaveBetterTheme.colors.gold
+                else -> SaveBetterTheme.colors.ink
             }
+            LedgerLabelValueRow(
+                label = stringResource(R.string.label_spent),
+                value = CurrencyFormatter.formatMinor(uiState.spentAmountMinor, selectedLanguage),
+                valueColor = spentColor
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Progress Bar
             ProgressTrack(
                 progress = uiState.budgetProgress,
                 height = 8.dp
@@ -187,28 +189,16 @@ private fun MonthlyAnalysisContent(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${stringResource(R.string.dashboard_savings_goal)}: ${CurrencyFormatter.formatMinor(uiState.savingGoalMinor, selectedLanguage)}",
-                    style = SaveBetterTheme.typography.caption,
-                    color = SaveBetterTheme.colors.textMuted
-                )
-                val isGoalPossible = uiState.spentAmountMinor <= uiState.targetAmountMinor
-                Text(
-                    text = if (isGoalPossible) {
-                        CurrencyFormatter.formatMinor(uiState.savingGoalMinor, selectedLanguage)
-                    } else {
-                        CurrencyFormatter.formatMinor(0L, selectedLanguage)
-                    },
-                    style = SaveBetterTheme.typography.amountMedium,
-                    color = if (isGoalPossible) SaveBetterTheme.colors.moss else SaveBetterTheme.colors.brick,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            val isGoalPossible = uiState.spentAmountMinor <= uiState.targetAmountMinor
+            LedgerLabelValueRow(
+                label = stringResource(R.string.dashboard_savings_goal),
+                value = if (isGoalPossible) {
+                    CurrencyFormatter.formatMinor(uiState.savingGoalMinor, selectedLanguage)
+                } else {
+                    CurrencyFormatter.formatMinor(0L, selectedLanguage)
+                },
+                valueColor = if (isGoalPossible) SaveBetterTheme.colors.moss else SaveBetterTheme.colors.brick
+            )
 
             Spacer(modifier = Modifier.height(10.dp))
             HorizontalDivider(color = SaveBetterTheme.colors.paperLine, thickness = 1.dp)

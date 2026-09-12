@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,14 +35,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -78,6 +77,7 @@ fun HomeScreen(
     onWeeklyDetailClick: () -> Unit = {},
     onMonthlyAnalysisClick: () -> Unit = {},
     onReconciliationClick: () -> Unit = {},
+    selectedBottomNavDestination: BottomNavDestination = BottomNavDestination.Home,
     onDestinationSelected: (BottomNavDestination) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -86,7 +86,6 @@ fun HomeScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
-    var selectedNavDestination by remember { mutableStateOf(BottomNavDestination.Home) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -105,15 +104,8 @@ fun HomeScreen(
         },
         bottomBar = {
             BottomNavBar(
-                selectedDestination = selectedNavDestination,
-                onDestinationSelected = { dest ->
-                    selectedNavDestination = dest
-                    when (dest) {
-                        BottomNavDestination.Weekly -> onWeeklyDetailClick()
-                        BottomNavDestination.Monthly -> onMonthlyAnalysisClick()
-                        else -> onDestinationSelected(dest)
-                    }
-                }
+                selectedDestination = selectedBottomNavDestination,
+                onDestinationSelected = onDestinationSelected
             )
         },
         floatingActionButton = {
@@ -252,31 +244,16 @@ private fun HomeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.dashboard_daily_limit),
-                        style = SaveBetterTheme.typography.caption,
-                        color = SaveBetterTheme.colors.textMuted
-                    )
-                    Text(
-                        text = CurrencyFormatter.formatMinor(uiState.weeklySummary.dailyLimitMinor, selectedLanguage),
-                        style = SaveBetterTheme.typography.amountSmall,
-                        color = SaveBetterTheme.colors.ink
-                    )
-                }
+                DashboardSubMetricColumn(
+                    label = stringResource(R.string.dashboard_daily_limit),
+                    value = CurrencyFormatter.formatMinor(uiState.weeklySummary.dailyLimitMinor, selectedLanguage)
+                )
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = stringResource(R.string.dashboard_today_spent),
-                        style = SaveBetterTheme.typography.caption,
-                        color = SaveBetterTheme.colors.textMuted
-                    )
-                    Text(
-                        text = CurrencyFormatter.formatMinor(uiState.weeklySummary.dailySpentMinor, selectedLanguage),
-                        style = SaveBetterTheme.typography.amountSmall,
-                        color = SaveBetterTheme.colors.ink
-                    )
-                }
+                DashboardSubMetricColumn(
+                    label = stringResource(R.string.dashboard_today_spent),
+                    value = CurrencyFormatter.formatMinor(uiState.weeklySummary.dailySpentMinor, selectedLanguage),
+                    horizontalAlignment = Alignment.End
+                )
             }
         }
 
@@ -334,51 +311,29 @@ private fun HomeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.dashboard_savings_goal),
-                        style = SaveBetterTheme.typography.caption,
-                        color = SaveBetterTheme.colors.textMuted
-                    )
-                    Text(
-                        text = CurrencyFormatter.formatMinor(uiState.monthlySummary.savingGoalMinor, selectedLanguage),
-                        style = SaveBetterTheme.typography.amountSmall,
-                        color = SaveBetterTheme.colors.moss,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                DashboardSubMetricColumn(
+                    label = stringResource(R.string.dashboard_savings_goal),
+                    value = CurrencyFormatter.formatMinor(uiState.monthlySummary.savingGoalMinor, selectedLanguage),
+                    valueColor = SaveBetterTheme.colors.moss,
+                    valueFontWeight = FontWeight.Bold
+                )
 
-                Column(
+                DashboardSubMetricColumn(
+                    label = stringResource(R.string.dashboard_cash_in_hand),
+                    value = CurrencyFormatter.formatMinor(uiState.monthlySummary.handRemainingMinor, selectedLanguage),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .clickable(onClick = onReconciliationClick)
                         .padding(horizontal = 4.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.dashboard_cash_in_hand),
-                        style = SaveBetterTheme.typography.caption,
-                        color = SaveBetterTheme.colors.textMuted
-                    )
-                    Text(
-                        text = CurrencyFormatter.formatMinor(uiState.monthlySummary.handRemainingMinor, selectedLanguage),
-                        style = SaveBetterTheme.typography.amountSmall,
-                        color = SaveBetterTheme.colors.ink
-                    )
-                }
+                )
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = stringResource(R.string.dashboard_projected_spent),
-                        style = SaveBetterTheme.typography.caption,
-                        color = SaveBetterTheme.colors.textMuted
-                    )
-                    Text(
-                        text = CurrencyFormatter.formatMinor(uiState.monthlySummary.projectedSpentMinor, selectedLanguage),
-                        style = SaveBetterTheme.typography.amountSmall,
-                        color = SaveBetterTheme.colors.inkSoft
-                    )
-                }
+                DashboardSubMetricColumn(
+                    label = stringResource(R.string.dashboard_projected_spent),
+                    value = CurrencyFormatter.formatMinor(uiState.monthlySummary.projectedSpentMinor, selectedLanguage),
+                    horizontalAlignment = Alignment.End,
+                    valueColor = SaveBetterTheme.colors.inkSoft
+                )
             }
         }
 
@@ -448,5 +403,38 @@ private fun HomeContent(
         }
 
         Spacer(modifier = Modifier.height(40.dp))
+    }
+}
+
+@Composable
+private fun RowScope.DashboardSubMetricColumn(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    valueColor: androidx.compose.ui.graphics.Color = SaveBetterTheme.colors.ink,
+    valueFontWeight: FontWeight? = null
+) {
+    Column(
+        modifier = modifier
+            .weight(1f)
+            .padding(horizontal = 2.dp),
+        horizontalAlignment = horizontalAlignment
+    ) {
+        Text(
+            text = label,
+            style = SaveBetterTheme.typography.caption,
+            color = SaveBetterTheme.colors.textMuted,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = value,
+            style = SaveBetterTheme.typography.amountSmall,
+            color = valueColor,
+            fontWeight = valueFontWeight ?: FontWeight.SemiBold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
