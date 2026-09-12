@@ -10,6 +10,7 @@ import com.example.savebetter.core.domain.repository.DebtCreditRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import com.example.savebetter.core.sync.SyncManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +20,8 @@ import javax.inject.Singleton
 @Singleton
 class DebtCreditRepositoryImpl @Inject constructor(
     private val debtCreditDao: DebtCreditDao,
-    private val remoteDataSource: DebtCreditRemoteDataSource
+    private val remoteDataSource: DebtCreditRemoteDataSource,
+    private val syncManager: SyncManager? = null
 ) : DebtCreditRepository {
 
     override fun observeDebtsAndCredits(userId: String): Flow<List<DebtCredit>> =
@@ -34,6 +36,8 @@ class DebtCreditRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadDebtCredit(pending).onSuccess {
             debtCreditDao.upsertDebtCredit(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -43,6 +47,8 @@ class DebtCreditRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadDebtCredit(pending).onSuccess {
             debtCreditDao.upsertDebtCredit(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -52,6 +58,8 @@ class DebtCreditRepositoryImpl @Inject constructor(
         debtCreditDao.getDebtCreditById(id)?.let { entity ->
             remoteDataSource.uploadDebtCredit(entity.toDomain()).onSuccess {
                 debtCreditDao.updateSettled(id, isSettled, updatedAt = now, syncStatus = SyncState.SYNCED)
+            }.onFailure {
+                syncManager?.requestImmediateSync()
             }
         }
     }
@@ -63,6 +71,8 @@ class DebtCreditRepositoryImpl @Inject constructor(
 
         remoteDataSource.deleteDebtCredit(item.userId, id).onSuccess {
             debtCreditDao.softDeleteDebtCredit(id, deletedAt = now, updatedAt = now, syncStatus = SyncState.SYNCED)
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 

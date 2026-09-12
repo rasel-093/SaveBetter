@@ -318,15 +318,9 @@ fun SettingsScreen(
                                 color = SaveBetterTheme.colors.ink
                             )
 
-                            if (uiState.isSyncing) {
-                                SyncStatusPill(
-                                    status = SyncStatus.Syncing
-                                )
-                            } else {
-                                SyncStatusPill(
-                                    status = SyncStatus.Synced
-                                )
-                            }
+                            SyncStatusPill(
+                                status = uiState.syncStatus
+                            )
                         }
 
                         HorizontalDivider(color = SaveBetterTheme.colors.paperLine)

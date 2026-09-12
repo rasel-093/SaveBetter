@@ -25,7 +25,6 @@ class FirebaseExpenseRemoteDataSource @Inject constructor(
         val querySnapshot = firestore.collection("users")
             .document(userId)
             .collection("expenses")
-            .whereEqualTo("isDeleted", false)
             .get()
             .await()
 
@@ -33,6 +32,7 @@ class FirebaseExpenseRemoteDataSource @Inject constructor(
             doc.toObject(ExpenseFirestoreDto::class.java)?.toDomain()
         }
     }
+
 
     override suspend fun uploadExpense(expense: Expense): Result<Unit> = runCatching {
         val dto = expense.toFirestoreDto()

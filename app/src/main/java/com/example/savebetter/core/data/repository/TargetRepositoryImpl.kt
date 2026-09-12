@@ -14,6 +14,7 @@ import com.example.savebetter.core.domain.repository.TargetRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import com.example.savebetter.core.sync.SyncManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,7 +26,8 @@ class TargetRepositoryImpl @Inject constructor(
     private val weeklyTargetDao: WeeklyTargetDao,
     private val monthlyTargetDao: MonthlyTargetDao,
     private val salaryHandRecordDao: SalaryHandRecordDao,
-    private val remoteDataSource: TargetRemoteDataSource
+    private val remoteDataSource: TargetRemoteDataSource,
+    private val syncManager: SyncManager? = null
 ) : TargetRepository {
 
     override fun observeWeeklyTargets(userId: String): Flow<List<WeeklyTarget>> =
@@ -40,6 +42,8 @@ class TargetRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadWeeklyTarget(pending).onSuccess {
             weeklyTargetDao.upsertWeeklyTarget(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -55,6 +59,8 @@ class TargetRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadMonthlyTarget(pending).onSuccess {
             monthlyTargetDao.upsertMonthlyTarget(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -70,6 +76,8 @@ class TargetRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadSalaryHandRecord(pending).onSuccess {
             salaryHandRecordDao.upsertSalaryHandRecord(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 

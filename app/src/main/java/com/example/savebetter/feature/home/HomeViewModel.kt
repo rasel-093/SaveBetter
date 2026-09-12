@@ -11,6 +11,7 @@ import com.example.savebetter.core.domain.repository.ExpenseRepository
 import com.example.savebetter.core.domain.usecase.dashboard.GetMonthlySummaryUseCase
 import com.example.savebetter.core.domain.usecase.dashboard.GetWeeklySummaryUseCase
 import com.example.savebetter.core.domain.usecase.profile.GetUserProfileUseCase
+import com.example.savebetter.core.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDate
 import java.time.LocalTime
@@ -33,7 +35,8 @@ class HomeViewModel @Inject constructor(
     private val getWeeklySummaryUseCase: GetWeeklySummaryUseCase,
     private val getMonthlySummaryUseCase: GetMonthlySummaryUseCase,
     private val expenseRepository: ExpenseRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val syncManager: SyncManager? = null
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
@@ -103,6 +106,8 @@ class HomeViewModel @Inject constructor(
                         monthYearText = monthYear,
                         isLoading = false
                     )
+                }.combine(syncManager?.syncStatus ?: flowOf(null)) { state, liveStatus ->
+                    if (liveStatus != null) state.copy(syncStatus = liveStatus) else state
                 }
             }
         }

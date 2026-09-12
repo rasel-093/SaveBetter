@@ -25,7 +25,6 @@ class FirebaseCategoryRemoteDataSource @Inject constructor(
         val querySnapshot = firestore.collection("users")
             .document(userId)
             .collection("categories")
-            .whereEqualTo("isDeleted", false)
             .get()
             .await()
 
@@ -33,6 +32,7 @@ class FirebaseCategoryRemoteDataSource @Inject constructor(
             doc.toObject(CategoryFirestoreDto::class.java)?.toDomain()
         }
     }
+
 
     override suspend fun uploadCategory(category: Category): Result<Unit> = runCatching {
         val dto = category.toFirestoreDto()

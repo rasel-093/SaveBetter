@@ -23,7 +23,6 @@ class FirebaseDebtCreditRemoteDataSource @Inject constructor(
         val querySnapshot = firestore.collection("users")
             .document(userId)
             .collection("debts")
-            .whereEqualTo("isDeleted", false)
             .get()
             .await()
 

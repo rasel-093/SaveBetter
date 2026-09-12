@@ -20,6 +20,7 @@ data class SettingsUiState(
     val notifyReconciliation: Boolean = true,
     val currentLanguage: AppLanguage = AppLanguage.ENGLISH,
     val isSyncing: Boolean = false,
+    val syncStatus: com.example.savebetter.core.designsystem.component.SyncStatus = com.example.savebetter.core.designsystem.component.SyncStatus.Synced,
     val syncMessage: String? = null,
     val categories: List<Category> = emptyList(),
     val showEditProfileDialog: Boolean = false,

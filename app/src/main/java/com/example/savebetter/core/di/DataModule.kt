@@ -15,9 +15,11 @@ import com.example.savebetter.core.data.repository.DebtCreditRepositoryImpl
 import com.example.savebetter.core.data.repository.ExpenseRepositoryImpl
 import com.example.savebetter.core.data.repository.TargetRepositoryImpl
 import com.example.savebetter.core.data.repository.UserProfileRepositoryImpl
+import com.example.savebetter.core.data.repository.SyncRepositoryImpl
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.DebtCreditRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
+import com.example.savebetter.core.domain.repository.SyncRepository
 import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.repository.UserProfileRepository
 import dagger.Binds
@@ -67,6 +69,12 @@ abstract class DataModule {
     abstract fun bindDebtCreditRepository(
         impl: DebtCreditRepositoryImpl
     ): DebtCreditRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSyncRepository(
+        impl: SyncRepositoryImpl
+    ): SyncRepository
 
     // ── Remote Data Source Bindings ──────────────────────────────────────────
     @Binds

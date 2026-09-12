@@ -19,6 +19,8 @@ import com.example.savebetter.core.domain.repository.UserProfileRepository
 import com.example.savebetter.core.domain.usecase.auth.DeleteAccountUseCase
 import com.example.savebetter.core.i18n.AppLanguage
 import com.example.savebetter.core.notification.ReconciliationReminderScheduler
+import com.example.savebetter.core.designsystem.component.SyncStatus
+import com.example.savebetter.core.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,7 +48,8 @@ class SettingsViewModel @Inject constructor(
     private val expenseRepository: ExpenseRepository,
     private val targetRepository: TargetRepository,
     private val debtCreditRepository: DebtCreditRepository,
-    private val deleteAccountUseCase: DeleteAccountUseCase
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val syncManager: SyncManager? = null
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
@@ -167,6 +170,8 @@ class SettingsViewModel @Inject constructor(
             reauthError = dialogs.reauthError,
             userMessage = dialogs.userMessage
         )
+    }.combine(syncManager?.syncStatus ?: flowOf(SyncStatus.Synced)) { state, liveStatus ->
+        state.copy(syncStatus = liveStatus, isSyncing = state.isSyncing || liveStatus == SyncStatus.Syncing)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -244,15 +249,21 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun syncNow() {
-        val uid = activeUserId.value ?: return
         viewModelScope.launch {
             dialogStates.update { it.copy(isSyncing = true, syncMessage = null) }
-            runCatching {
-                userProfileRepository.syncUserProfile(uid)
-                categoryRepository.syncPendingCategories(uid)
-                expenseRepository.syncPendingExpenses(uid)
-                targetRepository.syncPendingTargets(uid)
-                debtCreditRepository.syncPendingDebtsAndCredits(uid)
+            if (syncManager != null) {
+                syncManager.syncNow()
+            } else {
+                val uid = activeUserId.value
+                if (uid != null) {
+                    runCatching {
+                        userProfileRepository.syncUserProfile(uid)
+                        categoryRepository.syncPendingCategories(uid)
+                        expenseRepository.syncPendingExpenses(uid)
+                        targetRepository.syncPendingTargets(uid)
+                        debtCreditRepository.syncPendingDebtsAndCredits(uid)
+                    }
+                }
             }
             dialogStates.update { it.copy(isSyncing = false) }
         }
@@ -261,6 +272,7 @@ class SettingsViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             dialogStates.update { it.copy(showLogout = false) }
+            syncManager?.cancelAllSync()
             authRepository.signOut()
         }
     }

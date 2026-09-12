@@ -18,6 +18,7 @@ import com.example.savebetter.core.domain.usecase.expense.AddExpenseUseCase
 import com.example.savebetter.core.domain.usecase.i18n.GetLanguageUseCase
 import com.example.savebetter.core.i18n.CurrencyFormatter
 import com.example.savebetter.core.i18n.NumeralConverter
+import com.example.savebetter.core.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,8 @@ class ReconciliationViewModel @Inject constructor(
     private val getLanguageUseCase: GetLanguageUseCase,
     private val getReconciliationSummaryUseCase: GetReconciliationSummaryUseCase,
     private val saveSalaryHandRecordUseCase: SaveSalaryHandRecordUseCase,
-    private val addExpenseUseCase: AddExpenseUseCase
+    private val addExpenseUseCase: AddExpenseUseCase,
+    private val syncManager: SyncManager? = null
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
@@ -192,6 +194,8 @@ class ReconciliationViewModel @Inject constructor(
                     userMessageResId = query.userMessageResId
                 )
             }
+        }.combine(syncManager?.syncStatus ?: flowOf(null)) { state, liveStatus ->
+            state.copy(liveSyncStatus = liveStatus)
         }
     }.stateIn(
         scope = viewModelScope,

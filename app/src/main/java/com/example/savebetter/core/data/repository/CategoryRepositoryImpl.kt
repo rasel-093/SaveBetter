@@ -10,6 +10,7 @@ import com.example.savebetter.core.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import com.example.savebetter.core.sync.SyncManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +20,8 @@ import javax.inject.Singleton
 @Singleton
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryDao: CategoryDao,
-    private val remoteDataSource: CategoryRemoteDataSource
+    private val remoteDataSource: CategoryRemoteDataSource,
+    private val syncManager: SyncManager? = null
 ) : CategoryRepository {
 
     override fun observeCategories(userId: String): Flow<List<Category>> =
@@ -34,6 +36,8 @@ class CategoryRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadCategory(pending).onSuccess {
             categoryDao.updateCategory(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -44,6 +48,8 @@ class CategoryRepositoryImpl @Inject constructor(
         for (category in defaults) {
             remoteDataSource.uploadCategory(category).onSuccess {
                 categoryDao.updateCategory(category.copy(syncStatus = SyncState.SYNCED).toEntity())
+            }.onFailure {
+                syncManager?.requestImmediateSync()
             }
         }
     }
@@ -55,6 +61,8 @@ class CategoryRepositoryImpl @Inject constructor(
 
         remoteDataSource.deleteCategory(category.userId, id).onSuccess {
             categoryDao.softDeleteCategory(id, updatedAt = now, syncStatus = SyncState.SYNCED)
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 

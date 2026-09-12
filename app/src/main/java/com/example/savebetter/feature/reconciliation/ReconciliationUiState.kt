@@ -32,6 +32,7 @@ data class ReconciliationUiState(
     val isSaving: Boolean = false,
     val showQuickLogDialog: Boolean = false,
     val syncStatus: SyncState = SyncState.SYNCED,
+    val liveSyncStatus: com.example.savebetter.core.designsystem.component.SyncStatus? = null,
     val isCurrentMonth: Boolean = true,
     @StringRes val userMessageResId: Int? = null
 )

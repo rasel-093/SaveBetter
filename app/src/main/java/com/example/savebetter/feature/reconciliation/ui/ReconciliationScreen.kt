@@ -81,7 +81,7 @@ fun ReconciliationScreen(
         }
     }
 
-    val syncStatus = when (uiState.syncStatus) {
+    val syncStatus = uiState.liveSyncStatus ?: when (uiState.syncStatus) {
         SyncState.SYNCED -> SyncStatus.Synced
         SyncState.SYNCING -> SyncStatus.Syncing
         SyncState.PENDING -> SyncStatus.Offline

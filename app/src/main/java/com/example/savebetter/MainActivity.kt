@@ -35,7 +35,9 @@ import com.example.savebetter.feature.auth.ui.AuthenticatedPlaceholderScreen
 import com.example.savebetter.feature.auth.ui.SaveBetterColors
 import com.example.savebetter.navigation.AuthNavHost
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
+import com.example.savebetter.core.sync.SyncManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * Single Activity host for the SaveBetter application.
@@ -46,9 +48,15 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var syncManager: SyncManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Schedule periodic background sync (15 min, network connected)
+        syncManager.schedulePeriodicSync()
 
         // Schedule WorkManager month-end reconciliation reminder
         com.example.savebetter.core.notification.ReconciliationReminderScheduler.scheduleMonthEndReminder(applicationContext)
@@ -261,6 +269,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Trigger immediate background sync on app return to foreground
+        syncManager.requestImmediateSync()
     }
 }
 

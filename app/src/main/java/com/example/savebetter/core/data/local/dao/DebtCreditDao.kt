@@ -20,11 +20,17 @@ interface DebtCreditDao {
     @Query("SELECT * FROM debt_credits WHERE id = :id AND isDeleted = 0 LIMIT 1")
     suspend fun getDebtCreditById(id: String): DebtCreditEntity?
 
+    @Query("SELECT * FROM debt_credits WHERE id = :id LIMIT 1")
+    suspend fun getDebtCreditByIdIncludingDeleted(id: String): DebtCreditEntity?
+
     @Query("SELECT * FROM debt_credits WHERE userId = :userId AND syncStatus != 'SYNCED'")
     suspend fun getPendingDebtsAndCredits(userId: String): List<DebtCreditEntity>
 
     @Upsert
     suspend fun upsertDebtCredit(item: DebtCreditEntity)
+
+    @Query("UPDATE debt_credits SET syncStatus = :syncStatus WHERE id = :id")
+    suspend fun updateSyncStatus(id: String, syncStatus: SyncState)
 
     @Upsert
     suspend fun upsertDebtsAndCredits(items: List<DebtCreditEntity>)
@@ -37,5 +43,12 @@ interface DebtCreditDao {
 
     @Query("DELETE FROM debt_credits WHERE userId = :userId")
     suspend fun deleteDebtCreditsByUserId(userId: String)
+
+    @Query("SELECT * FROM debt_credits WHERE userId = :userId")
+    suspend fun getAllDebtsAndCredits(userId: String): List<DebtCreditEntity>
+
+    @Query("SELECT COUNT(*) FROM debt_credits WHERE userId = :userId AND syncStatus != 'SYNCED'")
+    fun observePendingCount(userId: String): Flow<Int>
 }
+
 

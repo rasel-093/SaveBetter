@@ -10,6 +10,7 @@ import com.example.savebetter.core.domain.repository.ExpenseRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import com.example.savebetter.core.sync.SyncManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class ExpenseRepositoryImpl @Inject constructor(
     private val expenseDao: ExpenseDao,
-    private val remoteDataSource: ExpenseRemoteDataSource
+    private val remoteDataSource: ExpenseRemoteDataSource,
+    private val syncManager: SyncManager? = null
 ) : ExpenseRepository {
 
     override fun observeExpenses(userId: String): Flow<List<Expense>> =
@@ -46,7 +48,8 @@ class ExpenseRepositoryImpl @Inject constructor(
         remoteDataSource.uploadExpense(pending).onSuccess {
             expenseDao.updateExpense(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
         }.onFailure {
-            // Keep PENDING for background SyncWorker
+            // Keep PENDING and schedule background sync
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -56,6 +59,8 @@ class ExpenseRepositoryImpl @Inject constructor(
 
         remoteDataSource.uploadExpense(pending).onSuccess {
             expenseDao.updateExpense(pending.copy(syncStatus = SyncState.SYNCED).toEntity())
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -66,6 +71,8 @@ class ExpenseRepositoryImpl @Inject constructor(
 
         remoteDataSource.deleteExpense(expense.userId, id).onSuccess {
             expenseDao.softDeleteExpense(id, deletedAt = now, updatedAt = now, syncStatus = SyncState.SYNCED)
+        }.onFailure {
+            syncManager?.requestImmediateSync()
         }
     }
 

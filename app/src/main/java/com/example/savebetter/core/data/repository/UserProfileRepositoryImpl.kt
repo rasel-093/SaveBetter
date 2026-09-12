@@ -10,6 +10,7 @@ import com.example.savebetter.core.domain.repository.UserProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
+import com.example.savebetter.core.sync.SyncManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class UserProfileRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
-    private val remoteDataSource: UserProfileRemoteDataSource
+    private val remoteDataSource: UserProfileRemoteDataSource,
+    private val syncManager: SyncManager? = null
 ) : UserProfileRepository {
 
     override fun observeUserProfile(userId: String): Flow<UserProfile?> =
@@ -37,7 +39,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         remoteDataSource.saveUserProfile(pending).onSuccess {
             userDao.updateSyncStatus(profile.id, SyncState.SYNCED, Instant.now())
         }.onFailure {
-            userDao.updateSyncStatus(profile.id, SyncState.ERROR, Instant.now())
+            syncManager?.requestImmediateSync()
         }
     }
 
@@ -47,6 +49,8 @@ class UserProfileRepositoryImpl @Inject constructor(
         getUserProfile(userId)?.let { profile ->
             remoteDataSource.saveUserProfile(profile).onSuccess {
                 userDao.updateSyncStatus(userId, SyncState.SYNCED, Instant.now())
+            }.onFailure {
+                syncManager?.requestImmediateSync()
             }
         }
     }

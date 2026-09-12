@@ -23,6 +23,9 @@ interface CategoryDao {
     @Query("SELECT * FROM categories WHERE id = :id AND isDeleted = 0 LIMIT 1")
     suspend fun getCategoryById(id: String): CategoryEntity?
 
+    @Query("SELECT * FROM categories WHERE id = :id LIMIT 1")
+    suspend fun getCategoryByIdIncludingDeleted(id: String): CategoryEntity?
+
     @Query("SELECT * FROM categories WHERE userId = :userId AND syncStatus != 'SYNCED'")
     suspend fun getPendingCategories(userId: String): List<CategoryEntity>
 
@@ -35,10 +38,20 @@ interface CategoryDao {
     @Update
     suspend fun updateCategory(category: CategoryEntity)
 
+    @Query("UPDATE categories SET syncStatus = :syncStatus WHERE id = :id")
+    suspend fun updateSyncStatus(id: String, syncStatus: SyncState)
+
     @Query("UPDATE categories SET isDeleted = 1, syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :id")
     suspend fun softDeleteCategory(id: String, updatedAt: Instant, syncStatus: SyncState)
 
     @Query("DELETE FROM categories WHERE userId = :userId")
     suspend fun deleteCategoriesByUserId(userId: String)
+
+    @Query("SELECT * FROM categories WHERE userId = :userId")
+    suspend fun getAllCategories(userId: String): List<CategoryEntity>
+
+    @Query("SELECT COUNT(*) FROM categories WHERE userId = :userId AND syncStatus != 'SYNCED'")
+    fun observePendingCount(userId: String): Flow<Int>
 }
+
 

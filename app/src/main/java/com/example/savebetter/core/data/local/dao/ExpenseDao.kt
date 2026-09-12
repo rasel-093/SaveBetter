@@ -26,6 +26,9 @@ interface ExpenseDao {
     @Query("SELECT * FROM expenses WHERE id = :id AND isDeleted = 0 LIMIT 1")
     suspend fun getExpenseById(id: String): ExpenseEntity?
 
+    @Query("SELECT * FROM expenses WHERE id = :id LIMIT 1")
+    suspend fun getExpenseByIdIncludingDeleted(id: String): ExpenseEntity?
+
     @Query("SELECT * FROM expenses WHERE userId = :userId AND syncStatus != 'SYNCED'")
     suspend fun getPendingExpenses(userId: String): List<ExpenseEntity>
 
@@ -34,6 +37,9 @@ interface ExpenseDao {
 
     @Update
     suspend fun updateExpense(expense: ExpenseEntity)
+
+    @Query("UPDATE expenses SET syncStatus = :syncStatus WHERE id = :id")
+    suspend fun updateSyncStatus(id: String, syncStatus: SyncState)
 
     @Upsert
     suspend fun upsertExpenses(expenses: List<ExpenseEntity>)
@@ -46,5 +52,12 @@ interface ExpenseDao {
 
     @Query("DELETE FROM expenses WHERE userId = :userId")
     suspend fun deleteExpensesByUserId(userId: String)
+
+    @Query("SELECT * FROM expenses WHERE userId = :userId")
+    suspend fun getAllExpenses(userId: String): List<ExpenseEntity>
+
+    @Query("SELECT COUNT(*) FROM expenses WHERE userId = :userId AND syncStatus != 'SYNCED'")
+    fun observePendingCount(userId: String): Flow<Int>
 }
+
 

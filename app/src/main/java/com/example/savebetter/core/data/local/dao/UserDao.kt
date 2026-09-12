@@ -29,10 +29,17 @@ interface UserDao {
     @Query("UPDATE users SET syncStatus = :syncStatus, updatedAt = :updatedAt WHERE id = :userId")
     suspend fun updateSyncStatus(userId: String, syncStatus: SyncState, updatedAt: Instant)
 
+    @Query("UPDATE users SET syncStatus = :syncStatus WHERE id = :userId")
+    suspend fun updateSyncStatus(userId: String, syncStatus: SyncState)
+
     @Query("DELETE FROM users WHERE id = :userId")
     suspend fun deleteUser(userId: String)
 
     @Query("DELETE FROM users")
     suspend fun deleteAllUsers()
+
+    @Query("SELECT COUNT(*) FROM users WHERE id = :userId AND syncStatus != 'SYNCED'")
+    fun observePendingCount(userId: String): Flow<Int>
 }
+
 
