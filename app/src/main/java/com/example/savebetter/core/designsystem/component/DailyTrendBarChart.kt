@@ -20,9 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
 data class DailyBarData(
@@ -44,8 +48,13 @@ fun DailyTrendBarChart(
     onBarClick: ((DailyBarData) -> Unit)? = null
 ) {
     val maxAmount = bars.maxOfOrNull { it.amount }?.takeIf { it > 0f } ?: 1f
+    val cdChart = stringResource(R.string.cd_daily_trend_chart)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = cdChart }
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

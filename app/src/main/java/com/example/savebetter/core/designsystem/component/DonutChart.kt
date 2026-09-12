@@ -20,9 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
 data class DonutSlice(
@@ -45,9 +49,12 @@ fun DonutChart(
     showLegend: Boolean = true
 ) {
     val total = slices.sumOf { it.value.toDouble() }.toFloat().coerceAtLeast(1f)
+    val cdChart = stringResource(R.string.cd_donut_chart)
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = cdChart },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

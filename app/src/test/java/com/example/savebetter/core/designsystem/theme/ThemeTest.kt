@@ -79,4 +79,16 @@ class ThemeTest {
         assertNotNull(typography.amountMedium)
         assertNotNull(typography.amountSmall)
     }
+
+    @Test
+    fun `bottom navigation destinations have valid labels and string resource IDs`() {
+        val destinations = com.example.savebetter.core.designsystem.component.BottomNavDestination.entries
+
+        assertEquals(5, destinations.size)
+        destinations.forEach { destination ->
+            assertTrue(destination.label.isNotBlank())
+            assertTrue(destination.labelResId > 0)
+            assertNotNull(destination.icon)
+        }
+    }
 }

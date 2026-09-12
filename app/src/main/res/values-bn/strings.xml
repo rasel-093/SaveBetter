@@ -339,4 +339,10 @@
     <string name="settings_categories_dialog_title">ক্যাটাগরিসমূহ</string>
     <string name="settings_profile_updated">প্রোফাইল সফলভাবে আপডেট হয়েছে</string>
 
+    <!-- Common Accessibility Content Descriptions -->
+    <string name="back">পেছনে যান</string>
+    <string name="cd_show_password">পাসওয়ার্ড দেখুন</string>
+    <string name="cd_hide_password">পাসওয়ার্ড লুকান</string>
+    <string name="cd_donut_chart">ক্যাটাগরি ভিত্তিক খরচের বিতরণ চার্ট</string>
+    <string name="cd_daily_trend_chart">দৈনিক খরচের ট্রেন্ড বার চার্ট</string>
 </resources>

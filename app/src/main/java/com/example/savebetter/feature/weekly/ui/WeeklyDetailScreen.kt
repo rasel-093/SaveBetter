@@ -92,25 +92,23 @@ fun WeeklyDetailScreen(
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = viewModel::navigatePreviousWeek,
-                            modifier = Modifier.size(36.dp)
+                            onClick = viewModel::navigatePreviousWeek
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.weekly_prev_week),
                                 tint = SaveBetterTheme.colors.inkSoft,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                         IconButton(
-                            onClick = viewModel::navigateNextWeek,
-                            modifier = Modifier.size(36.dp)
+                            onClick = viewModel::navigateNextWeek
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(R.string.weekly_next_week),
                                 tint = SaveBetterTheme.colors.inkSoft,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }

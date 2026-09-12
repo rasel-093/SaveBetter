@@ -96,23 +96,23 @@ fun ReconciliationScreen(
                 onBackClick = onNavigateBack,
                 actions = {
                     IconButton(
-                        onClick = { viewModel.navigatePreviousMonth() },
-                        modifier = Modifier.size(36.dp)
+                        onClick = { viewModel.navigatePreviousMonth() }
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             contentDescription = stringResource(R.string.monthly_prev_month),
-                            tint = SaveBetterTheme.colors.ink
+                            tint = SaveBetterTheme.colors.ink,
+                            modifier = Modifier.size(22.dp)
                         )
                     }
                     IconButton(
-                        onClick = { viewModel.navigateNextMonth() },
-                        modifier = Modifier.size(36.dp)
+                        onClick = { viewModel.navigateNextMonth() }
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = stringResource(R.string.monthly_next_month),
-                            tint = SaveBetterTheme.colors.ink
+                            tint = SaveBetterTheme.colors.ink,
+                            modifier = Modifier.size(22.dp)
                         )
                     }
                     SyncStatusPill(status = syncStatus)

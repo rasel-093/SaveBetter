@@ -88,25 +88,23 @@ fun MonthlyAnalysisScreen(
                 actions = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
-                            onClick = viewModel::navigatePreviousMonth,
-                            modifier = Modifier.size(36.dp)
+                            onClick = viewModel::navigatePreviousMonth
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.monthly_prev_month),
                                 tint = SaveBetterTheme.colors.inkSoft,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                         IconButton(
-                            onClick = viewModel::navigateNextMonth,
-                            modifier = Modifier.size(36.dp)
+                            onClick = viewModel::navigateNextMonth
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                 contentDescription = stringResource(R.string.monthly_next_month),
                                 tint = SaveBetterTheme.colors.inkSoft,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }

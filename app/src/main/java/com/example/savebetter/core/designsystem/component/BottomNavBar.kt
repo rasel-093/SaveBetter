@@ -25,14 +25,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
-enum class BottomNavDestination(val label: String, val icon: ImageVector) {
-    Home("Home", Icons.Outlined.Home),
-    Weekly("Weekly", Icons.Outlined.DateRange),
-    Monthly("Monthly", Icons.Outlined.CalendarMonth),
-    Debts("Debts", Icons.Outlined.AccountBalanceWallet),
-    Settings("Settings", Icons.Outlined.Settings)
+enum class BottomNavDestination(
+    val label: String,
+    val labelResId: Int,
+    val icon: ImageVector
+) {
+    Home("Home", R.string.nav_home, Icons.Outlined.Home),
+    Weekly("Weekly", R.string.nav_weekly, Icons.Outlined.DateRange),
+    Monthly("Monthly", R.string.nav_monthly, Icons.Outlined.CalendarMonth),
+    Debts("Debts", R.string.nav_debts, Icons.Outlined.AccountBalanceWallet),
+    Settings("Settings", R.string.nav_settings, Icons.Outlined.Settings)
 }
 
 /**
@@ -62,24 +71,30 @@ fun BottomNavBar(
         BottomNavDestination.entries.forEach { destination ->
             val isSelected = destination == selectedDestination
             val tint = if (isSelected) selectedColor else unselectedColor
+            val localizedLabel = stringResource(destination.labelResId)
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable { onDestinationSelected(destination) }
+                    .defaultMinSize(minHeight = 48.dp)
+                    .selectable(
+                        selected = isSelected,
+                        onClick = { onDestinationSelected(destination) },
+                        role = Role.Tab
+                    )
                     .padding(vertical = 6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
                     imageVector = destination.icon,
-                    contentDescription = destination.label,
+                    contentDescription = localizedLabel,
                     tint = tint,
                     modifier = Modifier.size(22.dp)
                 )
 
                 Text(
-                    text = destination.label,
+                    text = localizedLabel,
                     style = SaveBetterTheme.typography.caption,
                     color = tint,
                     fontSize = 10.sp,

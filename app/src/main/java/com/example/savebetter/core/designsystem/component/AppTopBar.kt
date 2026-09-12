@@ -20,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
 /**
@@ -45,7 +47,7 @@ fun AppTopBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -55,16 +57,16 @@ fun AppTopBar(
             ) {
                 if (onBackClick != null) {
                     IconButton(
-                        onClick = onBackClick,
-                        modifier = Modifier.size(36.dp)
+                        onClick = onBackClick
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                            tint = SaveBetterTheme.colors.ink
+                            contentDescription = stringResource(R.string.back),
+                            tint = SaveBetterTheme.colors.ink,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                 }
 
                 Column {

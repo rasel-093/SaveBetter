@@ -41,31 +41,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.savebetter.R
+import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
 /**
- * Design tokens extracted from expense-tracker-ui-design-savebetter.html
+ * Design tokens dynamically mapped to active SaveBetterTheme.
+ * Fully adapts between Light and Dark themes.
  */
 object SaveBetterColors {
-    val Paper = Color(0xFFFBF6EA)
-    val PaperLine = Color(0xFFE6DCC2)
-    val PaperLineStrong = Color(0xFFD8CBA8)
-    val Ink = Color(0xFF1E2A22)
-    val InkSoft = Color(0xFF3A4A3E)
-    val TextMuted = Color(0xFF7A7060)
-    val Gold = Color(0xFFC9A227)
-    val GoldSoft = Color(0xFFEFDFA3)
-    val GoldTint = Color(0xFFF7EFD2)
-    val Moss = Color(0xFF3F7856)
-    val MossTint = Color(0xFFDCEADF)
-    val Brick = Color(0xFFA23E32)
-    val BrickTint = Color(0xFFF1DAD3)
-    val Cover = Color(0xFF121A15)
+    val Paper: Color @Composable get() = SaveBetterTheme.colors.paper
+    val PaperLine: Color @Composable get() = SaveBetterTheme.colors.paperLine
+    val PaperLineStrong: Color @Composable get() = SaveBetterTheme.colors.paperLineStrong
+    val Ink: Color @Composable get() = SaveBetterTheme.colors.ink
+    val InkSoft: Color @Composable get() = SaveBetterTheme.colors.inkSoft
+    val TextMuted: Color @Composable get() = SaveBetterTheme.colors.textMuted
+    val Gold: Color @Composable get() = SaveBetterTheme.colors.gold
+    val GoldSoft: Color @Composable get() = SaveBetterTheme.colors.goldSoft
+    val GoldTint: Color @Composable get() = SaveBetterTheme.colors.goldTint
+    val Moss: Color @Composable get() = SaveBetterTheme.colors.moss
+    val MossTint: Color @Composable get() = SaveBetterTheme.colors.mossTint
+    val Brick: Color @Composable get() = SaveBetterTheme.colors.brick
+    val BrickTint: Color @Composable get() = SaveBetterTheme.colors.brickTint
+    val Cover: Color @Composable get() = SaveBetterTheme.colors.cover
+    val Card: Color @Composable get() = SaveBetterTheme.colors.card
 }
 
 /**
@@ -181,15 +186,19 @@ fun SaveBetterTextField(
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            contentDescription = if (passwordVisible) {
+                                stringResource(R.string.cd_hide_password)
+                            } else {
+                                stringResource(R.string.cd_show_password)
+                            },
                             tint = SaveBetterColors.TextMuted
                         )
                     }
                 }
             } else null,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
+                focusedContainerColor = SaveBetterColors.Card,
+                unfocusedContainerColor = SaveBetterColors.Card,
                 focusedBorderColor = SaveBetterColors.Gold,
                 unfocusedBorderColor = SaveBetterColors.PaperLineStrong,
                 focusedTextColor = SaveBetterColors.Ink,
@@ -260,7 +269,7 @@ fun GoogleSignInButton(
         enabled = enabled && !isLoading,
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = Color.White,
+            containerColor = SaveBetterColors.Card,
             contentColor = SaveBetterColors.Ink
         ),
         border = androidx.compose.foundation.BorderStroke(1.dp, SaveBetterColors.PaperLineStrong)

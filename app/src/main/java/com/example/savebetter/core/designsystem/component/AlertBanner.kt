@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,38 +30,47 @@ import com.example.savebetter.core.designsystem.theme.SaveBetterTheme
 
 enum class AlertBannerType {
     Warning,
+    Danger,
     Info,
     Success
 }
 
 /**
- * Paper-styled alert and notification banner.
+ * Alert banner component matching `.alert` styles.
+ *
+ * Distinct background tints, border colors, and icons per alert level.
  */
 @Composable
 fun AlertBanner(
-    message: String,
-    modifier: Modifier = Modifier,
     title: String? = null,
+    message: String,
     type: AlertBannerType = AlertBannerType.Warning,
+    modifier: Modifier = Modifier,
     icon: ImageVector? = null
 ) {
     val (bgColor, borderColor, contentColor, defaultIcon) = when (type) {
         AlertBannerType.Warning -> Quadruple(
+            SaveBetterTheme.colors.amberTint,
+            SaveBetterTheme.colors.amber,
+            SaveBetterTheme.colors.ink,
+            Icons.Outlined.Warning
+        )
+        AlertBannerType.Danger -> Quadruple(
             SaveBetterTheme.colors.brickTint,
-            SaveBetterTheme.colors.brick.copy(alpha = 0.4f),
             SaveBetterTheme.colors.brick,
+            SaveBetterTheme.colors.ink,
             Icons.Outlined.Warning
         )
         AlertBannerType.Info -> Quadruple(
             SaveBetterTheme.colors.goldTint,
-            SaveBetterTheme.colors.gold.copy(alpha = 0.4f),
             SaveBetterTheme.colors.gold,
+            SaveBetterTheme.colors.ink,
             Icons.Outlined.Info
         )
         AlertBannerType.Success -> Quadruple(
             SaveBetterTheme.colors.mossTint,
-            SaveBetterTheme.colors.moss.copy(alpha = 0.4f),
             SaveBetterTheme.colors.moss,
+            SaveBetterTheme.colors.ink,
             Icons.Outlined.CheckCircle
         )
     }
@@ -73,6 +83,7 @@ fun AlertBanner(
             .clip(shape)
             .background(bgColor)
             .border(1.dp, borderColor, shape)
+            .semantics(mergeDescendants = true) {}
             .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
