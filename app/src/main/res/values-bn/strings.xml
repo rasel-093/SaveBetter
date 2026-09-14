@@ -339,6 +339,14 @@
     <string name="settings_categories_dialog_title">ক্যাটাগরিসমূহ</string>
     <string name="settings_profile_updated">প্রোফাইল সফলভাবে আপডেট হয়েছে</string>
 
+    <!-- Settings — Budget Targets section -->
+    <string name="settings_section_budget_targets">বাজেট লক্ষ্যমাত্রা</string>
+    <string name="settings_weekly_target_label">সাপ্তাহিক খরচের লক্ষ্য</string>
+    <string name="settings_weekly_target_sub">প্রতি সপ্তাহের বাজেট (সোম–রবি)</string>
+    <string name="settings_weekly_target_dialog_title">সাপ্তাহিক বাজেট নির্ধারণ</string>
+    <string name="settings_weekly_target_hint">যেমন: ৮,৫০০</string>
+    <string name="settings_weekly_target_saved">সাপ্তাহিক লক্ষ্য সফলভাবে আপডেট হয়েছে</string>
+
     <!-- Common Accessibility Content Descriptions -->
     <string name="back">পেছনে যান</string>
     <string name="cd_show_password">পাসওয়ার্ড দেখুন</string>

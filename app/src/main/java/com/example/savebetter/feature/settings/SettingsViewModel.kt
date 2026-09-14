@@ -3,6 +3,7 @@ package com.example.savebetter.feature.settings
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.savebetter.R
 import com.example.savebetter.core.auth.model.RecentLoginRequiredException
 import com.example.savebetter.core.auth.repository.AuthRepository
 import com.example.savebetter.core.data.local.LanguagePreferences
@@ -11,6 +12,7 @@ import com.example.savebetter.core.domain.model.Category
 import com.example.savebetter.core.domain.model.SyncState
 import com.example.savebetter.core.domain.model.ThemeMode
 import com.example.savebetter.core.domain.model.UserProfile
+import com.example.savebetter.core.domain.model.WeeklyTarget
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.DebtCreditRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
@@ -30,10 +32,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.Instant
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,6 +65,7 @@ class SettingsViewModel @Inject constructor(
         val showTheme: Boolean = false,
         val showLanguage: Boolean = false,
         val showCategories: Boolean = false,
+        val showWeeklyTargetDialog: Boolean = false,
         val showLogout: Boolean = false,
         val showDeleteAccount: Boolean = false,
         val showReauthDialog: Boolean = false,
@@ -94,18 +101,34 @@ class SettingsViewModel @Inject constructor(
         if (userId == null) flowOf(emptyList()) else categoryRepository.observeCategories(userId)
     }
 
+    /** Observes the current week's target amount (0 if not yet set). */
+    private val weeklyTargetFlow = activeUserId.flatMapLatest { userId ->
+        if (userId == null) {
+            flowOf(0L)
+        } else {
+            val weekStart = LocalDate.now()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                .toString()
+            targetRepository.observeWeeklyTargets(userId).map { targets ->
+                targets.find { it.weekStart == weekStart }?.targetAmountMinor ?: 0L
+            }
+        }
+    }
+
     private data class UserAndCategoriesData(
         val userId: String?,
         val profile: UserProfile?,
-        val categories: List<Category>
+        val categories: List<Category>,
+        val weeklyTargetAmountMinor: Long
     )
 
     private val userAndCategoriesFlow = combine(
         activeUserId,
         userProfileFlow,
-        categoriesFlow
-    ) { userId, profile, categories ->
-        UserAndCategoriesData(userId, profile, categories)
+        categoriesFlow,
+        weeklyTargetFlow
+    ) { userId, profile, categories, weeklyTarget ->
+        UserAndCategoriesData(userId, profile, categories, weeklyTarget)
     }
 
     private data class PreferencesGroup(
@@ -149,6 +172,7 @@ class SettingsViewModel @Inject constructor(
             userName = userData.profile?.name ?: "",
             userEmail = userData.profile?.email ?: "",
             monthlySalaryMinor = userData.profile?.monthlySalaryMinor ?: 0L,
+            weeklyTargetAmountMinor = userData.weeklyTargetAmountMinor,
             themeMode = pref.theme,
             vibrationEnabled = pref.vibration,
             notificationsEnabled = pref.notifyAll,
@@ -163,6 +187,7 @@ class SettingsViewModel @Inject constructor(
             showThemeDialog = dialogs.showTheme,
             showLanguageDialog = dialogs.showLanguage,
             showCategoriesDialog = dialogs.showCategories,
+            showWeeklyTargetDialog = dialogs.showWeeklyTargetDialog,
             showLogoutConfirmDialog = dialogs.showLogout,
             showDeleteAccountConfirmDialog = dialogs.showDeleteAccount,
             showReauthDialog = dialogs.showReauthDialog,
@@ -291,6 +316,35 @@ class SettingsViewModel @Inject constructor(
 
     fun showCategoriesDialog(show: Boolean) {
         dialogStates.update { it.copy(showCategories = show) }
+    }
+
+    fun showWeeklyTargetDialog(show: Boolean) {
+        dialogStates.update { it.copy(showWeeklyTargetDialog = show) }
+    }
+
+    fun saveWeeklyTarget(amountMinor: Long) {
+        val uid = activeUserId.value ?: return
+        viewModelScope.launch {
+            val today = LocalDate.now()
+            val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toString()
+            val weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).toString()
+            val target = WeeklyTarget(
+                id = "$uid-$weekStart",
+                userId = uid,
+                weekStart = weekStart,
+                weekEnd = weekEnd,
+                targetAmountMinor = amountMinor,
+                updatedAt = Instant.now(),
+                syncStatus = SyncState.PENDING
+            )
+            targetRepository.saveWeeklyTarget(target)
+            dialogStates.update {
+                it.copy(
+                    showWeeklyTargetDialog = false,
+                    userMessage = context.getString(R.string.settings_weekly_target_saved)
+                )
+            }
+        }
     }
 
     fun showLogoutConfirm(show: Boolean) {

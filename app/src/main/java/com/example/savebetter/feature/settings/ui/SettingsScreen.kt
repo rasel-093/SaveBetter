@@ -186,6 +186,21 @@ fun SettingsScreen(
                     }
                 }
 
+                // Section: Budget Targets
+                SectionLabel(text = stringResource(R.string.settings_section_budget_targets))
+                LedgerCard(modifier = Modifier.fillMaxWidth()) {
+                    val weeklyTargetText = CurrencyFormatter.formatMinor(
+                        uiState.weeklyTargetAmountMinor,
+                        selectedLanguage
+                    )
+                    SettingsClickableRow(
+                        title = stringResource(R.string.settings_weekly_target_label),
+                        subtitle = stringResource(R.string.settings_weekly_target_sub),
+                        value = "$weeklyTargetText ›",
+                        onClick = { viewModel.showWeeklyTargetDialog(true) }
+                    )
+                }
+
                 // Section: Display
                 SectionLabel(text = stringResource(R.string.settings_section_display))
                 LedgerCard(modifier = Modifier.fillMaxWidth()) {
@@ -375,6 +390,16 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    // Dialog: Weekly Target
+    if (uiState.showWeeklyTargetDialog) {
+        WeeklyTargetDialog(
+            currentAmountMinor = uiState.weeklyTargetAmountMinor,
+            selectedLanguage = selectedLanguage,
+            onDismiss = { viewModel.showWeeklyTargetDialog(false) },
+            onSave = { viewModel.saveWeeklyTarget(it) }
+        )
     }
 
     // Dialog: Edit Profile
@@ -606,6 +631,80 @@ fun SettingsScreen(
             }
         )
     }
+}
+
+
+@Composable
+private fun WeeklyTargetDialog(
+    currentAmountMinor: Long,
+    selectedLanguage: AppLanguage,
+    onDismiss: () -> Unit,
+    onSave: (Long) -> Unit
+) {
+    val initialValue = if (currentAmountMinor > 0L) {
+        (currentAmountMinor / 100.0).toBigDecimal().stripTrailingZeros().toPlainString()
+    } else ""
+    var input by remember { mutableStateOf(initialValue) }
+    val isValid = input.isNotBlank() && input.toDoubleOrNull()?.let { it > 0.0 } == true
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = SaveBetterTheme.colors.paper,
+        title = {
+            Text(
+                text = stringResource(R.string.settings_weekly_target_dialog_title),
+                style = SaveBetterTheme.typography.screenSubtitle,
+                color = SaveBetterTheme.colors.ink
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = stringResource(R.string.settings_weekly_target_sub),
+                    style = SaveBetterTheme.typography.caption,
+                    color = SaveBetterTheme.colors.textMuted
+                )
+                OutlinedTextField(
+                    value = input,
+                    onValueChange = { input = it.filter { c -> c.isDigit() || c == '.' } },
+                    label = { Text(stringResource(R.string.settings_weekly_target_label)) },
+                    placeholder = { Text(stringResource(R.string.settings_weekly_target_hint)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = SaveBetterTheme.colors.gold,
+                        unfocusedBorderColor = SaveBetterTheme.colors.paperLineStrong,
+                        focusedLabelColor = SaveBetterTheme.colors.gold,
+                        focusedTextColor = SaveBetterTheme.colors.ink,
+                        unfocusedTextColor = SaveBetterTheme.colors.ink
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val major = input.toDoubleOrNull() ?: 0.0
+                    onSave((major * 100).toLong())
+                },
+                enabled = isValid,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SaveBetterTheme.colors.gold,
+                    contentColor = SaveBetterTheme.colors.cover,
+                    disabledContainerColor = SaveBetterTheme.colors.paperLine,
+                    disabledContentColor = SaveBetterTheme.colors.textMuted
+                )
+            ) {
+                Text(stringResource(R.string.settings_save_button))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.settings_cancel_button), color = SaveBetterTheme.colors.ink)
+            }
+        }
+    )
 }
 
 
