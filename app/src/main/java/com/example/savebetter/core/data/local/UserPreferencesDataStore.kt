@@ -36,6 +36,12 @@ object PreferenceKeys {
 
     /** Month-end reconciliation reminder. */
     val NOTIFY_RECONCILIATION  = booleanPreferencesKey("notify_reconciliation")
+
+    /** First day of week budget setup reminder (Monday). */
+    val NOTIFY_WEEKLY_BUDGET_REMINDER = booleanPreferencesKey("notify_weekly_budget_reminder")
+
+    /** First day of month budget setup reminder (1st of month). */
+    val NOTIFY_MONTHLY_BUDGET_REMINDER = booleanPreferencesKey("notify_monthly_budget_reminder")
 }
 
 /** Extension property to create/access the app-level DataStore. */

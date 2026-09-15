@@ -65,7 +65,6 @@ class SettingsViewModel @Inject constructor(
         val showTheme: Boolean = false,
         val showLanguage: Boolean = false,
         val showCategories: Boolean = false,
-        val showWeeklyTargetDialog: Boolean = false,
         val showLogout: Boolean = false,
         val showDeleteAccount: Boolean = false,
         val showReauthDialog: Boolean = false,
@@ -75,7 +74,6 @@ class SettingsViewModel @Inject constructor(
         val syncMessage: String? = null,
         val userMessage: String? = null
     )
-
 
     private val dialogStates = MutableStateFlow(DialogStates())
 
@@ -101,34 +99,18 @@ class SettingsViewModel @Inject constructor(
         if (userId == null) flowOf(emptyList()) else categoryRepository.observeCategories(userId)
     }
 
-    /** Observes the current week's target amount (0 if not yet set). */
-    private val weeklyTargetFlow = activeUserId.flatMapLatest { userId ->
-        if (userId == null) {
-            flowOf(0L)
-        } else {
-            val weekStart = LocalDate.now()
-                .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                .toString()
-            targetRepository.observeWeeklyTargets(userId).map { targets ->
-                targets.find { it.weekStart == weekStart }?.targetAmountMinor ?: 0L
-            }
-        }
-    }
-
     private data class UserAndCategoriesData(
         val userId: String?,
         val profile: UserProfile?,
-        val categories: List<Category>,
-        val weeklyTargetAmountMinor: Long
+        val categories: List<Category>
     )
 
     private val userAndCategoriesFlow = combine(
         activeUserId,
         userProfileFlow,
-        categoriesFlow,
-        weeklyTargetFlow
-    ) { userId, profile, categories, weeklyTarget ->
-        UserAndCategoriesData(userId, profile, categories, weeklyTarget)
+        categoriesFlow
+    ) { userId, profile, categories ->
+        UserAndCategoriesData(userId, profile, categories)
     }
 
     private data class PreferencesGroup(
@@ -151,14 +133,18 @@ class SettingsViewModel @Inject constructor(
 
     private data class MiscPreferences(
         val notifyReconciliation: Boolean,
+        val notifyWeeklyBudgetReminder: Boolean,
+        val notifyMonthlyBudgetReminder: Boolean,
         val language: AppLanguage
     )
 
     private val miscPreferencesFlow = combine(
         settingsPreferences.notifyReconciliation,
+        settingsPreferences.notifyWeeklyBudgetReminder,
+        settingsPreferences.notifyMonthlyBudgetReminder,
         languagePreferences.language
-    ) { notifyReconciliation, language ->
-        MiscPreferences(notifyReconciliation, language)
+    ) { notifyReconciliation, notifyWeeklyReminder, notifyMonthlyReminder, language ->
+        MiscPreferences(notifyReconciliation, notifyWeeklyReminder, notifyMonthlyReminder, language)
     }
 
     val uiState: StateFlow<SettingsUiState> = combine(
@@ -172,13 +158,14 @@ class SettingsViewModel @Inject constructor(
             userName = userData.profile?.name ?: "",
             userEmail = userData.profile?.email ?: "",
             monthlySalaryMinor = userData.profile?.monthlySalaryMinor ?: 0L,
-            weeklyTargetAmountMinor = userData.weeklyTargetAmountMinor,
             themeMode = pref.theme,
             vibrationEnabled = pref.vibration,
             notificationsEnabled = pref.notifyAll,
             notifyWeeklyWarning = pref.notifyWeekly,
             notifyMonthlyWarning = pref.notifyMonthly,
             notifyReconciliation = misc.notifyReconciliation,
+            notifyWeeklyBudgetReminder = misc.notifyWeeklyBudgetReminder,
+            notifyMonthlyBudgetReminder = misc.notifyMonthlyBudgetReminder,
             currentLanguage = misc.language,
             isSyncing = dialogs.isSyncing,
             syncMessage = dialogs.syncMessage,
@@ -187,7 +174,6 @@ class SettingsViewModel @Inject constructor(
             showThemeDialog = dialogs.showTheme,
             showLanguageDialog = dialogs.showLanguage,
             showCategoriesDialog = dialogs.showCategories,
-            showWeeklyTargetDialog = dialogs.showWeeklyTargetDialog,
             showLogoutConfirmDialog = dialogs.showLogout,
             showDeleteAccountConfirmDialog = dialogs.showDeleteAccount,
             showReauthDialog = dialogs.showReauthDialog,
@@ -220,10 +206,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             settingsPreferences.setNotificationsEnabled(enabled)
             if (enabled) {
-                // If master enabled and reconciliation toggle is on, schedule reminder
+                // If master enabled, schedule reminder services
                 ReconciliationReminderScheduler.scheduleMonthEndReminder(context)
+                com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleWeeklyBudgetReminder(context)
+                com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleMonthlyBudgetReminder(context)
             } else {
                 ReconciliationReminderScheduler.cancelReminder(context)
+                com.example.savebetter.core.notification.BudgetReminderScheduler.cancelWeeklyReminder(context)
+                com.example.savebetter.core.notification.BudgetReminderScheduler.cancelMonthlyReminder(context)
             }
         }
     }
@@ -247,6 +237,28 @@ class SettingsViewModel @Inject constructor(
                 ReconciliationReminderScheduler.scheduleMonthEndReminder(context)
             } else {
                 ReconciliationReminderScheduler.cancelReminder(context)
+            }
+        }
+    }
+
+    fun setNotifyWeeklyBudgetReminder(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsPreferences.setNotifyWeeklyBudgetReminder(enabled)
+            if (enabled) {
+                com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleWeeklyBudgetReminder(context)
+            } else {
+                com.example.savebetter.core.notification.BudgetReminderScheduler.cancelWeeklyReminder(context)
+            }
+        }
+    }
+
+    fun setNotifyMonthlyBudgetReminder(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsPreferences.setNotifyMonthlyBudgetReminder(enabled)
+            if (enabled) {
+                com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleMonthlyBudgetReminder(context)
+            } else {
+                com.example.savebetter.core.notification.BudgetReminderScheduler.cancelMonthlyReminder(context)
             }
         }
     }
@@ -316,35 +328,6 @@ class SettingsViewModel @Inject constructor(
 
     fun showCategoriesDialog(show: Boolean) {
         dialogStates.update { it.copy(showCategories = show) }
-    }
-
-    fun showWeeklyTargetDialog(show: Boolean) {
-        dialogStates.update { it.copy(showWeeklyTargetDialog = show) }
-    }
-
-    fun saveWeeklyTarget(amountMinor: Long) {
-        val uid = activeUserId.value ?: return
-        viewModelScope.launch {
-            val today = LocalDate.now()
-            val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toString()
-            val weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).toString()
-            val target = WeeklyTarget(
-                id = "$uid-$weekStart",
-                userId = uid,
-                weekStart = weekStart,
-                weekEnd = weekEnd,
-                targetAmountMinor = amountMinor,
-                updatedAt = Instant.now(),
-                syncStatus = SyncState.PENDING
-            )
-            targetRepository.saveWeeklyTarget(target)
-            dialogStates.update {
-                it.copy(
-                    showWeeklyTargetDialog = false,
-                    userMessage = context.getString(R.string.settings_weekly_target_saved)
-                )
-            }
-        }
     }
 
     fun showLogoutConfirm(show: Boolean) {

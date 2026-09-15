@@ -60,6 +60,9 @@ class MainActivity : ComponentActivity() {
 
         // Schedule WorkManager month-end reconciliation reminder
         com.example.savebetter.core.notification.ReconciliationReminderScheduler.scheduleMonthEndReminder(applicationContext)
+        // Schedule WorkManager weekly and monthly budget setup reminders
+        com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleWeeklyBudgetReminder(applicationContext)
+        com.example.savebetter.core.notification.BudgetReminderScheduler.scheduleMonthlyBudgetReminder(applicationContext)
 
         setContent {
             val languageViewModel: LanguageViewModel = hiltViewModel()
@@ -111,6 +114,8 @@ class MainActivity : ComponentActivity() {
                             var isAddExpenseOpen by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var activeExpenseIdForEdit by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
                             var showReconciliation by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var openBudgetDialogForWeekly by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                            var openBudgetDialogForMonthly by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                             var mainDestination by androidx.compose.runtime.remember {
                                 androidx.compose.runtime.mutableStateOf(
                                     com.example.savebetter.core.designsystem.component.BottomNavDestination.Home
@@ -121,8 +126,20 @@ class MainActivity : ComponentActivity() {
                                 { mainDestination = it }
 
                             androidx.compose.runtime.LaunchedEffect(Unit) {
-                                if (intent?.getStringExtra("navigate_to") == "reconciliation") {
-                                    showReconciliation = true
+                                when (intent?.getStringExtra("navigate_to")) {
+                                    "reconciliation" -> showReconciliation = true
+                                    "weekly" -> {
+                                        mainDestination = com.example.savebetter.core.designsystem.component.BottomNavDestination.Weekly
+                                        if (intent?.getBooleanExtra("open_budget_dialog", false) == true) {
+                                            openBudgetDialogForWeekly = true
+                                        }
+                                    }
+                                    "monthly" -> {
+                                        mainDestination = com.example.savebetter.core.designsystem.component.BottomNavDestination.Monthly
+                                        if (intent?.getBooleanExtra("open_budget_dialog", false) == true) {
+                                            openBudgetDialogForMonthly = true
+                                        }
+                                    }
                                 }
                             }
 
@@ -179,6 +196,7 @@ class MainActivity : ComponentActivity() {
                                         com.example.savebetter.feature.weekly.ui.WeeklyDetailScreen(
                                             userId = state.user.id,
                                             selectedLanguage = currentLanguage,
+                                            initialOpenBudgetDialog = openBudgetDialogForWeekly,
                                             onExpenseClick = { expenseId ->
                                                 activeExpenseIdForEdit = expenseId
                                                 isAddExpenseOpen = true
@@ -190,6 +208,7 @@ class MainActivity : ComponentActivity() {
                                         com.example.savebetter.feature.monthly.ui.MonthlyAnalysisScreen(
                                             userId = state.user.id,
                                             selectedLanguage = currentLanguage,
+                                            initialOpenBudgetDialog = openBudgetDialogForMonthly,
                                             onReconcileClick = { showReconciliation = true },
                                             onDestinationSelected = onMainTabSelected
                                         )

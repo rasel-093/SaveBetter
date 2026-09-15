@@ -341,13 +341,39 @@
     <string name="settings_categories_dialog_title">Categories</string>
     <string name="settings_profile_updated">Profile updated successfully</string>
 
-    <!-- Settings — Budget Targets section -->
-    <string name="settings_section_budget_targets">Budget Targets</string>
-    <string name="settings_weekly_target_label">Weekly Expense Target</string>
-    <string name="settings_weekly_target_sub">Budget for each week (Mon–Sun)</string>
-    <string name="settings_weekly_target_dialog_title">Set Weekly Budget</string>
-    <string name="settings_weekly_target_hint">e.g. 8,500</string>
-    <string name="settings_weekly_target_saved">Weekly target updated successfully</string>
+    <!-- Weekly Detail Budget Management -->
+    <string name="weekly_set_budget_action">Set Budget</string>
+    <string name="weekly_edit_budget_action">Edit Budget</string>
+    <string name="weekly_no_target_set_prompt">No weekly budget set. Tap to set spending limit.</string>
+    <string name="weekly_budget_dialog_title">Set Weekly Budget</string>
+    <string name="weekly_budget_dialog_sub">Set spending limit for this week (%1$s)</string>
+    <string name="weekly_budget_saved">Weekly budget updated successfully</string>
+
+    <!-- Monthly Analysis Budget Management -->
+    <string name="monthly_set_budget_action">Set Budget</string>
+    <string name="monthly_edit_budget_action">Edit Budget</string>
+    <string name="monthly_no_target_set_prompt">No monthly budget set. Tap to set targets.</string>
+    <string name="monthly_budget_dialog_title">Set Monthly Budget</string>
+    <string name="monthly_budget_dialog_sub">Set expense target and savings goal for %1$s</string>
+    <string name="monthly_target_input_label">Monthly Expense Target</string>
+    <string name="monthly_target_input_hint">e.g. 35,000</string>
+    <string name="monthly_savings_input_label">Monthly Savings Goal</string>
+    <string name="monthly_savings_input_hint">e.g. 10,000</string>
+    <string name="monthly_budget_saved">Monthly budget updated successfully</string>
+
+    <!-- Budget Reminder Notifications -->
+    <string name="budget_reminder_channel_name">Budget Setup Reminders</string>
+    <string name="budget_reminder_channel_desc">Notifications reminding you to set weekly and monthly budgets</string>
+    <string name="weekly_reminder_notification_title">New Week, New Budget!</string>
+    <string name="weekly_reminder_notification_desc">Set your weekly spending target for %1$s to stay on track.</string>
+    <string name="monthly_reminder_notification_title">Start of the Month Budgeting</string>
+    <string name="monthly_reminder_notification_desc">Plan your monthly expense target and savings goal for %1$s.</string>
+
+    <!-- Settings Reminder Toggles -->
+    <string name="settings_notify_weekly_budget_reminder">First Day of Week Budget Reminder</string>
+    <string name="settings_notify_weekly_budget_reminder_sub">Remind on Monday to set weekly budget</string>
+    <string name="settings_notify_monthly_budget_reminder">First Day of Month Budget Reminder</string>
+    <string name="settings_notify_monthly_budget_reminder_sub">Remind on the 1st to plan monthly budget &amp; savings</string>
 
     <!-- Common Accessibility Content Descriptions -->
     <string name="back">Back</string>

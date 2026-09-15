@@ -7,8 +7,11 @@ import com.example.savebetter.R
 import com.example.savebetter.core.designsystem.component.DailyBarData
 import com.example.savebetter.core.domain.model.Category
 import com.example.savebetter.core.domain.model.Expense
+import com.example.savebetter.core.domain.model.SyncState
+import com.example.savebetter.core.domain.model.WeeklyTarget
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
+import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.usecase.dashboard.GetWeeklyAdviceUseCase
 import com.example.savebetter.core.domain.usecase.dashboard.GetWeeklySummaryUseCase
 import com.example.savebetter.core.i18n.AppLanguage
@@ -24,7 +27,9 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -38,22 +43,33 @@ class WeeklyDetailViewModel @Inject constructor(
     private val getWeeklySummaryUseCase: GetWeeklySummaryUseCase,
     private val getWeeklyAdviceUseCase: GetWeeklyAdviceUseCase,
     private val expenseRepository: ExpenseRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val targetRepository: TargetRepository
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
     private val referenceDate = MutableStateFlow(LocalDate.now())
     private val currentLanguage = MutableStateFlow(AppLanguage.ENGLISH)
+    private val showBudgetDialogState = MutableStateFlow(false)
+    private val userMessageState = MutableStateFlow<String?>(null)
 
     val uiState: StateFlow<WeeklyDetailUiState> = combine(
         activeUserId,
         referenceDate,
-        currentLanguage
-    ) { userId, refDate, language ->
-        Triple(userId, refDate, language)
-    }.flatMapLatest { (userId, refDate, language) ->
+        currentLanguage,
+        showBudgetDialogState,
+        userMessageState
+    ) { userId, refDate, language, showDialog, userMsg ->
+        StateParams(userId, refDate, language, showDialog, userMsg)
+    }.flatMapLatest { params ->
+        val userId = params.userId
+        val refDate = params.refDate
+        val language = params.language
+        val showDialog = params.showDialog
+        val userMsg = params.userMsg
+
         if (userId == null) {
-            flowOf(WeeklyDetailUiState(isLoading = false))
+            flowOf(WeeklyDetailUiState(isLoading = false, showBudgetDialog = showDialog, userMessage = userMsg))
         } else {
             val weekStart = refDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
             val weekEnd = refDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
@@ -146,6 +162,8 @@ class WeeklyDetailViewModel @Inject constructor(
                     weeklyExpenses = expenseItems,
                     categories = activeCategories,
                     hasNextWeek = hasNextWeek,
+                    showBudgetDialog = showDialog,
+                    userMessage = userMsg,
                     isLoading = false
                 )
             }
@@ -156,6 +174,14 @@ class WeeklyDetailViewModel @Inject constructor(
         initialValue = WeeklyDetailUiState(isLoading = true)
     )
 
+    private data class StateParams(
+        val userId: String?,
+        val refDate: LocalDate,
+        val language: AppLanguage,
+        val showDialog: Boolean,
+        val userMsg: String?
+    )
+
     fun initForUser(userId: String, language: AppLanguage = AppLanguage.ENGLISH) {
         activeUserId.value = userId
         currentLanguage.value = language
@@ -163,6 +189,34 @@ class WeeklyDetailViewModel @Inject constructor(
 
     fun setLanguage(language: AppLanguage) {
         currentLanguage.value = language
+    }
+
+    fun showBudgetDialog(show: Boolean) {
+        showBudgetDialogState.value = show
+    }
+
+    fun saveWeeklyBudget(amountMinor: Long) {
+        val uid = activeUserId.value ?: return
+        viewModelScope.launch {
+            val refDate = referenceDate.value
+            val weekStart = refDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toString()
+            val weekEnd = refDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).toString()
+            val target = WeeklyTarget(
+                id = "$uid-$weekStart",
+                userId = uid,
+                weekStart = weekStart,
+                weekEnd = weekEnd,
+                targetAmountMinor = amountMinor,
+                updatedAt = Instant.now(),
+                syncStatus = SyncState.PENDING
+            )
+            targetRepository.saveWeeklyTarget(target)
+            showBudgetDialogState.value = false
+        }
+    }
+
+    fun clearUserMessage() {
+        userMessageState.value = null
     }
 
     fun navigatePreviousWeek() {

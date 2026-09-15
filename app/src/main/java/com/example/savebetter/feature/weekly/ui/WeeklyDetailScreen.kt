@@ -3,6 +3,7 @@ package com.example.savebetter.feature.weekly.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,11 +60,26 @@ import com.example.savebetter.core.i18n.CurrencyFormatter
 import com.example.savebetter.feature.weekly.WeeklyDetailUiState
 import com.example.savebetter.feature.weekly.WeeklyDetailViewModel
 
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.KeyboardType
+
 /**
  * Screen 05: Weekly Detail (সাপ্তাহিক বিস্তারিত)
  *
  * Replicates Screen 05 from expense-tracker-ui-design-savebetter.html:
  * - Budget progress with target, spent, remaining
+ * - In-screen weekly budget setup and editing dialog
  * - Pace warning banner
  * - Deterministic rule-based advice cards (dominant category, frequent small purchases, overshoot)
  * - 7-day trend bar chart with peak highlight
@@ -74,12 +90,16 @@ fun WeeklyDetailScreen(
     userId: String,
     modifier: Modifier = Modifier,
     selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
+    initialOpenBudgetDialog: Boolean = false,
     onExpenseClick: (String) -> Unit = {},
     onDestinationSelected: ((BottomNavDestination) -> Unit)? = null,
     viewModel: WeeklyDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(userId, selectedLanguage) {
         viewModel.initForUser(userId, selectedLanguage)
+        if (initialOpenBudgetDialog) {
+            viewModel.showBudgetDialog(true)
+        }
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -141,9 +161,19 @@ fun WeeklyDetailScreen(
                 uiState = uiState,
                 selectedLanguage = selectedLanguage,
                 innerPadding = innerPadding,
-                onExpenseClick = onExpenseClick
+                onExpenseClick = onExpenseClick,
+                onEditBudgetClick = { viewModel.showBudgetDialog(true) }
             )
         }
+    }
+
+    if (uiState.showBudgetDialog) {
+        WeeklyBudgetDialog(
+            currentAmountMinor = uiState.weeklySummary.targetAmountMinor,
+            weekRangeText = uiState.weekDateRangeText,
+            onDismiss = { viewModel.showBudgetDialog(false) },
+            onSave = { viewModel.saveWeeklyBudget(it) }
+        )
     }
 }
 
@@ -153,6 +183,7 @@ private fun WeeklyDetailContent(
     selectedLanguage: AppLanguage,
     innerPadding: PaddingValues,
     onExpenseClick: (String) -> Unit,
+    onEditBudgetClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -168,10 +199,63 @@ private fun WeeklyDetailContent(
     ) {
         // 1. Weekly Target & Budget Card
         LedgerCard {
-            LedgerLabelValueRow(
-                label = stringResource(R.string.weekly_target_label),
-                value = CurrencyFormatter.formatMinor(weekly.targetAmountMinor, selectedLanguage)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.weekly_target_label),
+                    style = SaveBetterTheme.typography.caption,
+                    color = SaveBetterTheme.colors.textMuted
+                )
+                TextButton(
+                    onClick = onEditBudgetClick,
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(13.dp),
+                        tint = SaveBetterTheme.colors.gold
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = if (weekly.targetAmountMinor > 0L) {
+                            stringResource(R.string.weekly_edit_budget_action)
+                        } else {
+                            stringResource(R.string.weekly_set_budget_action)
+                        },
+                        style = SaveBetterTheme.typography.caption.copy(fontWeight = FontWeight.SemiBold),
+                        color = SaveBetterTheme.colors.gold
+                    )
+                }
+            }
+
+            if (weekly.targetAmountMinor == 0L) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(SaveBetterTheme.shapes.radiusCard))
+                        .background(SaveBetterTheme.colors.goldTint)
+                        .border(1.dp, SaveBetterTheme.colors.gold.copy(alpha = 0.4f), RoundedCornerShape(SaveBetterTheme.shapes.radiusCard))
+                        .clickable { onEditBudgetClick() }
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.weekly_no_target_set_prompt),
+                        style = SaveBetterTheme.typography.body.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                        color = SaveBetterTheme.colors.ink
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            } else {
+                Text(
+                    text = CurrencyFormatter.formatMinor(weekly.targetAmountMinor, selectedLanguage),
+                    style = SaveBetterTheme.typography.screenSubtitle.copy(fontSize = 18.sp),
+                    color = SaveBetterTheme.colors.ink
+                )
+            }
 
             Spacer(modifier = Modifier.height(6.dp))
 
@@ -309,3 +393,80 @@ private fun WeeklyDetailContent(
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
+
+@Composable
+private fun WeeklyBudgetDialog(
+    currentAmountMinor: Long,
+    weekRangeText: String,
+    onDismiss: () -> Unit,
+    onSave: (Long) -> Unit
+) {
+    val initialValue = if (currentAmountMinor > 0L) {
+        (currentAmountMinor / 100.0).toBigDecimal().stripTrailingZeros().toPlainString()
+    } else ""
+    var input by remember { mutableStateOf(initialValue) }
+    val isValid = input.isNotBlank() && input.toDoubleOrNull()?.let { it > 0.0 } == true
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = SaveBetterTheme.colors.paper,
+        title = {
+            Text(
+                text = stringResource(R.string.weekly_budget_dialog_title),
+                style = SaveBetterTheme.typography.screenSubtitle,
+                color = SaveBetterTheme.colors.ink
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.weekly_budget_dialog_sub, weekRangeText),
+                    style = SaveBetterTheme.typography.caption,
+                    color = SaveBetterTheme.colors.textMuted
+                )
+                OutlinedTextField(
+                    value = input,
+                    onValueChange = { input = it.filter { c -> c.isDigit() || c == '.' } },
+                    label = { Text(stringResource(R.string.weekly_target_label)) },
+                    placeholder = { Text("e.g. 8,500") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = SaveBetterTheme.colors.gold,
+                        unfocusedBorderColor = SaveBetterTheme.colors.paperLineStrong,
+                        focusedLabelColor = SaveBetterTheme.colors.gold,
+                        focusedTextColor = SaveBetterTheme.colors.ink,
+                        unfocusedTextColor = SaveBetterTheme.colors.ink
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val major = input.toDoubleOrNull() ?: 0.0
+                    onSave((major * 100).toLong())
+                },
+                enabled = isValid,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SaveBetterTheme.colors.gold,
+                    contentColor = SaveBetterTheme.colors.cover,
+                    disabledContainerColor = SaveBetterTheme.colors.paperLine,
+                    disabledContentColor = SaveBetterTheme.colors.textMuted
+                )
+            ) {
+                Text(stringResource(R.string.action_save))
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = SaveBetterTheme.colors.ink)
+            ) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
+}
+

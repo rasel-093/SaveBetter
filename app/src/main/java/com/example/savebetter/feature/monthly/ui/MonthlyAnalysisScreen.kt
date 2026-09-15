@@ -56,11 +56,29 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.KeyboardType
+
 /**
  * Screen 06: Monthly Analysis & Detail (মাসিক বিস্তারিত ও গ্রাফ).
  *
  * Replicates Screen 06 from expense-tracker-ui-design-savebetter.html:
  * - Budget and savings goal progress
+ * - In-screen monthly budget & savings goal setup dialog
  * - Category spending distribution DonutChart with percentage legend
  * - Outlier-resistant reduction suggestion engine
  * - Month-over-month comparison bars
@@ -70,12 +88,16 @@ fun MonthlyAnalysisScreen(
     userId: String,
     modifier: Modifier = Modifier,
     selectedLanguage: AppLanguage = AppLanguage.ENGLISH,
+    initialOpenBudgetDialog: Boolean = false,
     onReconcileClick: () -> Unit = {},
     onDestinationSelected: ((BottomNavDestination) -> Unit)? = null,
     viewModel: MonthlyAnalysisViewModel = hiltViewModel()
 ) {
     LaunchedEffect(userId, selectedLanguage) {
         viewModel.initForUser(userId, selectedLanguage)
+        if (initialOpenBudgetDialog) {
+            viewModel.showBudgetDialog(true)
+        }
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -137,9 +159,22 @@ fun MonthlyAnalysisScreen(
                 uiState = uiState,
                 selectedLanguage = selectedLanguage,
                 innerPadding = innerPadding,
-                onReconcileClick = onReconcileClick
+                onReconcileClick = onReconcileClick,
+                onEditBudgetClick = { viewModel.showBudgetDialog(true) }
             )
         }
+    }
+
+    if (uiState.showBudgetDialog) {
+        MonthlyBudgetDialog(
+            currentExpenseTargetMinor = uiState.targetAmountMinor,
+            currentSavingGoalMinor = uiState.savingGoalMinor,
+            monthTitleText = uiState.monthTitleText,
+            onDismiss = { viewModel.showBudgetDialog(false) },
+            onSave = { expenseTarget, savingGoal ->
+                viewModel.saveMonthlyTarget(expenseTarget, savingGoal)
+            }
+        )
     }
 }
 
@@ -149,6 +184,7 @@ private fun MonthlyAnalysisContent(
     selectedLanguage: AppLanguage,
     innerPadding: PaddingValues,
     onReconcileClick: () -> Unit = {},
+    onEditBudgetClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -163,10 +199,63 @@ private fun MonthlyAnalysisContent(
     ) {
         // 1. Monthly Target & Savings Card
         LedgerCard {
-            LedgerLabelValueRow(
-                label = stringResource(R.string.label_budget),
-                value = CurrencyFormatter.formatMinor(uiState.targetAmountMinor, selectedLanguage)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.label_budget),
+                    style = SaveBetterTheme.typography.caption,
+                    color = SaveBetterTheme.colors.textMuted
+                )
+                TextButton(
+                    onClick = onEditBudgetClick,
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.size(13.dp),
+                        tint = SaveBetterTheme.colors.gold
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = if (uiState.targetAmountMinor > 0L) {
+                            stringResource(R.string.monthly_edit_budget_action)
+                        } else {
+                            stringResource(R.string.monthly_set_budget_action)
+                        },
+                        style = SaveBetterTheme.typography.caption.copy(fontWeight = FontWeight.SemiBold),
+                        color = SaveBetterTheme.colors.gold
+                    )
+                }
+            }
+
+            if (uiState.targetAmountMinor == 0L) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(SaveBetterTheme.shapes.radiusCard))
+                        .background(SaveBetterTheme.colors.goldTint)
+                        .border(1.dp, SaveBetterTheme.colors.gold.copy(alpha = 0.4f), RoundedCornerShape(SaveBetterTheme.shapes.radiusCard))
+                        .clickable { onEditBudgetClick() }
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.monthly_no_target_set_prompt),
+                        style = SaveBetterTheme.typography.body.copy(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                        color = SaveBetterTheme.colors.ink
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            } else {
+                Text(
+                    text = CurrencyFormatter.formatMinor(uiState.targetAmountMinor, selectedLanguage),
+                    style = SaveBetterTheme.typography.screenSubtitle.copy(fontSize = 18.sp),
+                    color = SaveBetterTheme.colors.ink
+                )
+            }
 
             Spacer(modifier = Modifier.height(6.dp))
 
@@ -296,3 +385,105 @@ private fun MonthlyAnalysisContent(
         Spacer(modifier = Modifier.height(24.dp))
     }
 }
+
+@Composable
+private fun MonthlyBudgetDialog(
+    currentExpenseTargetMinor: Long,
+    currentSavingGoalMinor: Long,
+    monthTitleText: String,
+    onDismiss: () -> Unit,
+    onSave: (Long, Long) -> Unit
+) {
+    val initialTarget = if (currentExpenseTargetMinor > 0L) {
+        (currentExpenseTargetMinor / 100.0).toBigDecimal().stripTrailingZeros().toPlainString()
+    } else ""
+    val initialSaving = if (currentSavingGoalMinor > 0L) {
+        (currentSavingGoalMinor / 100.0).toBigDecimal().stripTrailingZeros().toPlainString()
+    } else ""
+
+    var targetInput by remember { mutableStateOf(initialTarget) }
+    var savingInput by remember { mutableStateOf(initialSaving) }
+
+    val isValid = targetInput.isNotBlank() && targetInput.toDoubleOrNull()?.let { it > 0.0 } == true
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        containerColor = SaveBetterTheme.colors.paper,
+        title = {
+            Text(
+                text = stringResource(R.string.monthly_budget_dialog_title),
+                style = SaveBetterTheme.typography.screenSubtitle,
+                color = SaveBetterTheme.colors.ink
+            )
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    text = stringResource(R.string.monthly_budget_dialog_sub, monthTitleText),
+                    style = SaveBetterTheme.typography.caption,
+                    color = SaveBetterTheme.colors.textMuted
+                )
+                OutlinedTextField(
+                    value = targetInput,
+                    onValueChange = { targetInput = it.filter { c -> c.isDigit() || c == '.' } },
+                    label = { Text(stringResource(R.string.monthly_target_input_label)) },
+                    placeholder = { Text(stringResource(R.string.monthly_target_input_hint)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = SaveBetterTheme.colors.gold,
+                        unfocusedBorderColor = SaveBetterTheme.colors.paperLineStrong,
+                        focusedLabelColor = SaveBetterTheme.colors.gold,
+                        focusedTextColor = SaveBetterTheme.colors.ink,
+                        unfocusedTextColor = SaveBetterTheme.colors.ink
+                    )
+                )
+
+                OutlinedTextField(
+                    value = savingInput,
+                    onValueChange = { savingInput = it.filter { c -> c.isDigit() || c == '.' } },
+                    label = { Text(stringResource(R.string.monthly_savings_input_label)) },
+                    placeholder = { Text(stringResource(R.string.monthly_savings_input_hint)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = SaveBetterTheme.colors.gold,
+                        unfocusedBorderColor = SaveBetterTheme.colors.paperLineStrong,
+                        focusedLabelColor = SaveBetterTheme.colors.gold,
+                        focusedTextColor = SaveBetterTheme.colors.ink,
+                        unfocusedTextColor = SaveBetterTheme.colors.ink
+                    )
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val targetDouble = targetInput.toDoubleOrNull() ?: 0.0
+                    val savingDouble = savingInput.toDoubleOrNull() ?: 0.0
+                    onSave((targetDouble * 100).toLong(), (savingDouble * 100).toLong())
+                },
+                enabled = isValid,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = SaveBetterTheme.colors.gold,
+                    contentColor = SaveBetterTheme.colors.cover,
+                    disabledContainerColor = SaveBetterTheme.colors.paperLine,
+                    disabledContentColor = SaveBetterTheme.colors.textMuted
+                )
+            ) {
+                Text(stringResource(R.string.action_save))
+            }
+        },
+        dismissButton = {
+            OutlinedButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = SaveBetterTheme.colors.ink)
+            ) {
+                Text(stringResource(R.string.action_cancel))
+            }
+        }
+    )
+}
+

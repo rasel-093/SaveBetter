@@ -42,6 +42,14 @@ class SettingsPreferences @Inject constructor(
         preferences[PreferenceKeys.NOTIFY_RECONCILIATION] ?: true
     }
 
+    val notifyWeeklyBudgetReminder: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[PreferenceKeys.NOTIFY_WEEKLY_BUDGET_REMINDER] ?: true
+    }
+
+    val notifyMonthlyBudgetReminder: Flow<Boolean> = dataStore.data.map { preferences ->
+        preferences[PreferenceKeys.NOTIFY_MONTHLY_BUDGET_REMINDER] ?: true
+    }
+
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.THEME_MODE] = mode.code
@@ -75,6 +83,18 @@ class SettingsPreferences @Inject constructor(
     suspend fun setNotifyReconciliation(enabled: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.NOTIFY_RECONCILIATION] = enabled
+        }
+    }
+
+    suspend fun setNotifyWeeklyBudgetReminder(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.NOTIFY_WEEKLY_BUDGET_REMINDER] = enabled
+        }
+    }
+
+    suspend fun setNotifyMonthlyBudgetReminder(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.NOTIFY_MONTHLY_BUDGET_REMINDER] = enabled
         }
     }
 

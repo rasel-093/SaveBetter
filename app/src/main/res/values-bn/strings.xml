@@ -339,13 +339,39 @@
     <string name="settings_categories_dialog_title">ক্যাটাগরিসমূহ</string>
     <string name="settings_profile_updated">প্রোফাইল সফলভাবে আপডেট হয়েছে</string>
 
-    <!-- Settings — Budget Targets section -->
-    <string name="settings_section_budget_targets">বাজেট লক্ষ্যমাত্রা</string>
-    <string name="settings_weekly_target_label">সাপ্তাহিক খরচের লক্ষ্য</string>
-    <string name="settings_weekly_target_sub">প্রতি সপ্তাহের বাজেট (সোম–রবি)</string>
-    <string name="settings_weekly_target_dialog_title">সাপ্তাহিক বাজেট নির্ধারণ</string>
-    <string name="settings_weekly_target_hint">যেমন: ৮,৫০০</string>
-    <string name="settings_weekly_target_saved">সাপ্তাহিক লক্ষ্য সফলভাবে আপডেট হয়েছে</string>
+    <!-- Weekly Detail Budget Management -->
+    <string name="weekly_set_budget_action">বাজেট নির্ধারণ</string>
+    <string name="weekly_edit_budget_action">বাজেট পরিবর্তন</string>
+    <string name="weekly_no_target_set_prompt">সাপ্তাহিক বাজেট নির্ধারণ করা নেই। সীমা নির্ধারণ করতে চাপ দিন।</string>
+    <string name="weekly_budget_dialog_title">সাপ্তাহিক বাজেট নির্ধারণ</string>
+    <string name="weekly_budget_dialog_sub">এই সপ্তাহের খরচের সীমা নির্ধারণ করুন (%1$s)</string>
+    <string name="weekly_budget_saved">সাপ্তাহিক বাজেট সফলভাবে সংরক্ষিত হয়েছে</string>
+
+    <!-- Monthly Analysis Budget Management -->
+    <string name="monthly_set_budget_action">বাজেট নির্ধারণ</string>
+    <string name="monthly_edit_budget_action">বাজেট পরিবর্তন</string>
+    <string name="monthly_no_target_set_prompt">মাসিক বাজেট নির্ধারণ করা নেই। লক্ষ্য নির্ধারণ করতে চাপ দিন।</string>
+    <string name="monthly_budget_dialog_title">মাসিক বাজেট নির্ধারণ</string>
+    <string name="monthly_budget_dialog_sub">%1$s মাসের খরচ ও সঞ্চয়ের লক্ষ্য নির্ধারণ করুন</string>
+    <string name="monthly_target_input_label">মাসিক খরচের লক্ষ্য</string>
+    <string name="monthly_target_input_hint">যেমন: ৩৫,০০০</string>
+    <string name="monthly_savings_input_label">মাসিক সঞ্চয়ের লক্ষ্য</string>
+    <string name="monthly_savings_input_hint">যেমন: ১০,০০০</string>
+    <string name="monthly_budget_saved">মাসিক বাজেট সফলভাবে সংরক্ষিত হয়েছে</string>
+
+    <!-- Budget Reminder Notifications -->
+    <string name="budget_reminder_channel_name">বাজেট রিমাইন্ডার</string>
+    <string name="budget_reminder_channel_desc">সাপ্তাহিক ও মাসিক বাজেট নির্ধারণের নোটিফিকেশন</string>
+    <string name="weekly_reminder_notification_title">নতুন সপ্তাহ, নতুন বাজেট!</string>
+    <string name="weekly_reminder_notification_desc">%1$s সপ্তাহের খরচের লক্ষ্য নির্ধারণ করে নিয়ন্ত্রণে থাকুন।</string>
+    <string name="monthly_reminder_notification_title">নতুন মাসের বাজেট পরিকল্পনা</string>
+    <string name="monthly_reminder_notification_desc">%1$s মাসের খরচের লক্ষ্য এবং সঞ্চয়ের পরিকল্পনা সেট করুন।</string>
+
+    <!-- Settings Reminder Toggles -->
+    <string name="settings_notify_weekly_budget_reminder">সপ্তাহের প্রথম দিনে বাজেট রিমাইন্ডার</string>
+    <string name="settings_notify_weekly_budget_reminder_sub">সোমবার সকালে সাপ্তাহিক বাজেট নির্ধারণের নোটিফিকেশন</string>
+    <string name="settings_notify_monthly_budget_reminder">মাসের প্রথম দিনে বাজেট রিমাইন্ডার</string>
+    <string name="settings_notify_monthly_budget_reminder_sub">১ তারিখে মাসিক বাজেট ও সঞ্চয় নির্ধারণের নোটিফিকেশন</string>
 
     <!-- Common Accessibility Content Descriptions -->
     <string name="back">পেছনে যান</string>

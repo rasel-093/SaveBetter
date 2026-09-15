@@ -8,6 +8,7 @@ import com.example.savebetter.core.domain.model.MonthlySuggestionType
 import com.example.savebetter.core.domain.model.MonthlySummary
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
+import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.usecase.dashboard.GetMonthlyReductionSuggestionsUseCase
 import com.example.savebetter.core.domain.usecase.dashboard.GetMonthlySummaryUseCase
 import com.example.savebetter.core.i18n.AppLanguage
@@ -36,6 +37,7 @@ class MonthlyAnalysisViewModelTest {
     private val getMonthlyReductionSuggestionsUseCase: GetMonthlyReductionSuggestionsUseCase = mockk()
     private val expenseRepository: ExpenseRepository = mockk()
     private val categoryRepository: CategoryRepository = mockk()
+    private val targetRepository: TargetRepository = mockk(relaxed = true)
 
     private lateinit var viewModel: MonthlyAnalysisViewModel
 
@@ -125,7 +127,8 @@ class MonthlyAnalysisViewModelTest {
             getMonthlySummaryUseCase = getMonthlySummaryUseCase,
             getMonthlyReductionSuggestionsUseCase = getMonthlyReductionSuggestionsUseCase,
             expenseRepository = expenseRepository,
-            categoryRepository = categoryRepository
+            categoryRepository = categoryRepository,
+            targetRepository = targetRepository
         )
     }
 
@@ -189,6 +192,35 @@ class MonthlyAnalysisViewModelTest {
             val bn = awaitItem()
             assertTrue(bn.monthTitleText.contains("হিসাব"))
 
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `showBudgetDialog updates dialog state and saveMonthlyTarget calls repository`() = runTest {
+        viewModel.initForUser("user_1")
+
+        viewModel.uiState.test {
+            var state = awaitItem()
+            assertFalse(state.showBudgetDialog)
+
+            viewModel.showBudgetDialog(true)
+            state = awaitItem()
+            assertTrue(state.showBudgetDialog)
+
+            viewModel.saveMonthlyTarget(4500000L, 1200000L)
+            state = awaitItem()
+            assertFalse(state.showBudgetDialog)
+
+            io.mockk.coVerify {
+                targetRepository.saveMonthlyTarget(
+                    match {
+                        it.userId == "user_1" &&
+                        it.targetAmountMinor == 4500000L &&
+                        it.savingGoalMinor == 1200000L
+                    }
+                )
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }

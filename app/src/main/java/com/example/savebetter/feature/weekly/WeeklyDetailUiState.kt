@@ -30,5 +30,7 @@ data class WeeklyDetailUiState(
     val weeklyExpenses: List<ExpenseItemUiModel> = emptyList(),
     val categories: List<Category> = emptyList(),
     val hasNextWeek: Boolean = false,
+    val showBudgetDialog: Boolean = false,
+    val userMessage: String? = null,
     val isLoading: Boolean = true
 )

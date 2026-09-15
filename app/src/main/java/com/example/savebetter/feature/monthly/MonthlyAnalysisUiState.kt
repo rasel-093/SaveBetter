@@ -22,5 +22,7 @@ data class MonthlyAnalysisUiState(
     val comparisonPrevious: ComparisonBarItem? = null,
     val comparisonCurrent: ComparisonBarItem? = null,
     val hasNextMonth: Boolean = false,
+    val showBudgetDialog: Boolean = false,
+    val userMessage: String? = null,
     val isLoading: Boolean = true
 )

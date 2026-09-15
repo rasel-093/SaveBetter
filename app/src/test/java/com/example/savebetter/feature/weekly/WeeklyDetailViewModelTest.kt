@@ -8,6 +8,7 @@ import com.example.savebetter.core.domain.model.WeeklyAdviceType
 import com.example.savebetter.core.domain.model.WeeklySummary
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
+import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.usecase.dashboard.GetWeeklyAdviceUseCase
 import com.example.savebetter.core.domain.usecase.dashboard.GetWeeklySummaryUseCase
 import com.example.savebetter.core.i18n.AppLanguage
@@ -36,6 +37,7 @@ class WeeklyDetailViewModelTest {
     private val getWeeklyAdviceUseCase: GetWeeklyAdviceUseCase = mockk()
     private val expenseRepository: ExpenseRepository = mockk()
     private val categoryRepository: CategoryRepository = mockk()
+    private val targetRepository: TargetRepository = mockk(relaxed = true)
 
     private lateinit var viewModel: WeeklyDetailViewModel
 
@@ -66,6 +68,8 @@ class WeeklyDetailViewModelTest {
         weekEnd = "2026-09-13"
     )
 
+    private val thisMonday = LocalDate.now().with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY))
+
     private val testExpenses = listOf(
         Expense(
             id = "exp_1",
@@ -73,7 +77,7 @@ class WeeklyDetailViewModelTest {
             amountMinor = 200000L,
             categoryId = "cat_1",
             note = "Grocery store",
-            date = Instant.parse("2026-09-08T10:00:00Z"),
+            date = thisMonday.plusDays(1).atTime(10, 0).atZone(java.time.ZoneId.systemDefault()).toInstant(),
             createdAt = Instant.now(),
             updatedAt = Instant.now()
         ),
@@ -83,7 +87,7 @@ class WeeklyDetailViewModelTest {
             amountMinor = 400000L,
             categoryId = "cat_1",
             note = "Utensils",
-            date = Instant.parse("2026-09-09T10:00:00Z"),
+            date = thisMonday.plusDays(2).atTime(10, 0).atZone(java.time.ZoneId.systemDefault()).toInstant(),
             createdAt = Instant.now(),
             updatedAt = Instant.now()
         )
@@ -112,7 +116,8 @@ class WeeklyDetailViewModelTest {
             getWeeklySummaryUseCase = getWeeklySummaryUseCase,
             getWeeklyAdviceUseCase = getWeeklyAdviceUseCase,
             expenseRepository = expenseRepository,
-            categoryRepository = categoryRepository
+            categoryRepository = categoryRepository,
+            targetRepository = targetRepository
         )
     }
 
@@ -139,6 +144,33 @@ class WeeklyDetailViewModelTest {
 
             // Expense items
             assertEquals(2, state.weeklyExpenses.size)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `showBudgetDialog updates dialog state and saveWeeklyBudget calls repository`() = runTest {
+        viewModel.initForUser("user_1")
+
+        viewModel.uiState.test {
+            var state = awaitItem()
+            assertFalse(state.showBudgetDialog)
+
+            viewModel.showBudgetDialog(true)
+            state = awaitItem()
+            assertTrue(state.showBudgetDialog)
+
+            viewModel.saveWeeklyBudget(1200000L)
+            state = awaitItem()
+            assertFalse(state.showBudgetDialog)
+
+            io.mockk.coVerify {
+                targetRepository.saveWeeklyTarget(
+                    match {
+                        it.userId == "user_1" && it.targetAmountMinor == 1200000L
+                    }
+                )
+            }
             cancelAndIgnoreRemainingEvents()
         }
     }

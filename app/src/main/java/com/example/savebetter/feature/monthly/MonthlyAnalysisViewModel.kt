@@ -7,8 +7,11 @@ import com.example.savebetter.core.designsystem.component.ComparisonBarItem
 import com.example.savebetter.core.designsystem.component.DonutSlice
 import com.example.savebetter.core.domain.model.Category
 import com.example.savebetter.core.domain.model.Expense
+import com.example.savebetter.core.domain.model.MonthlyTarget
+import com.example.savebetter.core.domain.model.SyncState
 import com.example.savebetter.core.domain.repository.CategoryRepository
 import com.example.savebetter.core.domain.repository.ExpenseRepository
+import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.usecase.dashboard.GetMonthlyReductionSuggestionsUseCase
 import com.example.savebetter.core.domain.usecase.dashboard.GetMonthlySummaryUseCase
 import com.example.savebetter.core.i18n.AppLanguage
@@ -24,6 +27,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -36,22 +41,33 @@ class MonthlyAnalysisViewModel @Inject constructor(
     private val getMonthlySummaryUseCase: GetMonthlySummaryUseCase,
     private val getMonthlyReductionSuggestionsUseCase: GetMonthlyReductionSuggestionsUseCase,
     private val expenseRepository: ExpenseRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val targetRepository: TargetRepository
 ) : ViewModel() {
 
     private val activeUserId = MutableStateFlow<String?>(null)
     private val selectedYearMonth = MutableStateFlow(YearMonth.now())
     private val currentLanguage = MutableStateFlow(AppLanguage.ENGLISH)
+    private val showBudgetDialogState = MutableStateFlow(false)
+    private val userMessageState = MutableStateFlow<String?>(null)
 
     val uiState: StateFlow<MonthlyAnalysisUiState> = combine(
         activeUserId,
         selectedYearMonth,
-        currentLanguage
-    ) { userId, ym, language ->
-        Triple(userId, ym, language)
-    }.flatMapLatest { (userId, ym, language) ->
+        currentLanguage,
+        showBudgetDialogState,
+        userMessageState
+    ) { userId, ym, language, showDialog, userMsg ->
+        StateParams(userId, ym, language, showDialog, userMsg)
+    }.flatMapLatest { params ->
+        val userId = params.userId
+        val ym = params.ym
+        val language = params.language
+        val showDialog = params.showDialog
+        val userMsg = params.userMsg
+
         if (userId == null) {
-            flowOf(MonthlyAnalysisUiState(isLoading = false))
+            flowOf(MonthlyAnalysisUiState(isLoading = false, showBudgetDialog = showDialog, userMessage = userMsg))
         } else {
             val prevYm = ym.minusMonths(1)
 
@@ -148,6 +164,8 @@ class MonthlyAnalysisViewModel @Inject constructor(
                     comparisonPrevious = comparisonPrev,
                     comparisonCurrent = comparisonCurrent,
                     hasNextMonth = hasNextMonth,
+                    showBudgetDialog = showDialog,
+                    userMessage = userMsg,
                     isLoading = false
                 )
             }
@@ -158,6 +176,14 @@ class MonthlyAnalysisViewModel @Inject constructor(
         initialValue = MonthlyAnalysisUiState(isLoading = true)
     )
 
+    private data class StateParams(
+        val userId: String?,
+        val ym: YearMonth,
+        val language: AppLanguage,
+        val showDialog: Boolean,
+        val userMsg: String?
+    )
+
     fun initForUser(userId: String, language: AppLanguage = AppLanguage.ENGLISH) {
         activeUserId.value = userId
         currentLanguage.value = language
@@ -165,6 +191,33 @@ class MonthlyAnalysisViewModel @Inject constructor(
 
     fun setLanguage(language: AppLanguage) {
         currentLanguage.value = language
+    }
+
+    fun showBudgetDialog(show: Boolean) {
+        showBudgetDialogState.value = show
+    }
+
+    fun saveMonthlyTarget(targetAmountMinor: Long, savingGoalMinor: Long) {
+        val uid = activeUserId.value ?: return
+        val ym = selectedYearMonth.value
+        viewModelScope.launch {
+            val target = MonthlyTarget(
+                id = "$uid-${ym.year}-${ym.monthValue}",
+                userId = uid,
+                month = ym.monthValue,
+                year = ym.year,
+                targetAmountMinor = targetAmountMinor,
+                savingGoalMinor = savingGoalMinor,
+                updatedAt = Instant.now(),
+                syncStatus = SyncState.PENDING
+            )
+            targetRepository.saveMonthlyTarget(target)
+            showBudgetDialogState.value = false
+        }
+    }
+
+    fun clearUserMessage() {
+        userMessageState.value = null
     }
 
     fun navigatePreviousMonth() {

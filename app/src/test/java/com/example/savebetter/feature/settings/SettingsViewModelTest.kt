@@ -18,6 +18,7 @@ import com.example.savebetter.core.domain.repository.ExpenseRepository
 import com.example.savebetter.core.domain.repository.TargetRepository
 import com.example.savebetter.core.domain.repository.UserProfileRepository
 import com.example.savebetter.core.i18n.AppLanguage
+import com.example.savebetter.core.notification.BudgetReminderScheduler
 import com.example.savebetter.core.notification.ReconciliationReminderScheduler
 import com.example.savebetter.util.MainDispatcherRule
 import io.mockk.coEvery
@@ -54,13 +55,14 @@ class SettingsViewModelTest {
     private val debtCreditRepository: DebtCreditRepository = mockk()
     private val deleteAccountUseCase: DeleteAccountUseCase = mockk()
 
-
     private val themeModeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     private val vibrationFlow = MutableStateFlow(true)
     private val notificationsFlow = MutableStateFlow(true)
     private val weeklyWarningFlow = MutableStateFlow(true)
     private val monthlyWarningFlow = MutableStateFlow(true)
     private val reconciliationFlow = MutableStateFlow(true)
+    private val weeklyBudgetReminderFlow = MutableStateFlow(true)
+    private val monthlyBudgetReminderFlow = MutableStateFlow(true)
     private val languageFlow = MutableStateFlow(AppLanguage.ENGLISH)
 
     private val testUser = AuthUser(id = "user_settings_1", email = "test@example.com")
@@ -90,6 +92,12 @@ class SettingsViewModelTest {
         every { ReconciliationReminderScheduler.scheduleMonthEndReminder(any()) } returns Unit
         every { ReconciliationReminderScheduler.cancelReminder(any()) } returns Unit
 
+        mockkObject(BudgetReminderScheduler)
+        every { BudgetReminderScheduler.scheduleWeeklyBudgetReminder(any()) } returns Unit
+        every { BudgetReminderScheduler.cancelWeeklyReminder(any()) } returns Unit
+        every { BudgetReminderScheduler.scheduleMonthlyBudgetReminder(any()) } returns Unit
+        every { BudgetReminderScheduler.cancelMonthlyReminder(any()) } returns Unit
+
         every { authRepository.observeAuthState() } returns flowOf(testUser)
         every { userProfileRepository.observeUserProfile("user_settings_1") } returns flowOf(testProfile)
         coEvery { userProfileRepository.getUserProfile("user_settings_1") } returns testProfile
@@ -103,6 +111,8 @@ class SettingsViewModelTest {
         every { settingsPreferences.notifyWeeklyWarning } returns weeklyWarningFlow
         every { settingsPreferences.notifyMonthlyWarning } returns monthlyWarningFlow
         every { settingsPreferences.notifyReconciliation } returns reconciliationFlow
+        every { settingsPreferences.notifyWeeklyBudgetReminder } returns weeklyBudgetReminderFlow
+        every { settingsPreferences.notifyMonthlyBudgetReminder } returns monthlyBudgetReminderFlow
         every { languagePreferences.language } returns languageFlow
 
         coEvery { settingsPreferences.setThemeMode(any()) } returns Unit
@@ -111,6 +121,8 @@ class SettingsViewModelTest {
         coEvery { settingsPreferences.setNotifyWeeklyWarning(any()) } returns Unit
         coEvery { settingsPreferences.setNotifyMonthlyWarning(any()) } returns Unit
         coEvery { settingsPreferences.setNotifyReconciliation(any()) } returns Unit
+        coEvery { settingsPreferences.setNotifyWeeklyBudgetReminder(any()) } returns Unit
+        coEvery { settingsPreferences.setNotifyMonthlyBudgetReminder(any()) } returns Unit
         coEvery { languagePreferences.setLanguage(any()) } returns Unit
 
         coEvery { userProfileRepository.syncUserProfile(any()) } returns Result.success(Unit)
@@ -134,10 +146,10 @@ class SettingsViewModelTest {
         )
     }
 
-
     @After
     fun tearDown() {
         unmockkObject(ReconciliationReminderScheduler)
+        unmockkObject(BudgetReminderScheduler)
     }
 
     @Test
@@ -157,6 +169,8 @@ class SettingsViewModelTest {
             assertEquals(ThemeMode.SYSTEM, state.themeMode)
             assertTrue(state.vibrationEnabled)
             assertTrue(state.notificationsEnabled)
+            assertTrue(state.notifyWeeklyBudgetReminder)
+            assertTrue(state.notifyMonthlyBudgetReminder)
             assertEquals(AppLanguage.ENGLISH, state.currentLanguage)
             assertEquals(1, state.categories.size)
             cancelAndIgnoreRemainingEvents()
@@ -200,12 +214,16 @@ class SettingsViewModelTest {
 
         coVerify { settingsPreferences.setNotificationsEnabled(true) }
         coVerify { ReconciliationReminderScheduler.scheduleMonthEndReminder(context) }
+        coVerify { BudgetReminderScheduler.scheduleWeeklyBudgetReminder(context) }
+        coVerify { BudgetReminderScheduler.scheduleMonthlyBudgetReminder(context) }
 
         viewModel.setNotificationsEnabled(false)
         testScheduler.advanceUntilIdle()
 
         coVerify { settingsPreferences.setNotificationsEnabled(false) }
         coVerify { ReconciliationReminderScheduler.cancelReminder(context) }
+        coVerify { BudgetReminderScheduler.cancelWeeklyReminder(context) }
+        coVerify { BudgetReminderScheduler.cancelMonthlyReminder(context) }
     }
 
     @Test
@@ -221,6 +239,36 @@ class SettingsViewModelTest {
 
         coVerify { settingsPreferences.setNotifyReconciliation(false) }
         coVerify { ReconciliationReminderScheduler.cancelReminder(context) }
+    }
+
+    @Test
+    fun `setNotifyWeeklyBudgetReminder schedules reminder when true and cancels when false`() = runTest {
+        viewModel.setNotifyWeeklyBudgetReminder(true)
+        testScheduler.advanceUntilIdle()
+
+        coVerify { settingsPreferences.setNotifyWeeklyBudgetReminder(true) }
+        coVerify { BudgetReminderScheduler.scheduleWeeklyBudgetReminder(context) }
+
+        viewModel.setNotifyWeeklyBudgetReminder(false)
+        testScheduler.advanceUntilIdle()
+
+        coVerify { settingsPreferences.setNotifyWeeklyBudgetReminder(false) }
+        coVerify { BudgetReminderScheduler.cancelWeeklyReminder(context) }
+    }
+
+    @Test
+    fun `setNotifyMonthlyBudgetReminder schedules reminder when true and cancels when false`() = runTest {
+        viewModel.setNotifyMonthlyBudgetReminder(true)
+        testScheduler.advanceUntilIdle()
+
+        coVerify { settingsPreferences.setNotifyMonthlyBudgetReminder(true) }
+        coVerify { BudgetReminderScheduler.scheduleMonthlyBudgetReminder(context) }
+
+        viewModel.setNotifyMonthlyBudgetReminder(false)
+        testScheduler.advanceUntilIdle()
+
+        coVerify { settingsPreferences.setNotifyMonthlyBudgetReminder(false) }
+        coVerify { BudgetReminderScheduler.cancelMonthlyReminder(context) }
     }
 
     @Test
